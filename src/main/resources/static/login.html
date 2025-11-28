@@ -76,10 +76,10 @@
 
               // 4. REDIRECCIÓN INTELIGENTE SEGÚN ROL
               if (data.rol === "DUENO") {
-                // El dueño va a su panel de control (Dashboard)
                 window.location.href = "/dashboard-dueno.html";
+              } else if (data.rol === "ADMIN") {
+                window.location.href = "/admin/panel.html"; // <--- NUEVA RUTA
               } else {
-                // El cliente va al catálogo a gastar dinero
                 window.location.href = "/catalogo.html";
               }
             } else {
