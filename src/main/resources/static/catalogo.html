@@ -60,7 +60,9 @@
         localStorage.clear();
         window.location.href = "/index.html";
       }
-
+      function verDetalle(id) {
+        window.location.href = `/detalle.html?id=${id}`;
+      }
       // 2. Cargar Datos del Backend
       async function cargar() {
         try {
@@ -88,7 +90,7 @@
                             <p style="color:#666">📍 ${h.ubicacion}</p>
                             <p>${h.descripcion}</p>
                             <p style="font-weight:bold; color:#205c3b; font-size:1.2em">S/ ${h.precio}</p>
-                            <button onclick="alert('Funcionalidad de detalle en siguiente feature')" style="width:100%; padding:10px; background:#205c3b; color:white; border:none; cursor:pointer; border-radius:5px">Ver Detalle</button>
+                            <button onclick="verDetalle(${h.id})" class="btn-detalle">Ver Detalle</button>
                         </div>
                     `;
             contenedor.appendChild(card);

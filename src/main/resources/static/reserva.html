@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Confirmar Reserva</title>
+    <link rel="stylesheet" href="/Css/reserva.css" />
+  </head>
+  <body>
+    <div
+      style="
+        max-width: 500px;
+        margin: 50px auto;
+        padding: 30px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      "
+    >
+      <h2 style="color: #205c3b; text-align: center">Finalizar Reserva</h2>
+      <h3 id="hotelNombre" style="text-align: center; color: #555">...</h3>
+
+      <form
+        id="formReserva"
+        style="display: flex; flex-direction: column; gap: 15px"
+      >
+        <label
+          >Fecha Llegada: <input type="date" id="checkin" required
+        /></label>
+        <label
+          >Fecha Salida: <input type="date" id="checkout" required
+        /></label>
+        <label
+          >Personas:
+          <input type="number" id="personas" value="2" min="1" required
+        /></label>
+
+        <div
+          style="
+            background: #eef;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+          "
+        >
+          <p>
+            Precio por noche:
+            <strong>S/ <span id="precioNoche">0</span></strong>
+          </p>
+          <p style="font-size: 1.3em; font-weight: bold; color: #205c3b">
+            Total: S/ <span id="precioTotal">0.00</span>
+          </p>
+        </div>
+
+        <button
+          type="submit"
+          style="
+            background: #205c3b;
+            color: white;
+            padding: 12px;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1em;
+            border-radius: 5px;
+          "
+        >
+          Confirmar y Pagar
+        </button>
+      </form>
+    </div>
+
+    <script>
+      // 1. Obtener datos de la URL y Sesión
+      const params = new URLSearchParams(window.location.search);
+      const hotelId = params.get("id");
+      const precioUnitario = parseFloat(params.get("precio"));
+      document.getElementById("hotelNombre").innerText = params.get("nombre");
+      document.getElementById("precioNoche").innerText = precioUnitario;
+
+      const usuarioId = localStorage.getItem("usuarioId");
+
+      // Validar que esté logueado
+      if (!usuarioId) {
+        alert("Debes iniciar sesión para reservar");
+        window.location.href = "/login.html";
+      }
+
+      // 2. Calcular precio dinámico
+      const inpCheckin = document.getElementById("checkin");
+      const inpCheckout = document.getElementById("checkout");
+
+      function calcular() {
+        if (inpCheckin.value && inpCheckout.value) {
+          const d1 = new Date(inpCheckin.value);
+          const d2 = new Date(inpCheckout.value);
+          const diff = d2 - d1;
+          const dias = diff / (1000 * 60 * 60 * 24);
+
+          if (dias > 0) {
+            document.getElementById("precioTotal").innerText = (
+              dias * precioUnitario
+            ).toFixed(2);
+          } else {
+            document.getElementById("precioTotal").innerText = "0.00";
+          }
+        }
+      }
+      inpCheckin.addEventListener("change", calcular);
+      inpCheckout.addEventListener("change", calcular);
+
+      // 3. Enviar al Backend
+      document
+        .getElementById("formReserva")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const reservaData = {
+            checkin: inpCheckin.value,
+            checkout: inpCheckout.value,
+            personas: document.getElementById("personas").value,
+            hospedajeId: hotelId,
+            usuarioId: usuarioId,
+          };
+
+          try {
+            const res = await fetch("http://localhost:8080/api/reservas", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(reservaData),
+            });
+
+            if (res.ok) {
+              const data = await res.json(); // Backend nos devuelve la reserva con el precio total calculado
+              alert(
+                `✅ ¡Reserva Exitosa!\nTotal a pagar: S/ ${data.precioTotal}`
+              );
+              window.location.href = "/catalogo.html";
+            } else {
+              const err = await res.json();
+              alert(
+                "❌ " + (err.mensaje || err.message || "Error desconocido")
+              );
+            }
+          } catch (error) {
+            alert("Error de conexión");
+          }
+        });
+    </script>
+  </body>
+</html>

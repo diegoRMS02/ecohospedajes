@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Detalle | EcoHospedajes</title>
+    <link rel="stylesheet" href="/Css/detalle.css" />
+  </head>
+  <body>
+    <header class="navbar">
+      <div class="logo"><img src="/img/logo.jpg" width="50" /></div>
+      <nav><a href="/catalogo.html">Volver al Catálogo</a></nav>
+    </header>
+
+    <main
+      id="detalle-container"
+      style="padding: 40px; max-width: 800px; margin: auto"
+    >
+      <p>Cargando...</p>
+    </main>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
+
+      async function cargarDetalle() {
+        try {
+          // 1. Pedir datos al backend
+          const res = await fetch(`http://localhost:8080/api/hospedajes/${id}`);
+          if (!res.ok) throw new Error("No encontrado");
+
+          const h = await res.json();
+
+          // 2. Renderizar
+          const container = document.getElementById("detalle-container");
+          container.innerHTML = `
+                    <div style="background:white; padding:20px; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1)">
+                        <img src="${h.imagenUrl}" style="width:100%; max-height:400px; object-fit:cover; border-radius:10px" onerror="this.src='/img/logo.jpg'">
+                        <h1>${h.nombre}</h1>
+                        <h3>📍 ${h.ubicacion}</h3>
+                        <p><strong>Dueño:</strong> ${h.nombrePropietario}</p>
+                        <p style="font-size:1.1em">${h.descripcion}</p>
+                        
+                        <div style="margin-top:20px; padding:20px; background:#f9f9f9; border-radius:10px; text-align:center">
+                            <h2 style="color:#205c3b">S/ ${h.precio} <small>/ noche</small></h2>
+                            <button onclick="irAReserva(${h.id}, '${h.nombre}', ${h.precio})" 
+                                style="background:#205c3b; color:white; padding:15px 30px; border:none; font-size:1.2em; cursor:pointer; border-radius:5px">
+                                Reservar Ahora
+                            </button>
+                        </div>
+                    </div>
+                `;
+        } catch (error) {
+          document.body.innerHTML =
+            "<h1>Error: Hospedaje no encontrado</h1><a href='/catalogo.html'>Volver</a>";
+        }
+      }
+
+      function irAReserva(id, nombre, precio) {
+        // Usamos encodeURIComponent para evitar errores si el nombre tiene espacios
+        window.location.href = `/reserva.html?id=${id}&nombre=${encodeURIComponent(
+          nombre
+        )}&precio=${precio}`;
+      }
+
+      cargarDetalle();
+    </script>
+  </body>
+</html>
