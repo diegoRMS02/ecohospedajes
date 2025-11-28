@@ -103,5 +103,39 @@
       }
       cargar();
     </script>
+    <script>
+      const usuarioStorage = localStorage.getItem("usuarioLogueado");
+      const nav = document.getElementById("menuNav");
+
+      if (usuarioStorage) {
+        const usuario = JSON.parse(usuarioStorage);
+
+        // Variable para guardar el botón especial según el rol
+        let botonRol = "";
+
+        if (usuario.rol === "DUENO") {
+          // Si es dueño, le damos acceso a su Dashboard
+          botonRol = `<a href="/dashboard-dueno.html" style="font-weight:bold; color:#205c3b; border: 2px solid #205c3b; padding: 5px 10px; border-radius: 5px;">Ir a mi Panel</a>`;
+        } else if (usuario.rol === "CLIENTE") {
+          // Si es cliente, le daremos acceso a sus viajes (Feature 6)
+          botonRol = `<a href="/perfil.html">Mis Viajes</a>`;
+        } else if (usuario.rol === "ADMIN") {
+          botonRol = `<a href="/admin/panel.html">Administración</a>`;
+        }
+
+        // Inyectamos el menú personalizado
+        nav.innerHTML = `
+                <a href="/index.html">Inicio</a>
+                <a href="/catalogo.html">Catálogo</a>
+                ${botonRol} <span style="margin-left:10px; color:#555">Hola, <b>${usuario.nombre}</b> (${usuario.rol})</span>
+                <a href="#" onclick="logout()" style="color:red; margin-left:10px">Salir</a>
+            `;
+      }
+
+      function logout() {
+        localStorage.clear();
+        window.location.reload();
+      }
+    </script>
   </body>
 </html>

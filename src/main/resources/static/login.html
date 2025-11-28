@@ -54,39 +54,40 @@
           const contrasena = document.getElementById("contrasena").value;
 
           try {
-            // CONEXIÓN AL NUEVO BACKEND
+            // 1. CONEXIÓN AL BACKEND
             const response = await fetch(
               "http://localhost:8080/api/usuarios/login",
               {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                // OJO: El backend espera "password", aunque tu input se llame "contrasena"
+                // Mapeamos 'contrasena' del input a 'password' que espera Java
                 body: JSON.stringify({ email: email, password: contrasena }),
               }
             );
 
+            // 2. RESPUESTA DEL SERVIDOR
             if (response.ok) {
               const data = await response.json();
 
-              // GUARDAMOS SESIÓN
+              // 3. GUARDAR SESIÓN EN EL NAVEGADOR
               localStorage.setItem("usuarioLogueado", JSON.stringify(data));
-              localStorage.setItem("usuarioId", data.id); // Importante para la reserva
+              localStorage.setItem("usuarioId", data.id);
               localStorage.setItem("usuarioRol", data.rol);
 
-              // REDIRECCIÓN SEGÚN ROL (Tal cual lo tenías)
+              // 4. REDIRECCIÓN INTELIGENTE SEGÚN ROL
               if (data.rol === "DUENO") {
-                // Ajusta esta ruta si tu archivo se llama diferente
-                window.location.href = "/dueño/RegistrarHospedaje.html";
+                // El dueño va a su panel de control (Dashboard)
+                window.location.href = "/dashboard-dueno.html";
               } else {
-                window.location.href = "/catalogo.html"; // O /logueado/index.html
+                // El cliente va al catálogo a gastar dinero
+                window.location.href = "/catalogo.html";
               }
             } else {
-              // Manejo de error si la contraseña está mal
-              alert("Credenciales incorrectas");
+              alert("❌ Credenciales incorrectas. Intenta de nuevo.");
             }
           } catch (error) {
             console.error("Error:", error);
-            alert("Error al conectar con el servidor");
+            alert("❌ Error de conexión con el servidor");
           }
         });
     </script>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Publicar Hospedaje | EcoHospedajes</title>
+    <link rel="stylesheet" href="/Css/Registrate.css" />
+  </head>
+  <body>
+    <div class="login-container">
+      <div class="login-box" style="width: 400px">
+        <div class="logo">
+          <img src="/img/logo.jpg" alt="Logo" />
+          <h2>EcoHospedajes</h2>
+        </div>
+
+        <h1>Publicar Nuevo Hospedaje</h1>
+
+        <form id="formHospedaje">
+          <input
+            type="text"
+            id="nombre"
+            placeholder="Nombre del Hospedaje"
+            required
+          />
+          <input
+            type="text"
+            id="ubicacion"
+            placeholder="Ubicación (ej: Cusco)"
+            required
+          />
+          <input
+            type="number"
+            id="precio"
+            placeholder="Precio por noche (S/.)"
+            required
+          />
+          <input
+            type="text"
+            id="imagenUrl"
+            placeholder="URL de la imagen (http...)"
+            required
+          />
+          <textarea
+            id="descripcion"
+            placeholder="Descripción del lugar..."
+            rows="4"
+            style="
+              width: 100%;
+              padding: 10px;
+              margin-bottom: 10px;
+              border-radius: 5px;
+              border: 1px solid #ccc;
+            "
+            required
+          ></textarea>
+
+          <button type="submit">Publicar Hospedaje</button>
+        </form>
+
+        <p class="switch-text">
+          <a href="/dashboard-dueno.html">Cancelar y volver al Panel</a>
+        </p>
+      </div>
+    </div>
+
+    <script>
+      // 1. Verificar Seguridad
+      const usuario = JSON.parse(localStorage.getItem("usuarioLogueado"));
+      if (!usuario || usuario.rol !== "DUENO") {
+        alert("No tienes permisos de dueño.");
+        window.location.href = "/index.html";
+      }
+
+      // 2. Enviar Datos
+      document
+        .getElementById("formHospedaje")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const datos = {
+            nombre: document.getElementById("nombre").value,
+            ubicacion: document.getElementById("ubicacion").value,
+            precio: parseFloat(document.getElementById("precio").value),
+            imagenUrl: document.getElementById("imagenUrl").value,
+            descripcion: document.getElementById("descripcion").value,
+            propietarioId: usuario.id, // IMPORTANTE: Vinculamos al dueño logueado
+          };
+
+          try {
+            const res = await fetch("http://localhost:8080/api/hospedajes", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(datos),
+            });
+
+            if (res.ok) {
+              alert("✅ Hospedaje publicado correctamente.");
+              window.location.href = "/dashboard-dueno.html"; // Volvemos al dashboard
+            } else {
+              alert("❌ Error al publicar.");
+            }
+          } catch (error) {
+            console.error(error);
+            alert("Error de conexión");
+          }
+        });
+    </script>
+  </body>
+</html>
