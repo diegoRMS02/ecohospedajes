@@ -77,4 +77,8 @@ public class ReservaService {
 
                 return datos;
         }
+
+        public List<Reserva> listarReservasDeUsuario(Long usuarioId) {
+                return reservaRepository.findByUsuarioId(usuarioId);
+        }
 }

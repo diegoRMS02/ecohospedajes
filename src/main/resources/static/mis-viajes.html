@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Mis Viajes | EcoHospedajes</title>
+    <link rel="stylesheet" href="/css/catalogo.css" />
+    <link rel="stylesheet" href="/css/mis-viajes.css" />
+  </head>
+  <body>
+    <header class="navbar">
+      <div class="logo"><img src="/img/logo.jpg" width="40" /></div>
+      <nav id="menuNav">
+        <a href="/index.html">Inicio</a>
+        <a href="/catalogo.html">Catálogo</a>
+      </nav>
+    </header>
+
+    <div class="container">
+      <div class="page-header">
+        <h1>🎒 Mis Próximas Aventuras</h1>
+        <p>Gestiona tus reservas y prepara tus maletas.</p>
+      </div>
+
+      <div id="listaViajes">
+        <p style="text-align: center; color: #888">Cargando tus reservas...</p>
+      </div>
+    </div>
+
+    <script src="/js/logic-navbar.js"></script>
+
+    <script>
+      const usuario = JSON.parse(localStorage.getItem("usuarioLogueado"));
+      if (!usuario || usuario.rol !== "CLIENTE")
+        window.location.href = "/index.html";
+
+      async function cargarViajes() {
+        try {
+          const res = await fetch(
+            `http://localhost:8080/api/reservas/usuario/${usuario.id}`
+          );
+          const viajes = await res.json();
+          const contenedor = document.getElementById("listaViajes");
+          contenedor.innerHTML = "";
+
+          if (viajes.length === 0) {
+            contenedor.innerHTML = `<h3 style="text-align:center">No tienes viajes pendientes. ¡Reserva uno!</h3>`;
+            return;
+          }
+
+          viajes.forEach((v) => {
+            const d1 = new Date(v.checkin);
+            const d2 = new Date(v.checkout);
+            const noches = (d2 - d1) / (1000 * 60 * 60 * 24);
+
+            contenedor.innerHTML += `
+                        <div class="trip-card">
+                            <img src="${v.hospedaje.imagenUrl}" class="trip-img" onerror="this.src='/img/logo.jpg'">
+                            <div class="trip-content">
+                                <div class="trip-header">
+                                    <div>
+                                        <h2 class="trip-title">${v.hospedaje.nombre}</h2>
+                                        <div class="trip-location">📍 ${v.hospedaje.ubicacion}</div>
+                                    </div>
+                                    <span class="status-badge">✅ ${v.estado}</span>
+                                </div>
+                                <div class="trip-dates">
+                                    📅 <b>Llegada:</b> ${v.checkin} &nbsp; ➝ &nbsp; <b>Salida:</b> ${v.checkout}
+                                    <br> <small>(${noches} noches para ${v.personas} personas)</small>
+                                </div>
+                                <div class="trip-footer">
+                                    <div class="trip-price">Total: S/ ${v.precioTotal}</div>
+                                    <div class="actions">
+                                        <button class="btn-cancel" onclick="alert('Próximamente: Cancelar Reserva')">Cancelar Reserva</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+          });
+        } catch (error) {
+          console.error(error);
+          document.getElementById("listaViajes").innerHTML =
+            "<p>Error al cargar datos.</p>";
+        }
+      }
+      cargarViajes();
+    </script>
+  </body>
+</html>

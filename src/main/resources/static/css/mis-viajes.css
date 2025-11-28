@@ -1,0 +1,126 @@
+body {
+  background-color: #f7f7f7;
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+}
+
+.container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.page-header {
+  margin-bottom: 30px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+}
+
+.page-header h1 {
+  color: #333;
+  margin: 0;
+}
+
+/* --- TARJETA TIPO AIRBNB --- */
+.trip-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  margin-bottom: 25px;
+  transition: transform 0.2s;
+  border: 1px solid #eee;
+}
+
+.trip-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.trip-img {
+  width: 280px;
+  height: 200px;
+  object-fit: cover;
+}
+
+.trip-content {
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.trip-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+}
+
+.trip-title {
+  margin: 0;
+  color: #205c3b;
+  font-size: 1.4rem;
+}
+
+.trip-location {
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: 5px;
+}
+
+.trip-dates {
+  background: #f1f8f6;
+  color: #333;
+  padding: 10px;
+  border-radius: 8px;
+  margin: 15px 0;
+  font-size: 0.9rem;
+  display: inline-block;
+}
+
+.trip-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #eee;
+  padding-top: 15px;
+}
+
+.trip-price {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #333;
+}
+
+/* BOTONES Y BADGES */
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-cancel {
+  background: white;
+  border: 1px solid #d63031;
+  color: #d63031;
+  padding: 8px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.btn-cancel:hover {
+  background: #fff5f5;
+}
+
+.status-badge {
+  background: #e6fffa;
+  color: #00796b;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
