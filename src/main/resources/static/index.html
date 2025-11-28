@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inicio - EcoHospedajes Rurales</title>
+    <link rel="stylesheet" href="/css/index.css" />
+  </head>
+  <body>
+    <header class="navbar">
+      <div class="logo">
+        <img src="/img/logo.jpg" alt="Logo" class="icono" />
+        <div>
+          <h1>EcoHospedajes Rurales</h1>
+          <p>Reservas en hospedajes rurales</p>
+        </div>
+      </div>
+      <nav id="menuNav">
+        <a href="/index.html">Inicio</a>
+        <a href="/catalogo.html">Catálogo</a>
+        <a href="/login.html">Iniciar Sesión</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div class="hero-content">
+        <h2>Descubre la tranquilidad del campo</h2>
+        <p>Escápate del ruido y vive una experiencia rural única.</p>
+        <a href="/catalogo.html" class="btn">Explorar hospedajes</a>
+      </div>
+    </section>
+
+    <script>
+      const usuario = localStorage.getItem("usuarioLogueado");
+      if (usuario) {
+        const userObj = JSON.parse(usuario);
+        const nav = document.getElementById("menuNav");
+        nav.innerHTML = `
+                <a href="/index.html">Inicio</a>
+                <a href="/catalogo.html">Catálogo</a>
+                <span style="margin-right:15px; font-weight:bold; color:#205c3b">Hola, ${userObj.nombre}</span>
+                <a href="#" onclick="logout()" style="color:red">Salir</a>
+            `;
+      }
+
+      function logout() {
+        localStorage.clear();
+        window.location.reload();
+      }
+    </script>
+  </body>
+</html>

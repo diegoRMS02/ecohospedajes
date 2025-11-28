@@ -1,0 +1,101 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9f7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-box {
+    background-color: #fff;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    text-align: center;
+    width: 340px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+}
+
+.logo img {
+    width: 45px;
+}
+
+.logo h2 {
+    color: #205c3b;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+h1 {
+    margin-bottom: 1.5rem;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+
+form {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+input {
+    padding: 0.7rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    outline: none;
+    font-size: 0.9rem;
+}
+
+input:focus {
+    border-color: #205c3b;
+}
+
+
+button {
+    background-color: #205c3b;
+    color: white;
+    padding: 0.8rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #18482f;
+}
+
+
+.switch-text {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: #444;
+}
+
+.switch-text a {
+    color: #205c3b;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.switch-text a:hover {
+    text-decoration: underline;
+}
