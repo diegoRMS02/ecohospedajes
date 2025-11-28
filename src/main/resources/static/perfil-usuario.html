@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mi Perfil | EcoHospedajes</title>
+    <link rel="stylesheet" href="/css/catalogo.css" />
+    <link rel="stylesheet" href="/css/perfil.css" />
+  </head>
+  <body>
+    <header class="navbar">
+      <div class="logo"><img src="/img/logo.jpg" width="40" /></div>
+      <nav id="menuNav">
+        <a href="/index.html">Inicio</a>
+      </nav>
+    </header>
+
+    <div class="profile-container">
+      <div class="profile-card">
+        <div class="profile-header">
+          <h1>Editar Perfil</h1>
+          <p>Mantén tu información actualizada</p>
+        </div>
+
+        <form id="formPerfil">
+          <div class="form-group">
+            <label>Nombre</label>
+            <input type="text" id="nombre" required />
+          </div>
+
+          <div class="form-group">
+            <label>Apellidos</label>
+            <input type="text" id="apellidos" required />
+          </div>
+
+          <div class="form-group">
+            <label>Correo Electrónico (No editable)</label>
+            <input type="email" id="email" disabled />
+          </div>
+
+          <div class="form-group">
+            <label>Nueva Contraseña <small>(Opcional)</small></label>
+            <input
+              type="password"
+              id="password"
+              placeholder="Dejar vacío para mantener la actual"
+            />
+          </div>
+
+          <button type="submit" class="btn-save">Guardar Cambios</button>
+          <a href="/index.html" class="btn-cancel">Cancelar y volver</a>
+        </form>
+      </div>
+    </div>
+
+    <script src="/js/logic-navbar.js"></script>
+    <script>
+      // Lógica específica de esta página
+      const usuario = JSON.parse(localStorage.getItem("usuarioLogueado"));
+      if (!usuario) window.location.href = "/login.html";
+
+      // 1. Cargar datos
+      document.getElementById("nombre").value = usuario.nombre;
+      document.getElementById("apellidos").value = usuario.apellidos;
+      document.getElementById("email").value = usuario.email;
+
+      // 2. Guardar cambios
+      document
+        .getElementById("formPerfil")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const datosActualizados = {
+            nombre: document.getElementById("nombre").value,
+            apellidos: document.getElementById("apellidos").value,
+            email: usuario.email,
+            password: document.getElementById("password").value,
+            rol: usuario.rol,
+          };
+
+          try {
+            const res = await fetch(
+              `http://localhost:8080/api/usuarios/${usuario.id}`,
+              {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(datosActualizados),
+              }
+            );
+
+            if (res.ok) {
+              const usuarioNuevo = await res.json();
+
+              // Actualizar localStorage
+              localStorage.setItem(
+                "usuarioLogueado",
+                JSON.stringify(usuarioNuevo)
+              );
+
+              alert("✅ Perfil actualizado correctamente");
+              // Recargar para ver el cambio en el Navbar
+              window.location.reload();
+            } else {
+              alert("❌ Error al actualizar");
+            }
+          } catch (error) {
+            console.error(error);
+            alert("Error de conexión");
+          }
+        });
+    </script>
+  </body>
+</html>
