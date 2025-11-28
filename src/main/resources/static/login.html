@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iniciar Sesión | EcoHospedajes Rurales</title>
+    <link rel="stylesheet" href="/Css/login.css" />
+  </head>
+  <body>
+    <div class="login-container">
+      <div class="login-box">
+        <div class="logo">
+          <img src="/img/logo.jpg" alt="Logo" />
+          <h2>EcoHospedajes Rurales</h2>
+        </div>
+
+        <h1>Inicia sesión</h1>
+
+        <form id="loginForm">
+          <input
+            type="email"
+            id="email"
+            placeholder="Correo electrónico"
+            required
+          />
+          <input
+            type="password"
+            id="contrasena"
+            placeholder="Contraseña"
+            required
+          />
+          <button type="submit">Entrar</button>
+        </form>
+
+        <p class="switch-text">
+          ¿No tienes una cuenta?
+          <a href="/registrate.html">Regístrate aquí</a>
+        </p>
+
+        <p class="switch-text">
+          Registrate como dueño
+          <a href="/registrar-dueño.html">Regístrate aquí</a>
+        </p>
+      </div>
+    </div>
+
+    <script>
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", async (event) => {
+          event.preventDefault();
+
+          const email = document.getElementById("email").value;
+          const contrasena = document.getElementById("contrasena").value;
+
+          try {
+            // CONEXIÓN AL NUEVO BACKEND
+            const response = await fetch(
+              "http://localhost:8080/api/usuarios/login",
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                // OJO: El backend espera "password", aunque tu input se llame "contrasena"
+                body: JSON.stringify({ email: email, password: contrasena }),
+              }
+            );
+
+            if (response.ok) {
+              const data = await response.json();
+
+              // GUARDAMOS SESIÓN
+              localStorage.setItem("usuarioLogueado", JSON.stringify(data));
+              localStorage.setItem("usuarioId", data.id); // Importante para la reserva
+              localStorage.setItem("usuarioRol", data.rol);
+
+              // REDIRECCIÓN SEGÚN ROL (Tal cual lo tenías)
+              if (data.rol === "DUENO") {
+                // Ajusta esta ruta si tu archivo se llama diferente
+                window.location.href = "/dueño/RegistrarHospedaje.html";
+              } else {
+                window.location.href = "/catalogo.html"; // O /logueado/index.html
+              }
+            } else {
+              // Manejo de error si la contraseña está mal
+              alert("Credenciales incorrectas");
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            alert("Error al conectar con el servidor");
+          }
+        });
+    </script>
+  </body>
+</html>

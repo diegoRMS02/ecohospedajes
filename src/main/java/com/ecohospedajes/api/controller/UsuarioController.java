@@ -29,4 +29,10 @@ public class UsuarioController {
         Usuario usuarioGuardado = usuarioService.registrar(datos);
         return ResponseEntity.ok(usuarioGuardado);
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody com.ecohospedajes.api.dto.DatosLogin datos) {
+        Usuario usuario = usuarioService.login(datos);
+        return ResponseEntity.ok(usuario);
+    }
 }

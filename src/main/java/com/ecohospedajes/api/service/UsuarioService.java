@@ -29,4 +29,16 @@ public class UsuarioService {
 
         return usuarioRepository.save(nuevo);
     }
+    // ... código anterior ...
+
+    public Usuario login(com.ecohospedajes.api.dto.DatosLogin datos) {
+        Usuario usuario = usuarioRepository.findByEmail(datos.getEmail())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        
+        // Validación simple de contraseña (en el futuro usaremos BCrypt)
+        if (!usuario.getPassword().equals(datos.getPassword())) {
+            throw new RuntimeException("Contraseña incorrecta");
+        }
+        return usuario;
+    }
 }

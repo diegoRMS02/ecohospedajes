@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registro Dueño | EcoHospedajes Rurales</title>
+    <link rel="stylesheet" href="/Css/Registrate.css" />
+  </head>
+  <body>
+    <div class="login-container">
+      <div class="login-box">
+        <div class="logo">
+          <img src="/img/logo.jpg" alt="Logo " />
+          <h2>EcoHospedajes Rurales</h2>
+        </div>
+
+        <h1>Registro para Dueños</h1>
+        <p style="font-size: 0.9rem; color: #666; margin-bottom: 15px">
+          Publica tus hospedajes y recibe turistas.
+        </p>
+
+        <form id="formRegistroDueno">
+          <input type="text" id="nombre" placeholder="Nombre" required />
+          <input type="text" id="apellidos" placeholder="Apellidos" required />
+          <input
+            type="email"
+            id="email"
+            placeholder="Correo electrónico"
+            required
+          />
+          <input
+            type="password"
+            id="contrasena"
+            placeholder="Contraseña"
+            required
+          />
+          <button type="submit">Registrarme como Dueño</button>
+        </form>
+
+        <p class="switch-text">
+          ¿Ya tienes cuenta?
+          <a href="/login.html">Inicia sesión</a>
+        </p>
+      </div>
+    </div>
+
+    <script>
+      document
+        .getElementById("formRegistroDueno")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const data = {
+            nombre: document.getElementById("nombre").value,
+            apellidos: document.getElementById("apellidos").value,
+            email: document.getElementById("email").value,
+            password: document.getElementById("contrasena").value,
+            rol: "DUENO", // AQUI ESTA LA CLAVE
+          };
+
+          try {
+            const response = await fetch(
+              "http://localhost:8080/api/usuarios/registro",
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+              }
+            );
+
+            if (response.ok) {
+              alert("✅ Cuenta de Dueño creada. Inicia sesión.");
+              window.location.href = "/login.html";
+            } else {
+              alert("❌ Error al registrar.");
+            }
+          } catch (error) {
+            alert("Error de conexión");
+          }
+        });
+    </script>
+  </body>
+</html>
