@@ -1,9 +1,14 @@
 package com.ecohospedajes.api.controller;
 
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -31,34 +36,68 @@ public class DashboardController {
     }
 
     @GetMapping("/{duenoId}")
-    public ResponseEntity<Map<String, Object>> obtenerResumen(@PathVariable Long duenoId) {
-        // 1. Buscar todos los hoteles de este dueño
+    public ResponseEntity<Map<String, Object>> obtenerEstadisticas(@PathVariable Long duenoId) {
         List<Hospedaje> misHoteles = hospedajeRepository.findByPropietarioId(duenoId);
 
-        List<Reserva> todasLasReservas = new ArrayList<>();
+        List<Reserva> todasReservas = new ArrayList<>();
         double gananciasTotales = 0;
 
-        // 2. Por cada hotel, buscar sus reservas y sumar dinero
+        // Contadores Nuevos
+        long cantConfirmadas = 0;
+        long cantCanceladas = 0;
+
         for (Hospedaje h : misHoteles) {
-            // Buscamos las reservas de ese hotel específico
             List<Reserva> reservasDelHotel = reservaRepository.findByHospedajeId(h.getId());
+            todasReservas.addAll(reservasDelHotel);
 
-            // Las agregamos a la lista general para mostrarlas en la tabla
-            todasLasReservas.addAll(reservasDelHotel);
-
-            // Sumamos la plata
             for (Reserva r : reservasDelHotel) {
-                gananciasTotales += r.getPrecioTotal();
+                if ("CANCELADA".equals(r.getEstado())) {
+                    cantCanceladas++;
+                } else {
+                    // Asumimos que si no es cancelada, es confirmada (o pendiente)
+                    cantConfirmadas++;
+                    gananciasTotales += r.getPrecioTotal();
+                }
             }
         }
 
-        // 3. Empaquetar todo en un JSON bonito
-        Map<String, Object> data = new HashMap<>();
-        data.put("totalHoteles", misHoteles.size());
-        data.put("totalReservas", todasLasReservas.size());
-        data.put("ganancias", gananciasTotales);
-        data.put("listaReservas", todasLasReservas); // Para la tabla detallada
+        // ... (Lógica de gráficos de barras se mantiene igual) ...
+        Map<String, Double> ingresosPorMes = new LinkedHashMap<>();
+        LocalDate hoy = LocalDate.now();
+        for (int i = 5; i >= 0; i--) {
+            Month mes = hoy.minusMonths(i).getMonth();
+            ingresosPorMes.put(mes.toString(), 0.0);
+        }
+        for (Reserva r : todasReservas) {
+            if (!"CANCELADA".equals(r.getEstado())) {
+                String mesReserva = r.getCheckin().getMonth().toString();
+                if (ingresosPorMes.containsKey(mesReserva)) {
+                    ingresosPorMes.put(mesReserva, ingresosPorMes.get(mesReserva) + r.getPrecioTotal());
+                }
+            }
+        }
+        List<String> etiquetasGrafico = new ArrayList<>(ingresosPorMes.keySet());
+        List<Double> valoresGrafico = new ArrayList<>(ingresosPorMes.values());
 
-        return ResponseEntity.ok(data);
+        // Armar Respuesta
+        Map<String, Object> response = new HashMap<>();
+        response.put("kpi_hoteles", misHoteles.size());
+        response.put("kpi_reservas", cantConfirmadas); // Solo las válidas para el KPI
+        response.put("kpi_ganancias", gananciasTotales);
+
+        // ENVIAMOS LOS CONTEOS EXACTOS PARA EL GRÁFICO CIRCULAR
+        response.put("total_confirmadas", cantConfirmadas);
+        response.put("total_canceladas", cantCanceladas);
+
+        response.put("grafico_etiquetas", etiquetasGrafico);
+        response.put("grafico_valores", valoresGrafico);
+
+        List<Reserva> ultimasReservas = todasReservas.stream()
+                .sorted(Comparator.comparing(Reserva::getId).reversed())
+                .limit(10)
+                .collect(Collectors.toList());
+        response.put("tabla_reservas", ultimasReservas);
+
+        return ResponseEntity.ok(response);
     }
 }

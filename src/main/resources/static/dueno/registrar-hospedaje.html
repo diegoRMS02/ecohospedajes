@@ -2,106 +2,314 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Publicar Hospedaje | EcoHospedajes</title>
-    <link rel="stylesheet" href="/Css/Registrate.css" />
+
+    <link rel="stylesheet" href="/css/global.css" />
+    <link rel="stylesheet" href="/css/perfil.css" />
+
+    <style>
+      /* Estilos específicos que se mantienen por consistencia */
+      .publish-container {
+        display: flex;
+        justify-content: center;
+        padding: 40px 20px;
+        min-height: 80vh;
+      }
+
+      .publish-card {
+        background-color: white;
+        width: 100%;
+        max-width: 650px;
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        border: 1px solid #eee;
+      }
+
+      .publish-header {
+        text-align: center;
+        margin-bottom: 30px;
+        border-bottom: 1px solid #f0f0f0;
+        padding-bottom: 20px;
+      }
+
+      .publish-header h1 {
+        color: var(--primary-color);
+        margin: 0;
+        font-size: 1.8rem;
+      }
+
+      .services-section {
+        background: #f9fdfa;
+        padding: 20px;
+        border-radius: 10px;
+        border: 1px dashed #205c3b;
+        margin-top: 20px;
+      }
+
+      .services-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        margin-top: 15px;
+      }
+
+      .checkbox-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        font-size: 0.95rem;
+        color: #444;
+        padding: 5px;
+        border-radius: 5px;
+        transition: background 0.2s;
+      }
+
+      input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        accent-color: var(--primary-color);
+        margin: 0;
+      }
+
+      .form-actions {
+        margin-top: 30px;
+        display: flex;
+        gap: 15px;
+      }
+    </style>
   </head>
   <body>
-    <div class="login-container">
-      <div class="login-box" style="width: 400px">
-        <div class="logo">
-          <img src="/img/logo.jpg" alt="Logo" />
-          <h2>EcoHospedajes</h2>
+    <header class="navbar">
+      <a
+        href="/index.html"
+        class="logo"
+        style="
+          text-decoration: none;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        "
+      >
+        <img src="/img/logo.jpg" alt="Logo" width="45" />
+        <span
+          style="
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+          "
+          >EcoHospedajes</span
+        >
+      </a>
+      <nav id="menuNav"></nav>
+    </header>
+
+    <div class="publish-container">
+      <div class="publish-card">
+        <div class="publish-header">
+          <h1 id="formTitle">Publicar Nuevo Alojamiento</h1>
+          <p>Completa los detalles para atraer a tus futuros huéspedes.</p>
         </div>
 
-        <h1>Publicar Nuevo Hospedaje</h1>
-
         <form id="formHospedaje">
-          <input
-            type="text"
-            id="nombre"
-            placeholder="Nombre del Hospedaje"
-            required
-          />
-          <input
-            type="text"
-            id="ubicacion"
-            placeholder="Ubicación (ej: Cusco)"
-            required
-          />
-          <input
-            type="number"
-            id="precio"
-            placeholder="Precio por noche (S/.)"
-            required
-          />
-          <input
-            type="text"
-            id="imagenUrl"
-            placeholder="URL de la imagen (http...)"
-            required
-          />
-          <textarea
-            id="descripcion"
-            placeholder="Descripción del lugar..."
-            rows="4"
-            style="
-              width: 100%;
-              padding: 10px;
-              margin-bottom: 10px;
-              border-radius: 5px;
-              border: 1px solid #ccc;
-            "
-            required
-          ></textarea>
+          <div class="form-group">
+            <label>Nombre del Hospedaje</label
+            ><input
+              type="text"
+              id="nombre"
+              placeholder="Ej: Cabaña El Rio"
+              required
+            />
+          </div>
 
-          <button type="submit">Publicar Hospedaje</button>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Ubicación</label
+              ><input
+                type="text"
+                id="ubicacion"
+                placeholder="Ej: Lunahuaná"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label>Precio por noche (S/.)</label
+              ><input
+                type="number"
+                id="precio"
+                placeholder="0.00"
+                min="1"
+                step="0.50"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Foto Principal (URL)</label
+            ><input
+              type="text"
+              id="imagenUrl"
+              placeholder="https://..."
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Descripción</label
+            ><textarea
+              id="descripcion"
+              rows="4"
+              style="width: 100%; resize: vertical"
+              placeholder="Cuenta qué hace especial a tu lugar..."
+              required
+            ></textarea>
+          </div>
+
+          <div class="services-section">
+            <label style="font-weight: bold; color: var(--primary-color)"
+              >Servicios Incluidos</label
+            >
+            <div class="services-grid">
+              <label class="checkbox-label"
+                ><input type="checkbox" name="servicios" value="WIFI" /> 📶 Wifi
+                Rural</label
+              >
+              <label class="checkbox-label"
+                ><input type="checkbox" name="servicios" value="PISCINA" /> 🏊
+                Piscina</label
+              >
+              <label class="checkbox-label"
+                ><input type="checkbox" name="servicios" value="COCHERA" /> 🚗
+                Cochera</label
+              >
+              <label class="checkbox-label"
+                ><input type="checkbox" name="servicios" value="DESAYUNO" /> 🍳
+                Desayuno</label
+              >
+              <label class="checkbox-label"
+                ><input type="checkbox" name="servicios" value="FOGATA" /> 🔥
+                Fogata</label
+              >
+              <label class="checkbox-label"
+                ><input type="checkbox" name="servicios" value="GUIA" /> 🚶
+                Guía</label
+              >
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <a href="/dueno/gestion-hospedajes.html" class="btn-cancel"
+              >Cancelar</a
+            >
+            <button type="submit" class="btn-save" id="submitButton">
+              Publicar Ahora
+            </button>
+          </div>
         </form>
-
-        <p class="switch-text">
-          <a href="/dashboard-dueno.html">Cancelar y volver al Panel</a>
-        </p>
       </div>
     </div>
 
+    <footer></footer>
+
+    <script src="/js/logic-navbar.js"></script>
     <script>
-      // 1. Verificar Seguridad
       const usuario = JSON.parse(localStorage.getItem("usuarioLogueado"));
       if (!usuario || usuario.rol !== "DUENO") {
-        alert("No tienes permisos de dueño.");
+        alert("Acceso denegado.");
         window.location.href = "/index.html";
       }
 
-      // 2. Enviar Datos
+      const urlParams = new URLSearchParams(window.location.search);
+      const hotelId = urlParams.get("id");
+
+      let fetchMethod = "POST";
+      let fetchUrl = "http://localhost:8080/api/hospedajes";
+
+      // --- LÓGICA DE EDICIÓN / CARGA DE DATOS ---
+      if (hotelId) {
+        document.getElementById("formTitle").innerText =
+          "Editar Hospedaje (ID: " + hotelId + ")";
+        document.getElementById("submitButton").innerText = "Guardar Cambios";
+        fetchMethod = "PUT";
+        fetchUrl = `http://localhost:8080/api/hospedajes/${hotelId}`;
+        cargarDatosHotel(hotelId);
+      }
+
+      async function cargarDatosHotel(id) {
+        try {
+          const res = await fetch(`http://localhost:8080/api/hospedajes/${id}`);
+          const data = await res.json();
+
+          document.getElementById("nombre").value = data.nombre;
+          document.getElementById("ubicacion").value = data.ubicacion;
+          document.getElementById("precio").value = data.precio;
+          document.getElementById("imagenUrl").value = data.imagenUrl;
+          document.getElementById("descripcion").value = data.descripcion;
+
+          // Pre-seleccionar servicios (si existen)
+          if (data.servicios) {
+            const servicios = data.servicios.split(",");
+            servicios.forEach((servicio) => {
+              const checkbox = document.querySelector(
+                `input[name="servicios"][value="${servicio}"]`
+              );
+              if (checkbox) checkbox.checked = true;
+            });
+          }
+        } catch (e) {
+          alert("Error cargando datos del hotel para edición.");
+        }
+      }
+
+      // --- LÓGICA DE SUBMIT (POST / PUT) ---
       document
         .getElementById("formHospedaje")
         .addEventListener("submit", async (e) => {
           e.preventDefault();
 
+          const checkboxes = document.querySelectorAll(
+            'input[name="servicios"]:checked'
+          );
+          const listaServicios = Array.from(checkboxes)
+            .map((cb) => cb.value)
+            .join(",");
+
+          // EL ARREGLO FINAL: Incluir propietarioId SIEMPRE para pasar la validación @Valid del backend
           const datos = {
             nombre: document.getElementById("nombre").value,
             ubicacion: document.getElementById("ubicacion").value,
             precio: parseFloat(document.getElementById("precio").value),
             imagenUrl: document.getElementById("imagenUrl").value,
             descripcion: document.getElementById("descripcion").value,
-            propietarioId: usuario.id, // IMPORTANTE: Vinculamos al dueño logueado
+            servicios: listaServicios,
+            // CORRECCIÓN: Enviamos el ID del dueño logueado SIEMPRE para pasar la validación @NotNull
+            propietarioId: usuario.id,
           };
 
           try {
-            const res = await fetch("http://localhost:8080/api/hospedajes", {
-              method: "POST",
+            const res = await fetch(fetchUrl, {
+              method: fetchMethod,
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(datos),
             });
 
             if (res.ok) {
-              alert("✅ Hospedaje publicado correctamente.");
-              window.location.href = "/dashboard-dueno.html"; // Volvemos al dashboard
+              alert("✅ Operación realizada con éxito.");
+              window.location.href = "/dueno/gestion-hospedajes.html";
             } else {
-              alert("❌ Error al publicar.");
+              const errorData = await res.json();
+              alert(
+                "❌ Error al guardar: " +
+                  (errorData.mensaje ||
+                    errorData.message ||
+                    "Error desconocido")
+              );
             }
           } catch (error) {
-            console.error(error);
-            alert("Error de conexión");
+            alert("Error de conexión al servidor.");
           }
         });
     </script>

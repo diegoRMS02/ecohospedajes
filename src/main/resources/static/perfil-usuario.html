@@ -3,66 +3,114 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mi Perfil | EcoHospedajes</title>
-    <link rel="stylesheet" href="/css/catalogo.css" />
+    <title>Configuración de Cuenta | EcoHospedajes</title>
+
+    <link rel="stylesheet" href="/css/global.css" />
     <link rel="stylesheet" href="/css/perfil.css" />
   </head>
   <body>
     <header class="navbar">
-      <div class="logo"><img src="/img/logo.jpg" width="40" /></div>
-      <nav id="menuNav">
-        <a href="/index.html">Inicio</a>
-      </nav>
+      <a
+        href="/index.html"
+        class="logo"
+        style="
+          text-decoration: none;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        "
+      >
+        <img src="/img/logo.jpg" alt="Logo" width="45" />
+        <span
+          style="
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+          "
+          >EcoHospedajes</span
+        >
+      </a>
+      <nav id="menuNav"></nav>
     </header>
 
     <div class="profile-container">
       <div class="profile-card">
         <div class="profile-header">
-          <h1>Editar Perfil</h1>
-          <p>Mantén tu información actualizada</p>
+          <img id="avatarBig" src="" class="profile-avatar-large" />
+          <h1 id="displayNombre">Cargando...</h1>
+          <p id="displayEmail">usuario@email.com</p>
+          <span id="displayRol" class="role-badge">USUARIO</span>
         </div>
 
         <form id="formPerfil">
-          <div class="form-group">
-            <label>Nombre</label>
-            <input type="text" id="nombre" required />
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nombre</label>
+              <input type="text" id="nombre" required />
+            </div>
+            <div class="form-group">
+              <label>Apellidos</label>
+              <input type="text" id="apellidos" required />
+            </div>
           </div>
 
           <div class="form-group">
-            <label>Apellidos</label>
-            <input type="text" id="apellidos" required />
-          </div>
-
-          <div class="form-group">
-            <label>Correo Electrónico (No editable)</label>
-            <input type="email" id="email" disabled />
-          </div>
-
-          <div class="form-group">
-            <label>Nueva Contraseña <small>(Opcional)</small></label>
+            <label>Correo Electrónico</label>
             <input
-              type="password"
-              id="password"
-              placeholder="Dejar vacío para mantener la actual"
+              type="email"
+              id="email"
+              disabled
+              title="El correo no se puede cambiar por seguridad"
             />
           </div>
 
-          <button type="submit" class="btn-save">Guardar Cambios</button>
-          <a href="/index.html" class="btn-cancel">Cancelar y volver</a>
+          <div class="form-group password-section">
+            <h3 style="margin: 0 0 15px 0; font-size: 1.1rem; color: #333">
+              Seguridad
+            </h3>
+            <label>Nueva Contraseña</label>
+            <input
+              type="password"
+              id="password"
+              placeholder="Escribe aquí solo si deseas cambiarla"
+            />
+            <small style="color: #888; margin-top: 5px"
+              >Mínimo 6 caracteres. Déjalo en blanco para mantener la
+              actual.</small
+            >
+          </div>
+
+          <div class="form-actions">
+            <a href="/index.html" class="btn-cancel">Cancelar</a>
+            <button type="submit" class="btn-save">Guardar Cambios</button>
+          </div>
         </form>
       </div>
     </div>
 
+    <footer></footer>
+
     <script src="/js/logic-navbar.js"></script>
     <script>
-      // Lógica específica de esta página
       const usuario = JSON.parse(localStorage.getItem("usuarioLogueado"));
       if (!usuario) window.location.href = "/login.html";
 
-      // 1. Cargar datos
+      // 1. Cargar datos en Inputs y Header
       document.getElementById("nombre").value = usuario.nombre;
       document.getElementById("apellidos").value = usuario.apellidos;
       document.getElementById("email").value = usuario.email;
+
+      // Header visual
+      document.getElementById(
+        "displayNombre"
+      ).innerText = `${usuario.nombre} ${usuario.apellidos}`;
+      document.getElementById("displayEmail").innerText = usuario.email;
+      document.getElementById("displayRol").innerText = usuario.rol;
+
+      // Avatar Grande
+      document.getElementById(
+        "avatarBig"
+      ).src = `https://ui-avatars.com/api/?name=${usuario.nombre}+${usuario.apellidos}&background=205c3b&color=fff&size=200`;
 
       // 2. Guardar cambios
       document
@@ -70,11 +118,19 @@
         .addEventListener("submit", async (e) => {
           e.preventDefault();
 
+          const passInput = document.getElementById("password").value;
+
+          // Validación Frontend básica
+          if (passInput && passInput.length < 3) {
+            alert("La contraseña es muy corta.");
+            return;
+          }
+
           const datosActualizados = {
             nombre: document.getElementById("nombre").value,
             apellidos: document.getElementById("apellidos").value,
             email: usuario.email,
-            password: document.getElementById("password").value,
+            password: passInput,
             rol: usuario.rol,
           };
 
@@ -90,15 +146,12 @@
 
             if (res.ok) {
               const usuarioNuevo = await res.json();
-
-              // Actualizar localStorage
               localStorage.setItem(
                 "usuarioLogueado",
                 JSON.stringify(usuarioNuevo)
               );
 
-              alert("✅ Perfil actualizado correctamente");
-              // Recargar para ver el cambio en el Navbar
+              alert("✅ Perfil actualizado con éxito");
               window.location.reload();
             } else {
               alert("❌ Error al actualizar");

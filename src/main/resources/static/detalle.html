@@ -2,64 +2,216 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Detalle | EcoHospedajes</title>
-    <link rel="stylesheet" href="/Css/detalle.css" />
+
+    <link rel="stylesheet" href="/css/global.css" />
+    <link rel="stylesheet" href="/css/detalle.css" />
   </head>
   <body>
     <header class="navbar">
-      <div class="logo"><img src="/img/logo.jpg" width="50" /></div>
-      <nav><a href="/catalogo.html">Volver al Catálogo</a></nav>
+      <a
+        href="/index.html"
+        class="logo"
+        style="
+          text-decoration: none;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        "
+      >
+        <img src="/img/logo.jpg" alt="Logo" width="45" />
+        <span
+          style="
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+          "
+          >EcoHospedajes</span
+        >
+      </a>
+      <nav id="menuNav"></nav>
     </header>
 
-    <main
-      id="detalle-container"
-      style="padding: 40px; max-width: 800px; margin: auto"
-    >
-      <p>Cargando...</p>
+    <main id="loading" style="text-align: center; padding: 100px">
+      <h2>Cargando experiencia...</h2>
     </main>
 
+    <main id="detalle-container" class="detail-container" style="display: none">
+      <div class="listing-header">
+        <h1 id="tituloHospedaje">...</h1>
+        <span class="listing-subtitle" id="ubicacionHospedaje">...</span>
+      </div>
+
+      <div class="hero-image-container">
+        <img
+          id="imgHospedaje"
+          class="hero-image"
+          src=""
+          alt="Hospedaje"
+          onerror="this.src='/img/logo.jpg'"
+        />
+      </div>
+
+      <div class="listing-grid">
+        <section class="left-content">
+          <div class="host-info">
+            <div class="host-text">
+              <h2>Hospedado por <span id="nombreDuenio">...</span></h2>
+              <p>Superanfitrión · Experiencia Rural Verificada</p>
+            </div>
+            <div class="host-avatar">
+              <img id="avatarDuenio" src="" style="width: 100%" />
+            </div>
+          </div>
+
+          <div class="description-section">
+            <h3>Acerca de este lugar</h3>
+            <p id="descripcionHospedaje">...</p>
+          </div>
+
+          <div class="amenities-section">
+            <h3>Lo que ofrece este lugar</h3>
+            <div class="amenities-grid" id="listaServicios"></div>
+          </div>
+        </section>
+
+        <aside class="booking-sidebar">
+          <div class="booking-card">
+            <div class="price-header">
+              <div>
+                <span class="final-price" id="precioHospedaje">S/ 0</span>
+                <span class="per-night"> noche</span>
+              </div>
+              <div style="font-size: 0.9em; color: #205c3b">★ 5.0 (Nuevo)</div>
+            </div>
+
+            <button id="btnReservar" class="btn-reservar">
+              Reservar Ahora
+            </button>
+
+            <p class="no-charge-text">No se te cobrará nada todavía.</p>
+
+            <div
+              style="
+                margin-top: 20px;
+                font-size: 0.9em;
+                color: #666;
+                display: flex;
+                justify-content: space-between;
+              "
+            >
+              <span>Tarifa base</span> <span id="tarifaBase">S/ 0</span>
+            </div>
+            <div
+              style="
+                margin-top: 10px;
+                font-size: 0.9em;
+                color: #666;
+                display: flex;
+                justify-content: space-between;
+              "
+            >
+              <span>Comisión servicio</span> <span>S/ 0</span>
+            </div>
+            <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd" />
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                font-weight: bold;
+                color: #222;
+              "
+            >
+              <span>Total (sin fechas)</span>
+              <span id="totalEstimado">...</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <footer></footer>
+
+    <script src="/js/logic-navbar.js"></script>
     <script>
       const params = new URLSearchParams(window.location.search);
       const id = params.get("id");
 
+      // DICCIONARIO DE ICONOS (Mapeo: Clave Backend -> Emoji/Icono)
+      const iconosMap = {
+        WIFI: "📶 Wifi Rural",
+        PISCINA: "🏊 Piscina Privada",
+        COCHERA: "🅿️ Cochera Gratuita",
+        DESAYUNO: "🍳 Desayuno Incluido",
+        FOGATA: "🔥 Zona de Fogata",
+        GUIA: "🚶 Guía Turístico",
+      };
+
       async function cargarDetalle() {
         try {
-          // 1. Pedir datos al backend
           const res = await fetch(`http://localhost:8080/api/hospedajes/${id}`);
           if (!res.ok) throw new Error("No encontrado");
 
           const h = await res.json();
 
-          // 2. Renderizar
-          const container = document.getElementById("detalle-container");
-          container.innerHTML = `
-                    <div style="background:white; padding:20px; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1)">
-                        <img src="${h.imagenUrl}" style="width:100%; max-height:400px; object-fit:cover; border-radius:10px" onerror="this.src='/img/logo.jpg'">
-                        <h1>${h.nombre}</h1>
-                        <h3>📍 ${h.ubicacion}</h3>
-                        <p><strong>Dueño:</strong> ${h.nombrePropietario}</p>
-                        <p style="font-size:1.1em">${h.descripcion}</p>
-                        
-                        <div style="margin-top:20px; padding:20px; background:#f9f9f9; border-radius:10px; text-align:center">
-                            <h2 style="color:#205c3b">S/ ${h.precio} <small>/ noche</small></h2>
-                            <button onclick="irAReserva(${h.id}, '${h.nombre}', ${h.precio})" 
-                                style="background:#205c3b; color:white; padding:15px 30px; border:none; font-size:1.2em; cursor:pointer; border-radius:5px">
-                                Reservar Ahora
-                            </button>
-                        </div>
-                    </div>
-                `;
-        } catch (error) {
-          document.body.innerHTML =
-            "<h1>Error: Hospedaje no encontrado</h1><a href='/catalogo.html'>Volver</a>";
-        }
-      }
+          // Llenar Textos Básicos
+          document.getElementById("tituloHospedaje").innerText = h.nombre;
+          document.getElementById("ubicacionHospedaje").innerText =
+            "📍 " + h.ubicacion;
+          document.getElementById("imgHospedaje").src = h.imagenUrl;
+          document.getElementById("nombreDuenio").innerText =
+            h.nombrePropietario;
+          document.getElementById(
+            "avatarDuenio"
+          ).src = `https://ui-avatars.com/api/?name=${h.nombrePropietario}&background=efefef&color=333`;
+          document.getElementById("descripcionHospedaje").innerText =
+            h.descripcion;
 
-      function irAReserva(id, nombre, precio) {
-        // Usamos encodeURIComponent para evitar errores si el nombre tiene espacios
-        window.location.href = `/reserva.html?id=${id}&nombre=${encodeURIComponent(
-          nombre
-        )}&precio=${precio}`;
+          // Llenar Precios
+          document.getElementById("precioHospedaje").innerText =
+            "S/ " + h.precio;
+          document.getElementById("tarifaBase").innerText = "S/ " + h.precio;
+          document.getElementById("totalEstimado").innerText = "S/ " + h.precio;
+
+          // --- LÓGICA DE SERVICIOS (NUEVO) ---
+          const divServicios = document.getElementById("listaServicios");
+          divServicios.innerHTML = "";
+
+          if (h.servicios && h.servicios.trim() !== "") {
+            const lista = h.servicios.split(","); // Convertir "A,B" en array ["A","B"]
+
+            lista.forEach((s) => {
+              // Buscar el texto bonito en el mapa, o usar el texto original si no existe
+              const textoBonito = iconosMap[s] || "✨ " + s;
+
+              divServicios.innerHTML += `
+                            <div class="amenity-item">
+                                ${textoBonito}
+                            </div>
+                        `;
+            });
+          } else {
+            divServicios.innerHTML =
+              "<p style='color:#777;'>Este lugar no ha especificado servicios adicionales.</p>";
+          }
+          // -----------------------------------
+
+          // Acción Botón
+          document.getElementById("btnReservar").onclick = () => {
+            window.location.href = `/reserva.html?id=${
+              h.id
+            }&nombre=${encodeURIComponent(h.nombre)}&precio=${h.precio}`;
+          };
+
+          // Mostrar
+          document.getElementById("loading").style.display = "none";
+          document.getElementById("detalle-container").style.display = "block";
+        } catch (error) {
+          console.error(error);
+          document.getElementById("loading").innerHTML =
+            "<h1>❌ Hospedaje no disponible</h1><a href='/catalogo.html'>Volver</a>";
+        }
       }
 
       cargarDetalle();

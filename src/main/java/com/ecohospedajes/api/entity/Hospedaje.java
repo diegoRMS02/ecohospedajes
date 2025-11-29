@@ -39,9 +39,18 @@ public class Hospedaje {
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario propietario;
+    private String servicios;
 
     // Constructor vacío
     public Hospedaje() {
+    }
+
+    public String getServicios() {
+        return servicios;
+    }
+
+    public void setServicios(String servicios) {
+        this.servicios = servicios;
     }
 
     // Getters y Setters

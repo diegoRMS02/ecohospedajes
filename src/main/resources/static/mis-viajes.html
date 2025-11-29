@@ -3,16 +3,33 @@
   <head>
     <meta charset="UTF-8" />
     <title>Mis Viajes | EcoHospedajes</title>
-    <link rel="stylesheet" href="/css/catalogo.css" />
+
+    <link rel="stylesheet" href="/css/global.css" />
     <link rel="stylesheet" href="/css/mis-viajes.css" />
   </head>
   <body>
     <header class="navbar">
-      <div class="logo"><img src="/img/logo.jpg" width="40" /></div>
-      <nav id="menuNav">
-        <a href="/index.html">Inicio</a>
-        <a href="/catalogo.html">Catálogo</a>
-      </nav>
+      <a
+        href="/index.html"
+        class="logo"
+        style="
+          text-decoration: none;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        "
+      >
+        <img src="/img/logo.jpg" alt="Logo" width="45" />
+        <span
+          style="
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+          "
+          >EcoHospedajes</span
+        >
+      </a>
+      <nav id="menuNav"></nav>
     </header>
 
     <div class="container">
@@ -26,8 +43,9 @@
       </div>
     </div>
 
-    <script src="/js/logic-navbar.js"></script>
+    <footer></footer>
 
+    <script src="/js/logic-navbar.js"></script>
     <script>
       const usuario = JSON.parse(localStorage.getItem("usuarioLogueado"));
       if (!usuario || usuario.rol !== "CLIENTE")
@@ -52,25 +70,59 @@
             const d2 = new Date(v.checkout);
             const noches = (d2 - d1) / (1000 * 60 * 60 * 24);
 
+            // Estilo dinámico para estado CANCELADA
+            let badgeClass = "status-badge";
+            let estadoTexto = "✅ " + v.estado;
+            let btnDisabled = "";
+
+            if (v.estado === "CANCELADA") {
+              estadoTexto = "❌ CANCELADA";
+              // Cambiamos estilo visual si está cancelada
+              badgeClass = "status-badge status-cancel";
+              btnDisabled = "disabled style='opacity:0.5; cursor:not-allowed'";
+            }
+
             contenedor.innerHTML += `
                         <div class="trip-card">
-                            <img src="${v.hospedaje.imagenUrl}" class="trip-img" onerror="this.src='/img/logo.jpg'">
+                            <img src="${
+                              v.hospedaje.imagenUrl
+                            }" class="trip-img" onerror="this.src='/img/logo.jpg'">
                             <div class="trip-content">
                                 <div class="trip-header">
                                     <div>
-                                        <h2 class="trip-title">${v.hospedaje.nombre}</h2>
-                                        <div class="trip-location">📍 ${v.hospedaje.ubicacion}</div>
+                                        <h2 class="trip-title">${
+                                          v.hospedaje.nombre
+                                        }</h2>
+                                        <div class="trip-location">📍 ${
+                                          v.hospedaje.ubicacion
+                                        }</div>
                                     </div>
-                                    <span class="status-badge">✅ ${v.estado}</span>
+                                    <span class="${badgeClass}">${estadoTexto}</span>
                                 </div>
                                 <div class="trip-dates">
-                                    📅 <b>Llegada:</b> ${v.checkin} &nbsp; ➝ &nbsp; <b>Salida:</b> ${v.checkout}
-                                    <br> <small>(${noches} noches para ${v.personas} personas)</small>
+                                    📅 <b>Llegada:</b> ${
+                                      v.checkin
+                                    } &nbsp; ➝ &nbsp; <b>Salida:</b> ${
+              v.checkout
+            }
+                                    <br> <small>(${noches} noches para ${
+              v.personas
+            } personas)</small>
                                 </div>
                                 <div class="trip-footer">
-                                    <div class="trip-price">Total: S/ ${v.precioTotal}</div>
+                                    <div class="trip-price">Total: S/ ${
+                                      v.precioTotal
+                                    }</div>
                                     <div class="actions">
-                                        <button class="btn-cancel" onclick="alert('Próximamente: Cancelar Reserva')">Cancelar Reserva</button>
+                                        <button class="btn-cancel" onclick="cancelarReserva(${
+                                          v.id
+                                        })" ${btnDisabled}>
+                                            ${
+                                              v.estado === "CANCELADA"
+                                                ? "Cancelado"
+                                                : "Cancelar Reserva"
+                                            }
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -83,6 +135,38 @@
             "<p>Error al cargar datos.</p>";
         }
       }
+
+      // Lógica REAL de cancelación
+      async function cancelarReserva(id) {
+        if (
+          !confirm(
+            "¿Seguro que deseas cancelar esta reserva? Se liberarán las fechas y el reembolso dependerá de las políticas."
+          )
+        )
+          return;
+
+        try {
+          // Llamada al endpoint PUT que creamos
+          const res = await fetch(
+            `http://localhost:8080/api/reservas/${id}/cancelar`,
+            {
+              method: "PUT",
+            }
+          );
+
+          if (res.ok) {
+            alert("✅ Reserva cancelada correctamente.");
+            window.location.reload(); // Recargar para ver el cambio
+          } else {
+            const err = await res.json();
+            alert("❌ Error: " + (err.mensaje || "No se pudo cancelar"));
+          }
+        } catch (error) {
+          console.error(error);
+          alert("Error de conexión");
+        }
+      }
+
       cargarViajes();
     </script>
   </body>

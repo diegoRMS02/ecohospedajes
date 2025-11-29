@@ -3,9 +3,12 @@ package com.ecohospedajes.api.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional; // Importante
 
-import com.ecohospedajes.api.dto.DatosHospedaje;
+import com.ecohospedajes.api.dto.DatosHospedaje; // Importante
 import com.ecohospedajes.api.entity.Hospedaje;
 import com.ecohospedajes.api.entity.Usuario;
 import com.ecohospedajes.api.repository.HospedajeRepository;
@@ -22,9 +25,51 @@ public class HospedajeService {
         this.usuarioRepository = usuarioRepository;
     }
 
-    // 1. Guardar un nuevo hospedaje
+    // --- MÉTODOS DE LECTURA (READ) ---
+
+    // Listar todos (se mantiene por si acaso, aunque ya no se use directo)
+    public List<DatosHospedaje> listarTodos() {
+        return hospedajeRepository.findAll().stream()
+                .map(this::convertirADTO)
+                .collect(Collectors.toList());
+    }
+
+    // Listar por dueño (para la tabla de gestión)
+    public List<DatosHospedaje> listarPorDueno(Long duenoId) {
+        return hospedajeRepository.findByPropietarioId(duenoId).stream()
+                .map(this::convertirADTO)
+                .collect(Collectors.toList());
+    }
+
+    // Buscar por ID (para la vista detalle)
+    public DatosHospedaje buscarPorId(Long id) {
+        Hospedaje h = hospedajeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Hospedaje no encontrado con ID: " + id));
+        return convertirADTO(h);
+    }
+
+    // 🔥 EL MÉTODO QUE FALTABA CON PAGINACIÓN (4 argumentos)
+    public Page<DatosHospedaje> filtrar(String ubicacion, Double minPrice, Double maxPrice, int pagina) {
+        // Asignar valores por defecto para que la consulta SQL funcione
+        if (minPrice == null)
+            minPrice = 0.0;
+        if (maxPrice == null)
+            maxPrice = 10000.0;
+
+        // Creamos la solicitud de página (Pagina X, 5 elementos por página)
+        PageRequest pageRequest = PageRequest.of(pagina, 5);
+
+        // El repositorio llama al método que creamos con @Query
+        Page<Hospedaje> resultados = hospedajeRepository.buscarConFiltros(ubicacion, minPrice, maxPrice, pageRequest);
+
+        // Convertimos la Página de Entidades a Página de DTOs y la retornamos
+        return resultados.map(this::convertirADTO);
+    }
+
+    // --- MÉTODOS DE ESCRITURA (CRUD) ---
+
+    @Transactional
     public DatosHospedaje guardar(DatosHospedaje datos) {
-        // Buscamos al dueño por su ID
         Usuario dueno = usuarioRepository.findById(datos.getPropietarioId())
                 .orElseThrow(() -> new RuntimeException("El dueño no existe"));
 
@@ -34,31 +79,39 @@ public class HospedajeService {
         nuevo.setPrecio(datos.getPrecio());
         nuevo.setImagenUrl(datos.getImagenUrl());
         nuevo.setDescripcion(datos.getDescripcion());
-        nuevo.setPropietario(dueno); // Asignamos la relación
+        nuevo.setServicios(datos.getServicios());
+        nuevo.setPropietario(dueno);
 
         Hospedaje guardado = hospedajeRepository.save(nuevo);
 
-        // Devolvemos el DTO con el ID generado
         datos.setId(guardado.getId());
         datos.setNombrePropietario(dueno.getNombre());
         return datos;
     }
 
-    // 2. Listar todos (Para el catálogo público)
-    public List<DatosHospedaje> listarTodos() {
-        return hospedajeRepository.findAll().stream()
-                .map(this::convertirADTO)
-                .collect(Collectors.toList());
+    @Transactional
+    public DatosHospedaje actualizarHospedaje(Long id, DatosHospedaje datosNuevos) {
+        Hospedaje hospedaje = hospedajeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Hospedaje no encontrado para editar"));
+
+        hospedaje.setNombre(datosNuevos.getNombre());
+        hospedaje.setDescripcion(datosNuevos.getDescripcion());
+        hospedaje.setUbicacion(datosNuevos.getUbicacion());
+        hospedaje.setPrecio(datosNuevos.getPrecio());
+        hospedaje.setImagenUrl(datosNuevos.getImagenUrl());
+        hospedaje.setServicios(datosNuevos.getServicios());
+
+        Hospedaje actualizado = hospedajeRepository.save(hospedaje);
+
+        return convertirADTO(actualizado);
     }
 
-    // 3. Buscar por ID (Para el detalle)
-    public DatosHospedaje buscarPorId(Long id) {
-        Hospedaje h = hospedajeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Hospedaje no encontrado"));
-        return convertirADTO(h);
+    @Transactional
+    public void eliminarHospedaje(Long id) {
+        hospedajeRepository.deleteById(id);
     }
 
-    // Método auxiliar para no repetir código (Entity -> DTO)
+    // --- CONVERSOR (Entity -> DTO) ---
     private DatosHospedaje convertirADTO(Hospedaje h) {
         DatosHospedaje dto = new DatosHospedaje();
         dto.setId(h.getId());
@@ -67,8 +120,12 @@ public class HospedajeService {
         dto.setPrecio(h.getPrecio());
         dto.setImagenUrl(h.getImagenUrl());
         dto.setDescripcion(h.getDescripcion());
-        dto.setPropietarioId(h.getPropietario().getId());
-        dto.setNombrePropietario(h.getPropietario().getNombre());
+        dto.setServicios(h.getServicios());
+
+        if (h.getPropietario() != null) {
+            dto.setPropietarioId(h.getPropietario().getId());
+            dto.setNombrePropietario(h.getPropietario().getNombre());
+        }
         return dto;
     }
 }

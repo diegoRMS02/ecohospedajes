@@ -4,16 +4,102 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Inicio - EcoHospedajes Rurales</title>
-    <link rel="stylesheet" href="/css/index.css" />
+
+    <link rel="stylesheet" href="/css/global.css" />
+
+    <style>
+      /* Estilos específicos solo para el Home */
+      .hero {
+        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+          url("https://images.unsplash.com/photo-1587595431973-160d0d94add1?auto=format&fit=crop&w=1600&q=80");
+        background-size: cover;
+        background-position: center;
+        height: 500px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: white;
+      }
+
+      .hero h1 {
+        font-size: 3rem;
+        margin-bottom: 10px;
+      }
+      .hero p {
+        font-size: 1.2rem;
+        margin-bottom: 30px;
+      }
+
+      .btn-cta {
+        background-color: #2ecc71;
+        color: white;
+        padding: 15px 30px;
+        font-size: 1.1rem;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: transform 0.3s;
+      }
+      .btn-cta:hover {
+        transform: scale(1.05);
+        background-color: #27ae60;
+      }
+
+      .section {
+        padding: 60px 20px;
+        text-align: center;
+      }
+      .section h2 {
+        color: var(--primary-color);
+        font-size: 2rem;
+        margin-bottom: 40px;
+      }
+
+      .steps-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+
+      .step-card {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: var(--shadow);
+      }
+      .step-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        display: block;
+      }
+    </style>
   </head>
   <body>
     <header class="navbar">
       <div class="logo">
-        <img src="/img/logo.jpg" alt="Logo" class="icono" />
-        <div>
-          <h1>EcoHospedajes Rurales</h1>
-          <p>Reservas en hospedajes rurales</p>
-        </div>
+        <a
+          href="/index.html"
+          class="logo"
+          style="
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+          "
+        >
+          <img src="/img/logo.jpg" alt="Logo" width="45" />
+          <span
+            style="
+              font-weight: bold;
+              color: var(--primary-color);
+              font-size: 1.2rem;
+            "
+            >EcoHospedajes</span
+          >
+        </a>
       </div>
       <nav id="menuNav">
         <a href="/index.html">Inicio</a>
@@ -23,12 +109,53 @@
     </header>
 
     <section class="hero">
-      <div class="hero-content">
-        <h2>Descubre la tranquilidad del campo</h2>
-        <p>Escápate del ruido y vive una experiencia rural única.</p>
-        <a href="/catalogo.html" class="btn">Explorar hospedajes</a>
+      <div>
+        <h1>Conecta con la Naturaleza</h1>
+        <p>Descubre los mejores alojamientos rurales en todo el Perú.</p>
+        <a href="/catalogo.html" class="btn-cta">Explorar Destinos</a>
       </div>
     </section>
+
+    <section class="section">
+      <h2>¿Cómo funciona?</h2>
+      <div class="steps-grid">
+        <div class="step-card">
+          <span class="step-icon">🔍</span>
+          <h3>1. Explora</h3>
+          <p>Busca entre cientos de cabañas y casas de campo verificadas.</p>
+        </div>
+        <div class="step-card">
+          <span class="step-icon">📅</span>
+          <h3>2. Reserva</h3>
+          <p>Elige tus fechas y reserva de forma segura e instantánea.</p>
+        </div>
+        <div class="step-card">
+          <span class="step-icon">🎒</span>
+          <h3>3. Viaja</h3>
+          <p>Recibe tu confirmación y prepárate para la aventura.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="background-color: #e8f5e9">
+      <h2>¿Tienes un hospedaje rural?</h2>
+      <p>Únete a nuestra comunidad y aumenta tus reservas hoy mismo.</p>
+      <br />
+      <a
+        href="/registrar-dueño.html"
+        style="
+          color: #205c3b;
+          font-weight: bold;
+          border: 2px solid #205c3b;
+          padding: 10px 20px;
+          border-radius: 20px;
+          text-decoration: none;
+        "
+        >Publicar mi Hospedaje</a
+      >
+    </section>
+
+    <footer></footer>
 
     <script src="/js/logic-navbar.js"></script>
   </body>

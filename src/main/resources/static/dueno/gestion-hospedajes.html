@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestión de Propiedades | EcoHospedajes</title>
+
+    <link rel="stylesheet" href="/css/global.css" />
+    <link rel="stylesheet" href="/css/dashboard.css" />
+    <style>
+      .gestion-container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 0 40px;
+      }
+      .gestion-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+      }
+      .gestion-header h1 {
+        margin: 0;
+        color: #222;
+        font-size: 1.8rem;
+      }
+
+      /* Estilos de la Tabla */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      }
+      th,
+      td {
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+        text-align: left;
+        font-size: 0.95rem;
+      }
+      th {
+        background-color: var(--primary-dark);
+        color: white;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      /* Thumbnail Style */
+      .hotel-thumb {
+        width: 60px;
+        height: 40px;
+        object-fit: cover;
+        border-radius: 4px;
+        border: 1px solid #eee;
+        vertical-align: middle;
+      }
+
+      .btn-action {
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-right: 8px;
+        transition: background 0.2s;
+        border: none;
+      }
+      .btn-edit {
+        background: #e6f7ff;
+        color: #1890ff;
+        border: 1px solid #91d5ff;
+      }
+      .btn-delete {
+        background: #fff1f0;
+        color: #ff4d4f;
+        border: 1px solid #ffa39e;
+      }
+      .btn-edit:hover {
+        background: #cce0ff;
+      }
+      .btn-delete:hover {
+        background: #ffccc7;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="navbar">
+      <a
+        href="/index.html"
+        class="logo"
+        style="
+          text-decoration: none;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        "
+      >
+        <img src="/img/logo.jpg" alt="Logo" width="45" />
+        <span
+          style="
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+          "
+          >EcoHospedajes</span
+        >
+      </a>
+      <nav id="menuNav"></nav>
+    </header>
+
+    <div class="gestion-container">
+      <div class="gestion-header">
+        <h1>Mis Hospedajes Publicados</h1>
+        <a
+          href="/dueno/registrar-hospedaje.html"
+          class="btn-action"
+          style="
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            padding: 12px 18px;
+            border-radius: 8px;
+          "
+        >
+          + Agregar Nuevo Hospedaje
+        </a>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>IMAGEN</th>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Ubicación</th>
+            <th>Precio / Noche</th>
+            <th>Servicios</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tablaHospedajes"></tbody>
+      </table>
+    </div>
+
+    <footer></footer>
+
+    <script src="/js/logic-navbar.js"></script>
+    <script>
+      const usuario = JSON.parse(localStorage.getItem("usuarioLogueado"));
+
+      // 1. Seguridad: Solo DUEÑO puede entrar
+      if (!usuario || usuario.rol !== "DUENO") {
+        alert("Acceso denegado.");
+        window.location.href = "/index.html";
+      }
+
+      // 2. Función de Carga
+      async function cargarHospedajes() {
+        try {
+          // Llama al endpoint GET /api/hospedajes/dueno/{id}
+          const res = await fetch(
+            `http://localhost:8080/api/hospedajes/dueno/${usuario.id}`
+          );
+          const data = await res.json();
+          const tbody = document.getElementById("tablaHospedajes");
+          tbody.innerHTML = "";
+
+          if (data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:30px">Aún no has publicado ningún hospedaje.</td></tr>`;
+            return;
+          }
+
+          data.forEach((h) => {
+            const tr = document.createElement("tr");
+            const cantServicios = h.servicios
+              ? h.servicios.split(",").length
+              : 0;
+
+            tr.innerHTML = `
+                        <td>
+                            <img src="${
+                              h.imagenUrl
+                            }" class="hotel-thumb" onerror="this.src='/img/logo.jpg'" alt="${
+              h.nombre
+            }">
+                        </td>
+                        <td>#${h.id}</td>
+                        <td>${h.nombre}</td>
+                        <td>${h.ubicacion}</td>
+                        <td>S/ ${h.precio.toFixed(2)}</td>
+                        <td>${cantServicios} servicios</td>
+                        <td>
+                            <button class="btn-action btn-edit" onclick="editarHotel(${
+                              h.id
+                            })">Editar</button>
+                            <button class="btn-action btn-delete" onclick="eliminarHotel(${
+                              h.id
+                            })">Eliminar</button>
+                        </td>
+                    `;
+            tbody.appendChild(tr);
+          });
+        } catch (error) {
+          console.error(error);
+          document.getElementById(
+            "tablaHospedajes"
+          ).innerHTML = `<tr><td colspan="7" style="color:red">Error al cargar datos.</td></tr>`;
+        }
+      }
+
+      // 3. Lógica de Acciones (Funciones de Editar y Eliminar)
+      function editarHotel(id) {
+        window.location.href = `/dueno/registrar-hospedaje.html?id=${id}`;
+      }
+
+      async function eliminarHotel(id) {
+        if (!confirm("¿Estás seguro de eliminar este hospedaje?")) return;
+
+        try {
+          const res = await fetch(
+            `http://localhost:8080/api/hospedajes/${id}`,
+            { method: "DELETE" }
+          );
+
+          if (res.ok) {
+            alert("✅ Hospedaje eliminado correctamente.");
+            cargarHospedajes(); // Recargar la tabla
+          } else {
+            const errorData = await res.json();
+            alert(
+              "❌ Error al eliminar: " +
+                (errorData.mensaje || "Hay reservas vinculadas.")
+            );
+          }
+        } catch (error) {
+          alert("Error de conexión al eliminar.");
+        }
+      }
+
+      cargarHospedajes();
+    </script>
+  </body>
+</html>

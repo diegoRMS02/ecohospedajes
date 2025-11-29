@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,5 +38,11 @@ public class ReservaController {
     public ResponseEntity<List<Reserva>> obtenerMisViajes(@PathVariable Long usuarioId) {
         // En el futuro, aquí podríamos agregar filtros (ej: solo viajes futuros)
         return ResponseEntity.ok(reservaService.listarReservasDeUsuario(usuarioId));
+    }
+
+    @PutMapping("/{id}/cancelar")
+    public ResponseEntity<?> cancelar(@PathVariable Long id) {
+        reservaService.cancelarReserva(id);
+        return ResponseEntity.ok().body(java.util.Collections.singletonMap("mensaje", "Reserva cancelada con éxito"));
     }
 }

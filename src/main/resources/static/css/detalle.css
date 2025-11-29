@@ -1,0 +1,239 @@
+/* Contenedor Centrado */
+.detail-container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 24px 40px; /* Espaciado lateral */
+}
+
+/* === 1. TÍTULO Y CABECERA === */
+.listing-header {
+  margin-bottom: 24px;
+}
+
+.listing-header h1 {
+  font-size: 26px;
+  font-weight: 700; /* Más grueso */
+  color: #222;
+  margin: 0 0 4px 0;
+  line-height: 1.2;
+}
+
+.listing-subtitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: #222;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* === 2. FOTO HERO (Estilo Cine) === */
+.hero-image-container {
+  width: 100%;
+  height: 450px; /* Altura fija impactante */
+  border-radius: 12px; /* Bordes suaves pero no exagerados */
+  overflow: hidden;
+  margin-bottom: 48px; /* Separación con el contenido */
+  position: relative;
+  background-color: #f0f0f0; /* Skeleton loading */
+}
+
+.hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.hero-image:hover {
+  transform: scale(1.03); /* Zoom muy sutil y elegante */
+}
+
+/* === 3. LAYOUT GRID (Contenido vs Reserva) === */
+.listing-grid {
+  display: grid;
+  grid-template-columns: 1.8fr 1fr; /* 65% - 35% aprox */
+  gap: 80px; /* Mucho aire entre columnas */
+  align-items: start;
+}
+
+/* SECCIÓN IZQUIERDA */
+.left-content {
+  padding-right: 10px;
+}
+
+/* Anfitrión */
+.host-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border-color); /* Línea divisoria */
+  margin-bottom: 32px;
+}
+
+.host-text h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  color: #222;
+}
+.host-text p {
+  margin: 4px 0 0;
+  color: var(--text-light);
+  font-size: 16px;
+}
+
+.host-avatar img {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #ddd;
+}
+
+/* Descripción */
+.description-section {
+  padding-bottom: 48px;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 32px;
+}
+
+.description-text {
+  font-size: 16px;
+  line-height: 24px; /* Mejor lectura */
+  color: #222;
+  white-space: pre-line;
+}
+
+/* Servicios */
+.amenities-section h3 {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+
+.amenities-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.amenity-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 16px;
+  color: #222;
+  padding: 8px 0;
+}
+
+.amenity-icon {
+  font-size: 20px;
+  color: #222; /* Iconos negros minimalistas, no verdes */
+  width: 24px;
+  text-align: center;
+}
+
+/* === 4. CAJA FLOTANTE (DERECHA) === */
+.booking-sidebar {
+  position: sticky;
+  top: 100px; /* Se queda pegado al bajar */
+  z-index: 10;
+}
+
+.booking-card {
+  border: 1px solid rgb(221, 221, 221);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  background: white;
+}
+
+.price-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 24px;
+}
+
+.final-price {
+  font-size: 22px;
+  font-weight: 700;
+  color: #222;
+}
+.per-night {
+  font-size: 16px;
+  font-weight: 400;
+  color: #222;
+}
+
+.btn-reservar {
+  width: 100%;
+  background: linear-gradient(
+    to right,
+    #e61e4d,
+    #d80565
+  ); /* Color "Radical" tipo Airbnb o usa tu verde */
+  background: var(--primary-color); /* Usamos tu verde corporativo */
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.1s;
+  margin-bottom: 16px;
+}
+
+.btn-reservar:active {
+  transform: scale(0.96);
+}
+
+.no-charge-text {
+  text-align: center;
+  font-size: 14px;
+  color: #717171;
+  margin-bottom: 24px;
+}
+
+/* Desglose de precios */
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  color: #222;
+  font-size: 16px;
+  text-decoration: underline;
+  text-decoration-color: #ddd;
+}
+
+.price-row span:last-child {
+  text-decoration: none;
+}
+
+.total-row {
+  border-top: 1px solid #ddd;
+  padding-top: 24px;
+  margin-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+  font-size: 18px;
+  color: #222;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .listing-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .hero-image-container {
+    height: 300px;
+  }
+  .booking-sidebar {
+    position: static;
+    margin-bottom: 40px;
+  }
+}

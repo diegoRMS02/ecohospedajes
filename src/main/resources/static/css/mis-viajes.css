@@ -1,13 +1,10 @@
-body {
-  background-color: #f7f7f7;
-  font-family: "Poppins", sans-serif;
-  margin: 0;
-}
+/* Hereda estilos base de global.css, aquí solo lo específico */
 
 .container {
   max-width: 900px;
   margin: 40px auto;
   padding: 20px;
+  min-height: 60vh; /* Para que el footer no suba si hay pocos viajes */
 }
 
 .page-header {
@@ -17,11 +14,11 @@ body {
 }
 
 .page-header h1 {
-  color: #333;
+  color: var(--primary-color); /* Usa la variable del global */
   margin: 0;
 }
 
-/* --- TARJETA TIPO AIRBNB --- */
+/* TARJETA DE VIAJE */
 .trip-card {
   background: white;
   border-radius: 12px;
@@ -60,7 +57,7 @@ body {
 
 .trip-title {
   margin: 0;
-  color: #205c3b;
+  color: var(--primary-color);
   font-size: 1.4rem;
 }
 
@@ -92,12 +89,6 @@ body {
   font-size: 1.3rem;
   font-weight: bold;
   color: #333;
-}
-
-/* BOTONES Y BADGES */
-.actions {
-  display: flex;
-  gap: 10px;
 }
 
 .btn-cancel {

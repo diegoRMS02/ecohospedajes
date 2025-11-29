@@ -27,6 +27,15 @@ public class DatosHospedaje {
 
     // Para mostrar el nombre del dueño en la tarjeta (opcional pero útil)
     private String nombrePropietario;
+    private String servicios; // Recibimos la lista de servicios
+
+    public String getServicios() {
+        return servicios;
+    }
+
+    public void setServicios(String servicios) {
+        this.servicios = servicios;
+    }
 
     // Getters y Setters
     public Long getId() {

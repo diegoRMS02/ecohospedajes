@@ -81,4 +81,17 @@ public class ReservaService {
         public List<Reserva> listarReservasDeUsuario(Long usuarioId) {
                 return reservaRepository.findByUsuarioId(usuarioId);
         }
+
+        public void cancelarReserva(Long id) {
+                Reserva reserva = reservaRepository.findById(id)
+                                .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
+
+                // Regla de Negocio: No se puede cancelar si el viaje ya pasó o empezó
+                if (java.time.LocalDate.now().isAfter(reserva.getCheckin())) {
+                        throw new RuntimeException("No se pueden cancelar reservas pasadas o en curso.");
+                }
+
+                reserva.setEstado("CANCELADA");
+                reservaRepository.save(reserva);
+        }
 }
