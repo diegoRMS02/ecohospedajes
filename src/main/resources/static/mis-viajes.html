@@ -47,127 +47,142 @@
 
     <script src="/js/logic-navbar.js"></script>
     <script>
-      const usuario = JSON.parse(localStorage.getItem("usuarioLogueado"));
-      if (!usuario || usuario.rol !== "CLIENTE")
-        window.location.href = "/index.html";
+      document.addEventListener("DOMContentLoaded", async () => {
+        // CORRECCION 1: Apuntamos al ID correcto de tu HTML
+        const contenedor = document.getElementById("listaViajes");
+        const token = localStorage.getItem("jwt");
 
-      async function cargarViajes() {
+        // 1. Seguridad
+        if (!token) {
+          window.location.href = "/login.html";
+          return;
+        }
+
         try {
-          const res = await fetch(
-            `http://localhost:8080/api/reservas/usuario/${usuario.id}`
-          );
-          const viajes = await res.json();
-          const contenedor = document.getElementById("listaViajes");
-          contenedor.innerHTML = "";
+          // 2. Petición al Backend
+          const response = await fetch("/api/reservas/mis-reservas", {
+            method: "GET",
+            headers: {
+              Authorization: "Bearer " + token,
+              "Content-Type": "application/json",
+            },
+          });
 
-          if (viajes.length === 0) {
-            contenedor.innerHTML = `<h3 style="text-align:center">No tienes viajes pendientes. ¡Reserva uno!</h3>`;
+          if (!response.ok) {
+            // Si el token expiró (ej: error 403), lo borramos y mandamos al login
+            if (response.status === 403 || response.status === 401) {
+              localStorage.removeItem("jwt");
+              window.location.href = "/login.html";
+              return;
+            }
+            throw new Error("Error " + response.status);
+          }
+
+          const reservas = await response.json();
+
+          // 3. Renderizar
+          if (reservas.length === 0) {
+            contenedor.innerHTML = `
+                <div style="text-align:center; padding: 40px;">
+                    <h3>Aún no tienes aventuras reservadas 🎒</h3>
+                    <a href="/catalogo.html" class="btn-primary" style="margin-top:20px; display:inline-block; padding: 10px 20px; background-color: #205c3b; color: white; text-decoration: none; border-radius: 5px;">Explorar Destinos</a>
+                </div>`;
             return;
           }
 
-          viajes.forEach((v) => {
-            const d1 = new Date(v.checkin);
-            const d2 = new Date(v.checkout);
-            const noches = (d2 - d1) / (1000 * 60 * 60 * 24);
+          // Generar HTML de las tarjetas
+          let htmlContent =
+            '<div class="reservas-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; padding: 20px;">';
 
-            // Estilo dinámico para estado CANCELADA
-            let badgeClass = "status-badge";
-            let estadoTexto = "✅ " + v.estado;
-            let btnDisabled = "";
+          reservas.forEach((reserva) => {
+            const colorEstado =
+              reserva.estado === "CANCELADA" ? "#e74c3c" : "#27ae60";
 
-            if (v.estado === "CANCELADA") {
-              estadoTexto = "❌ CANCELADA";
-              // Cambiamos estilo visual si está cancelada
-              badgeClass = "status-badge status-cancel";
-              btnDisabled = "disabled style='opacity:0.5; cursor:not-allowed'";
-            }
+            // Validación por si el hospedaje fue borrado de la BD
+            const nombreHospedaje = reserva.hospedaje
+              ? reserva.hospedaje.nombre
+              : "Hospedaje no disponible";
+            const imagenHospedaje =
+              reserva.hospedaje && reserva.hospedaje.imagenUrl
+                ? reserva.hospedaje.imagenUrl
+                : "/img/default-hotel.jpg";
 
-            contenedor.innerHTML += `
-                        <div class="trip-card">
-                            <img src="${
-                              v.hospedaje.imagenUrl
-                            }" class="trip-img" onerror="this.src='/img/logo.jpg'">
-                            <div class="trip-content">
-                                <div class="trip-header">
-                                    <div>
-                                        <h2 class="trip-title">${
-                                          v.hospedaje.nombre
-                                        }</h2>
-                                        <div class="trip-location">📍 ${
-                                          v.hospedaje.ubicacion
-                                        }</div>
-                                    </div>
-                                    <span class="${badgeClass}">${estadoTexto}</span>
-                                </div>
-                                <div class="trip-dates">
-                                    📅 <b>Llegada:</b> ${
-                                      v.checkin
-                                    } &nbsp; ➝ &nbsp; <b>Salida:</b> ${
-              v.checkout
-            }
-                                    <br> <small>(${noches} noches para ${
-              v.personas
-            } personas)</small>
-                                </div>
-                                <div class="trip-footer">
-                                    <div class="trip-price">Total: S/ ${
-                                      v.precioTotal
-                                    }</div>
-                                    <div class="actions">
-                                        <button class="btn-cancel" onclick="cancelarReserva(${
-                                          v.id
-                                        })" ${btnDisabled}>
-                                            ${
-                                              v.estado === "CANCELADA"
-                                                ? "Cancelado"
-                                                : "Cancelar Reserva"
-                                            }
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+            htmlContent += `
+                <div class="card-reserva" style="border: 1px solid #ddd; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); background: white;">
+                    <div class="card-header" style="background-color: #f8f9fa; padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-weight: bold; color: #555;">Reserva #${
+                          reserva.id
+                        }</span>
+                        <span style="background-color: ${colorEstado}; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.85em; font-weight: 600;">${
+              reserva.estado
+            }</span>
+                    </div>
+                    <div class="card-body" style="padding: 20px;">
+                        <h3 style="margin: 0 0 15px 0; color: #205c3b; font-size: 1.3em;">${nombreHospedaje}</h3>
+                        
+                        <div style="font-size: 0.95em; color: #666; display: flex; flex-direction: column; gap: 8px;">
+                            <div>📅 <b>Entrada:</b> ${reserva.checkin}</div>
+                            <div>📅 <b>Salida:</b> ${reserva.checkout}</div>
+                            <div>👥 <b>Viajeros:</b> ${reserva.personas}</div>
                         </div>
-                    `;
+
+                        <div style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed #eee; display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 1.1em; color: #333;">Total:</span>
+                            <span style="font-size: 1.4em; font-weight: bold; color: #205c3b;">S/ ${
+                              reserva.precioTotal
+                            }</span>
+                        </div>
+                        
+                        ${
+                          reserva.estado !== "CANCELADA"
+                            ? `<button onclick="cancelarReserva(${reserva.id})" style="width: 100%; padding: 12px; background-color: white; border: 2px solid #e74c3c; color: #e74c3c; border-radius: 8px; cursor: pointer; margin-top: 20px; font-weight: bold; transition: all 0.3s;">Cancelar Reserva</button>`
+                            : ""
+                        }
+                    </div>
+                </div>
+            `;
           });
+
+          htmlContent += "</div>";
+
+          // CORRECCION 2: Insertamos el HTML en el contenedor correcto
+          contenedor.innerHTML = htmlContent;
         } catch (error) {
           console.error(error);
-          document.getElementById("listaViajes").innerHTML =
-            "<p>Error al cargar datos.</p>";
+          contenedor.innerHTML = `<p style="text-align:center; color: red;">Error al cargar datos: ${error.message}</p>`;
         }
-      }
+      });
 
-      // Lógica REAL de cancelación
+      // Función cancelar fuera del DOMContentLoaded para que sea global
       async function cancelarReserva(id) {
         if (
           !confirm(
-            "¿Seguro que deseas cancelar esta reserva? Se liberarán las fechas y el reembolso dependerá de las políticas."
+            "¿Estás seguro de cancelar esta reserva? Esta acción no se puede deshacer."
           )
         )
           return;
 
+        const token = localStorage.getItem("jwt");
         try {
-          // Llamada al endpoint PUT que creamos
-          const res = await fetch(
-            `http://localhost:8080/api/reservas/${id}/cancelar`,
-            {
-              method: "PUT",
-            }
-          );
+          const res = await fetch(`/api/reservas/${id}`, {
+            method: "DELETE",
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+          });
 
           if (res.ok) {
-            alert("✅ Reserva cancelada correctamente.");
-            window.location.reload(); // Recargar para ver el cambio
+            alert("✅ Reserva cancelada exitosamente");
+            window.location.reload();
           } else {
-            const err = await res.json();
-            alert("❌ Error: " + (err.mensaje || "No se pudo cancelar"));
+            const msg = await res.text(); // Intentar leer error del backend
+            alert("⚠️ No se pudo cancelar: " + (msg || "Error desconocido"));
           }
-        } catch (error) {
-          console.error(error);
-          alert("Error de conexión");
+        } catch (e) {
+          console.error(e);
+          alert("Error de conexión con el servidor");
         }
       }
-
-      cargarViajes();
     </script>
   </body>
 </html>

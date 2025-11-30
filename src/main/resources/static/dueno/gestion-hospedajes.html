@@ -150,9 +150,10 @@
     <script src="/js/logic-navbar.js"></script>
     <script>
       const usuario = JSON.parse(localStorage.getItem("usuarioLogueado"));
+      const token = localStorage.getItem("jwt");
 
       // 1. Seguridad: Solo DUEÑO puede entrar
-      if (!usuario || usuario.rol !== "DUENO") {
+      if (!usuario || usuario.rol !== "DUENO" || !token) {
         alert("Acceso denegado.");
         window.location.href = "/index.html";
       }
@@ -160,10 +161,15 @@
       // 2. Función de Carga
       async function cargarHospedajes() {
         try {
-          // Llama al endpoint GET /api/hospedajes/dueno/{id}
-          const res = await fetch(
-            `http://localhost:8080/api/hospedajes/dueno/${usuario.id}`
-          );
+          const res = await fetch(`/api/hospedajes/dueno/${usuario.id}`, {
+            method: "GET",
+            headers: {
+              Authorization: "Bearer " + token, // TOKEN AQUI
+            },
+          });
+
+          if (!res.ok) throw new Error("Error al cargar");
+
           const data = await res.json();
           const tbody = document.getElementById("tablaHospedajes");
           tbody.innerHTML = "";
@@ -211,7 +217,7 @@
         }
       }
 
-      // 3. Lógica de Acciones (Funciones de Editar y Eliminar)
+      // 3. Lógica de Acciones
       function editarHotel(id) {
         window.location.href = `/dueno/registrar-hospedaje.html?id=${id}`;
       }
@@ -220,19 +226,22 @@
         if (!confirm("¿Estás seguro de eliminar este hospedaje?")) return;
 
         try {
-          const res = await fetch(
-            `http://localhost:8080/api/hospedajes/${id}`,
-            { method: "DELETE" }
-          );
+          const res = await fetch(`/api/hospedajes/${id}`, {
+            method: "DELETE",
+            headers: {
+              Authorization: "Bearer " + token, // TOKEN TAMBIEN AQUI
+            },
+          });
 
           if (res.ok) {
             alert("✅ Hospedaje eliminado correctamente.");
-            cargarHospedajes(); // Recargar la tabla
+            cargarHospedajes();
           } else {
-            const errorData = await res.json();
+            const errorData = await res.json(); // Intentar leer error del backend
             alert(
               "❌ Error al eliminar: " +
-                (errorData.mensaje || "Hay reservas vinculadas.")
+                (errorData.mensaje ||
+                  "Hay reservas vinculadas o error interno.")
             );
           }
         } catch (error) {

@@ -217,8 +217,10 @@
     <script src="/js/logic-navbar.js"></script>
     <script>
       const usuario = JSON.parse(localStorage.getItem("usuarioLogueado"));
-      if (!usuario || usuario.rol !== "DUENO") {
-        alert("Acceso denegado.");
+      const token = localStorage.getItem("jwt"); // LLAVE DE SEGURIDAD
+
+      if (!usuario || usuario.rol !== "DUENO" || !token) {
+        alert("Acceso denegado. Debes ser dueño para ver esto.");
         window.location.href = "/index.html";
       }
 
@@ -226,21 +228,22 @@
       const hotelId = urlParams.get("id");
 
       let fetchMethod = "POST";
-      let fetchUrl = "http://localhost:8080/api/hospedajes";
+      let fetchUrl = "/api/hospedajes"; // Ruta relativa
 
-      // --- LÓGICA DE EDICIÓN / CARGA DE DATOS ---
+      // --- LÓGICA DE EDICIÓN ---
       if (hotelId) {
         document.getElementById("formTitle").innerText =
           "Editar Hospedaje (ID: " + hotelId + ")";
         document.getElementById("submitButton").innerText = "Guardar Cambios";
         fetchMethod = "PUT";
-        fetchUrl = `http://localhost:8080/api/hospedajes/${hotelId}`;
+        fetchUrl = `/api/hospedajes/${hotelId}`;
         cargarDatosHotel(hotelId);
       }
 
       async function cargarDatosHotel(id) {
         try {
-          const res = await fetch(`http://localhost:8080/api/hospedajes/${id}`);
+          // GET es público, no necesita token, pero no está de más ponerlo
+          const res = await fetch(`/api/hospedajes/${id}`);
           const data = await res.json();
 
           document.getElementById("nombre").value = data.nombre;
@@ -249,7 +252,6 @@
           document.getElementById("imagenUrl").value = data.imagenUrl;
           document.getElementById("descripcion").value = data.descripcion;
 
-          // Pre-seleccionar servicios (si existen)
           if (data.servicios) {
             const servicios = data.servicios.split(",");
             servicios.forEach((servicio) => {
@@ -277,7 +279,6 @@
             .map((cb) => cb.value)
             .join(",");
 
-          // EL ARREGLO FINAL: Incluir propietarioId SIEMPRE para pasar la validación @Valid del backend
           const datos = {
             nombre: document.getElementById("nombre").value,
             ubicacion: document.getElementById("ubicacion").value,
@@ -285,14 +286,16 @@
             imagenUrl: document.getElementById("imagenUrl").value,
             descripcion: document.getElementById("descripcion").value,
             servicios: listaServicios,
-            // CORRECCIÓN: Enviamos el ID del dueño logueado SIEMPRE para pasar la validación @NotNull
             propietarioId: usuario.id,
           };
 
           try {
             const res = await fetch(fetchUrl, {
               method: fetchMethod,
-              headers: { "Content-Type": "application/json" },
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token, // <--- CLAVE PARA QUE FUNCIONE
+              },
               body: JSON.stringify(datos),
             });
 
@@ -303,9 +306,7 @@
               const errorData = await res.json();
               alert(
                 "❌ Error al guardar: " +
-                  (errorData.mensaje ||
-                    errorData.message ||
-                    "Error desconocido")
+                  (errorData.mensaje || "Error desconocido")
               );
             }
           } catch (error) {

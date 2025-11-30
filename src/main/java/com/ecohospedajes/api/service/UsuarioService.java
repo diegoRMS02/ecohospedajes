@@ -1,23 +1,23 @@
 package com.ecohospedajes.api.service;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ecohospedajes.api.dto.DatosActualizacionUsuario;
-import com.ecohospedajes.api.dto.DatosLogin;
 import com.ecohospedajes.api.dto.DatosRegistro;
 import com.ecohospedajes.api.entity.Usuario;
-import com.ecohospedajes.api.repository.UsuarioRepository; // <--- NUEVO IMPORT
+import com.ecohospedajes.api.repository.UsuarioRepository;
 
 @Service
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder; // Inyectamos el encoder
 
-    public UsuarioService(UsuarioRepository usuarioRepository) {
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
     }
-
-    // --- MÉTODOS DE AUTENTICACIÓN ---
 
     public Usuario registrar(DatosRegistro datos) {
         if (usuarioRepository.existsByEmail(datos.getEmail())) {
@@ -29,35 +29,25 @@ public class UsuarioService {
         nuevo.setApellidos(datos.getApellidos());
         nuevo.setEmail(datos.getEmail());
         nuevo.setRol(datos.getRol());
-        nuevo.setPassword(datos.getPassword());
+        // AQUI ESTA LA CLAVE: ENCRIPTAMOS
+        nuevo.setPassword(passwordEncoder.encode(datos.getPassword()));
 
         return usuarioRepository.save(nuevo);
     }
 
-    public Usuario login(DatosLogin datos) {
-        Usuario usuario = usuarioRepository.findByEmail(datos.getEmail())
+    // EL LOGIN YA NO SE HACE AQUI, SE HACE EN EL CONTROLLER CON AUTHENTICATION
+    // MANAGER
+    // Mantenemos solo la actualización
+
+    public Usuario actualizar(Long id, DatosActualizacionUsuario datos) {
+        Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        if (!usuario.getPassword().equals(datos.getPassword())) {
-            throw new RuntimeException("Contraseña incorrecta");
-        }
-        return usuario;
-    }
-
-    // --- MÉTODOS DE GESTIÓN (CRUD) ---
-
-    // Método de Actualización
-    public Usuario actualizar(Long id, DatosActualizacionUsuario datos) { // <--- CAMBIO DE DTO
-        Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado para actualizar"));
-
-        // 1. Actualizamos campos
         usuario.setNombre(datos.getNombre());
         usuario.setApellidos(datos.getApellidos());
 
-        // 2. Si manda contraseña, la actualizamos (solo si no es nula NI vacía)
         if (datos.getPassword() != null && !datos.getPassword().isEmpty()) {
-            usuario.setPassword(datos.getPassword());
+            usuario.setPassword(passwordEncoder.encode(datos.getPassword())); // Encriptar si cambia
         }
 
         return usuarioRepository.save(usuario);

@@ -29,7 +29,7 @@ public class AdminController {
         this.hospedajeRepository = hospedajeRepository;
     }
 
-    // 1. Estadísticas Generales
+    // 1. Estadísticas Generales (Protegido por SecurityConfig)
     @GetMapping("/stats")
     public ResponseEntity<Map<String, Long>> obtenerEstadisticas() {
         Map<String, Long> stats = new HashMap<>();
@@ -44,15 +44,16 @@ public class AdminController {
         return ResponseEntity.ok(usuarioRepository.findAll());
     }
 
-    // 3. Eliminar Usuario (Cuidado: Esto borra sus hoteles y reservas en cascada si
-    // está configurado)
+    // 3. Eliminar Usuario
     @DeleteMapping("/usuarios/{id}")
     public ResponseEntity<?> eliminarUsuario(@PathVariable Long id) {
+        // Opcional: Validar que no se borre al admin principal aquí si quisieras lógica
+        // extra
         usuarioRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }
 
-    // 4. Eliminar Hospedaje (Por si es falso)
+    // 4. Eliminar Hospedaje
     @DeleteMapping("/hospedajes/{id}")
     public ResponseEntity<?> eliminarHospedaje(@PathVariable Long id) {
         hospedajeRepository.deleteById(id);

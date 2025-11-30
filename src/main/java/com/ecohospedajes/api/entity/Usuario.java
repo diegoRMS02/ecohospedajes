@@ -1,6 +1,12 @@
 package com.ecohospedajes.api.entity;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,10 +18,16 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "usuarios")
-public class Usuario {
+// Usamos Lombok si está disponible (veo que lo tienes en pom) para limpiar
+// código, si no, mantén tus getters/setters manuales
+public class Usuario implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,20 +48,20 @@ public class Usuario {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private Rol rol; // ADMIN, DUENO, CLIENTE
+    private Rol rol;
 
     private LocalDateTime fechaRegistro = LocalDateTime.now();
 
-    // Enum para roles estrictos
     public enum Rol {
         ADMIN, DUENO, CLIENTE
     }
 
-    // Constructor vacío (obligatorio para JPA)
+    // Constructor vacío
     public Usuario() {
     }
 
-    // Getters y Setters
+    // Getters y Setters manuales (para asegurar compatibilidad con tu código
+    // previo)
     public Long getId() {
         return id;
     }
@@ -82,10 +94,6 @@ public class Usuario {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     public void setPassword(String password) {
         this.password = password;
     }
@@ -104,5 +112,43 @@ public class Usuario {
 
     public void setFechaRegistro(LocalDateTime fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
+    }
+
+    // --- MÉTODOS DE USER DETAILS (Spring Security) ---
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // Convierte el ROL (Enum) en una Autoridad que Spring entienda
+        return List.of(new SimpleGrantedAuthority(rol.name()));
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email; // Usamos el email como "usuario" para loguearse
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

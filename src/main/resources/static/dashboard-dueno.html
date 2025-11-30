@@ -124,12 +124,10 @@
       }
 
       .badge-status[style*="d63031"] {
-        /* Estilo para cancelada */
         background: #ffecec;
         color: #d63031;
       }
       .badge-status:not([style*="d63031"]) {
-        /* Estilo para confirmada */
         background: #e6fffa;
         color: #00796b;
       }
@@ -232,24 +230,21 @@
     <script src="/js/logic-navbar.js"></script>
     <script>
       const usuario = JSON.parse(localStorage.getItem("usuarioLogueado"));
+      const token = localStorage.getItem("jwt");
 
       // Seguridad Básica
-      if (!usuario || usuario.rol !== "DUENO") {
-        window.location.href = "/index.index";
+      if (!usuario || usuario.rol !== "DUENO" || !token) {
+        window.location.href = "/index.html";
       }
       document.getElementById("nombreUser").innerText = usuario.nombre;
 
-      // Variables globales para los gráficos
       let myBarChart = null;
       let myDoughnutChart = null;
 
-      // Configuración de Gráficos
       function initCharts(meses, montos, confirmadas, canceladas) {
-        // Destruir anteriores si existen
         if (myBarChart) myBarChart.destroy();
         if (myDoughnutChart) myDoughnutChart.destroy();
 
-        // Gráfico de Barras
         myBarChart = new Chart(document.getElementById("barChart"), {
           type: "bar",
           data: {
@@ -269,7 +264,6 @@
           },
         });
 
-        // Gráfico de Rosquilla (Ocupación)
         myDoughnutChart = new Chart(document.getElementById("doughnutChart"), {
           type: "doughnut",
           data: {
@@ -287,9 +281,15 @@
 
       async function cargarDashboard() {
         try {
-          const res = await fetch(
-            `http://localhost:8080/api/dashboard/${usuario.id}`
-          );
+          const res = await fetch(`/api/dashboard/${usuario.id}`, {
+            method: "GET",
+            headers: {
+              Authorization: "Bearer " + token, // AÑADIDO
+            },
+          });
+
+          if (!res.ok) throw new Error("Error carga dashboard");
+
           const data = await res.json();
 
           // 1. LLENAR KPIs
@@ -298,8 +298,7 @@
           document.getElementById("kpiReservas").innerText = data.kpi_reservas;
           document.getElementById("kpiHoteles").innerText = data.kpi_hoteles;
 
-          // 2. TIPO CASTEO Y DIBUJO DE GRÁFICOS
-          // Corrección final de tipos de datos para Chart.js
+          // 2. GRÁFICOS
           const totalConfirmadas = parseInt(data.total_confirmadas);
           const totalCanceladas = parseInt(data.total_canceladas);
 
@@ -310,7 +309,7 @@
             totalCanceladas
           );
 
-          // 3. LLENAR TABLA
+          // 3. TABLA
           const tbody = document.getElementById("tablaBody");
           tbody.innerHTML = "";
 
@@ -318,7 +317,6 @@
             tbody.innerHTML = `<tr><td colspan='5' style='text-align:center; padding:20px'>No hay reservas aún.</td></tr>`;
           } else {
             data.tabla_reservas.forEach((r) => {
-              // Lógica de color según estado
               let colorStyle = r.estado.toUpperCase().includes("CANCELADA")
                 ? "background:#ffecec; color:#d63031"
                 : "background:#e6fffa; color:#00796b";

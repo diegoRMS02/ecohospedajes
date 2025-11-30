@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotNull;
 
 public class DatosReserva {
 
-    private Long id; // Para devolverlo al confirmar
+    private Long id;
 
     @NotNull(message = "La fecha de entrada es obligatoria")
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -21,14 +21,14 @@ public class DatosReserva {
     @NotNull(message = "Indica el número de personas")
     private Integer personas;
 
-    // Solo recibimos los IDs, no los objetos completos
     @NotNull(message = "Falta el ID del hospedaje")
     private Long hospedajeId;
 
-    @NotNull(message = "Falta el ID del usuario")
+    // --- CAMBIO IMPORTANTE: Quitamos el @NotNull aquí ---
+    // Ya no es obligatorio en el JSON, porque lo ponemos nosotros desde el Token
     private Long usuarioId;
 
-    private Double precioTotal; // Lo calcularemos en el backend, pero lo ponemos para devolverlo
+    private Double precioTotal;
 
     // Getters y Setters
     public Long getId() {
