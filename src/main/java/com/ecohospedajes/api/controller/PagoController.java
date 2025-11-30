@@ -1,7 +1,5 @@
-// en PagoController.java (arriba)
 package com.ecohospedajes.api.controller;
 
-// <-- CORRIGE aquí si tu servicio está en "servicio"
 import com.ecohospedajes.api.service.PaymentService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +15,7 @@ public class PagoController {
 
     @GetMapping("/pago-form")
     public String mostrarFormularioPago() {
-        return "pago_form"; // debe estar en templates/
+        return "pago_form";
     }
 
     @PostMapping("/create")

@@ -24,7 +24,6 @@ public class Payment {
     @Column(name = "reservacion_id")
     private Long reservationId;
 
-    // Datos del usuario
     @Column(name = "nombre")
     private String firstName;
 
@@ -37,7 +36,6 @@ public class Payment {
     @Column(name = "telefono")
     private String phone;
 
-    // Datos de tarjeta
     @Column(name = "tarjeta_numero")
     private String cardNumber;
 

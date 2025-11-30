@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <title>Formulario de Pago</title>
     <link rel="stylesheet" href="/css/pago.css">
-    <script src="/js/login-navbar.js"></script>
+    <script src="js/logic-navbar.js"></script>
+    <link rel="stylesheet" href="css/global.css">
 </head>
 <body>
     <style>
-      /* Estilos específicos solo para el Home */
       .hero {
         background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
           url("https://images.unsplash.com/photo-1587595431973-160d0d94add1?auto=format&fit=crop&w=1600&q=80");
@@ -157,7 +157,7 @@ document.getElementById("paymentForm").addEventListener("submit", function(event
     const formData = new URLSearchParams();
 
     formData.append("nombre", document.getElementById("nombre").value);
-    formData.append("apellidos", document.getElementById("apellido").value);
+    formData.append("apellidos", document.getElementById("apellidos").value);
     formData.append("correo", document.getElementById("correo").value);
     formData.append("numero", document.getElementById("numero").value);
 
@@ -189,4 +189,21 @@ document.getElementById("paymentForm").addEventListener("submit", function(event
 </script>
 
 </body>
+<script>
+const params = new URLSearchParams(window.location.search);
+
+const total   = params.get("total");
+const id      = params.get("id");
+const checkin = params.get("checkin");
+const checkout = params.get("checkout");
+const personas = params.get("personas");
+
+if (total) document.getElementById("cantidad").value = total;
+if (id) document.getElementById("reservacion_id").value = id;
+
+console.log("Checkin:", checkin);
+console.log("Checkout:", checkout);
+console.log("Personas:", personas);
+</script>
+
 </html>

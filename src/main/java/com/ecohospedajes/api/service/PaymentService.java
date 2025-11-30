@@ -11,7 +11,6 @@ public class PaymentService {
     @Autowired
     private PaymentRepository paymentRepository;
 
-    // Firma EXACTA que usa tu controller (reserva, monto, método, nombres, apellidos, email, phone, tarjeta, expiry, cvv)
     public void createPayment(
             Long reservationId,
             Double amount,
@@ -22,8 +21,7 @@ public class PaymentService {
             String phone,
             String cardNumber,
             String expiryDate,
-            String cvv
-    ) {
+            String cvv) {
         Payment payment = new Payment();
         payment.setReservationId(reservationId);
         payment.setAmount(amount);
@@ -34,7 +32,6 @@ public class PaymentService {
         payment.setEmail(email);
         payment.setPhone(phone);
 
-        // No recomendable guardar CVV en producción; aquí lo hacemos solo para pruebas locales
         payment.setCardNumber(cardNumber);
         payment.setExpiryDate(expiryDate);
         payment.setCvv(cvv);
@@ -42,4 +39,3 @@ public class PaymentService {
         paymentRepository.save(payment);
     }
 }
-

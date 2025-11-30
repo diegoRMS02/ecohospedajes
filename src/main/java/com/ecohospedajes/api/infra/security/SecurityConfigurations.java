@@ -30,23 +30,18 @@ public class SecurityConfigurations {
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
 
-                        // ARCHIVOS ESTÁTICOS
                         .requestMatchers("/css/**", "/js/**", "/img/**", "/favicon.ico").permitAll()
 
-                        // FORMULARIO DE PAGO
                         .requestMatchers("/payments/**").permitAll()
 
-                        // PÁGINAS HTML
                         .requestMatchers("/", "/*.html").permitAll()
 
-                        // APIs que deseas permitir
                         .requestMatchers("/dueno/**", "/admin/**").permitAll()
 
                         .requestMatchers(HttpMethod.POST, "/api/usuarios/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/usuarios/registro").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/hospedajes/**").permitAll()
 
-                        // Rutas con permiso de rol
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/hospedajes").hasAuthority("DUENO")
                         .requestMatchers(HttpMethod.PUT, "/api/hospedajes/**").hasAuthority("DUENO")
