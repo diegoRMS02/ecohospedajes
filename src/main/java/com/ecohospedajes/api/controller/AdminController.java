@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ecohospedajes.api.entity.Reserva;
 import com.ecohospedajes.api.entity.Usuario;
 import com.ecohospedajes.api.repository.HospedajeRepository;
+import com.ecohospedajes.api.repository.ReservaRepository;
 import com.ecohospedajes.api.repository.UsuarioRepository;
 
 @RestController
@@ -23,18 +25,25 @@ public class AdminController {
 
     private final UsuarioRepository usuarioRepository;
     private final HospedajeRepository hospedajeRepository;
+    private final ReservaRepository reservaRepository;
 
-    public AdminController(UsuarioRepository usuarioRepository, HospedajeRepository hospedajeRepository) {
+    public AdminController(
+        UsuarioRepository usuarioRepository,
+        HospedajeRepository hospedajeRepository,
+        ReservaRepository reservaRepository
+    ) {
         this.usuarioRepository = usuarioRepository;
         this.hospedajeRepository = hospedajeRepository;
+        this.reservaRepository = reservaRepository;
     }
 
-    // 1. Estadísticas Generales (Protegido por SecurityConfig)
+    // 1. Estadísticas Generales
     @GetMapping("/stats")
     public ResponseEntity<Map<String, Long>> obtenerEstadisticas() {
         Map<String, Long> stats = new HashMap<>();
         stats.put("usuarios", usuarioRepository.count());
         stats.put("hospedajes", hospedajeRepository.count());
+        stats.put("reservas", reservaRepository.count()); // NUEVO
         return ResponseEntity.ok(stats);
     }
 
@@ -47,8 +56,6 @@ public class AdminController {
     // 3. Eliminar Usuario
     @DeleteMapping("/usuarios/{id}")
     public ResponseEntity<?> eliminarUsuario(@PathVariable Long id) {
-        // Opcional: Validar que no se borre al admin principal aquí si quisieras lógica
-        // extra
         usuarioRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }
@@ -57,6 +64,20 @@ public class AdminController {
     @DeleteMapping("/hospedajes/{id}")
     public ResponseEntity<?> eliminarHospedaje(@PathVariable Long id) {
         hospedajeRepository.deleteById(id);
+        return ResponseEntity.ok().build();
+    }
+
+
+    // 5. Listar Todas las Reservas
+    @GetMapping("/reservas")
+    public ResponseEntity<List<Reserva>> listarReservas() {
+        return ResponseEntity.ok(reservaRepository.findAll());
+    }
+
+    // 6. Eliminar Reserva
+    @DeleteMapping("/reservas/{id}")
+    public ResponseEntity<?> eliminarReserva(@PathVariable Long id) {
+        reservaRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }
 }

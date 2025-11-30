@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registrar Reserva</title>
+
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f5f6fa;
+        margin: 0;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 500px;
+        background: white;
+        padding: 25px;
+        margin: auto;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      label {
+        font-weight: bold;
+        margin-top: 10px;
+        display: block;
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 15px;
+      }
+
+      button {
+        width: 100%;
+        padding: 12px;
+        background: #2ecc71;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        margin-top: 20px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background: #27ae60;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Registrar Reserva</h2>
+
+      <form id="formReserva">
+        <label for="usuarioId">Usuario</label>
+        <select id="usuarioId" required></select>
+
+        <label for="hospedajeId">Hospedaje</label>
+        <select id="hospedajeId" required></select>
+
+        <label for="fechaInicio">Fecha de Inicio</label>
+        <input type="date" id="fechaInicio" required />
+
+        <label for="fechaFin">Fecha de Fin</label>
+        <input type="date" id="fechaFin" required />
+
+        <label for="estado">Estado</label>
+        <select id="estado" required>
+          <option value="PENDIENTE">Pendiente</option>
+          <option value="CONFIRMADA">Confirmada</option>
+          <option value="CANCELADA">Cancelada</option>
+        </select>
+
+        <button type="submit">Guardar Reserva</button>
+      </form>
+    </div>
+
+    <script>
+      // CARGAR USUARIOS
+      async function cargarUsuarios() {
+        const res = await fetch("http://localhost:8080/api/usuarios");
+        const data = await res.json();
+
+        const select = document.getElementById("usuarioId");
+        select.innerHTML = data
+          .map(
+            (u) => `<option value="${u.id}">${u.nombre} ${u.apellidos}</option>`
+          )
+          .join("");
+      }
+
+      // CARGAR HOSPEDAJES
+      async function cargarHospedajes() {
+        const res = await fetch("http://localhost:8080/api/hospedajes");
+        const data = await res.json();
+
+        const select = document.getElementById("hospedajeId");
+        select.innerHTML = data
+          .map((h) => `<option value="${h.id}">${h.nombre}</option>`)
+          .join("");
+      }
+
+      // REGISTRAR RESERVA
+      document
+        .getElementById("formReserva")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const reserva = {
+            usuarioId: document.getElementById("usuarioId").value,
+            hospedajeId: document.getElementById("hospedajeId").value,
+            fechaInicio: document.getElementById("fechaInicio").value,
+            fechaFin: document.getElementById("fechaFin").value,
+            estado: document.getElementById("estado").value,
+          };
+
+          const res = await fetch("http://localhost:8080/api/reservas", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(reserva),
+          });
+
+          if (res.ok) {
+            alert("Reserva registrada correctamente");
+            document.getElementById("formReserva").reset();
+          } else {
+            alert("Error al registrar reserva");
+          }
+        });
+
+      // CARGAR DATOS AL INICIO
+      cargarUsuarios();
+      cargarHospedajes();
+    </script>
+  </body>
+</html>

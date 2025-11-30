@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestión de Reservas | EcoHospedajes</title>
+
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/dashboard.css" />
+
+  <style>
+    .gestion-container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 40px;
+    }
+
+    .gestion-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    th,
+    td {
+      padding: 15px;
+      border-bottom: 1px solid #eee;
+      font-size: 0.95rem;
+    }
+
+    th {
+      background-color: var(--primary-dark);
+      color: white;
+      text-transform: uppercase;
+    }
+
+    .btn-action {
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-right: 8px;
+      border: none;
+    }
+
+    .btn-edit {
+      background: #e6f7ff;
+      color: #1890ff;
+      border: 1px solid #91d5ff;
+    }
+
+    .btn-delete {
+      background: #fff1f0;
+      color: #ff4d4f;
+      border: 1px solid #ffa39e;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="navbar">
+    <a href="/index.html" class="logo" style="text-decoration:none; display:flex; gap:10px;">
+      <img src="/img/logo.jpg" width="45" />
+      <span style="font-weight:bold; color:var(--primary-color); font-size:1.2rem;">
+        EcoHospedajes
+      </span>
+    </a>
+    <nav id="menuNav"></nav>
+  </header>
+
+  <div class="gestion-container">
+    <div class="gestion-header">
+      <h1>Reservas Recibidas</h1>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Huésped</th>
+          <th>Hospedaje</th>
+          <th>Entrada</th>
+          <th>Salida</th>
+          <th>Total</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tablaReservas"></tbody>
+    </table>
+  </div>
+
+  <footer></footer>
+
+  <script src="/js/logic-navbar.js"></script>
+  <script>
+    const usuario = JSON.parse(localStorage.getItem("usuarioLogueado"));
+    const token = localStorage.getItem("jwt");
+
+    if (!usuario || usuario.rol !== "DUENO" || !token) {
+      alert("Acceso denegado.");
+      window.location.href = "/index.html";
+    }
+
+    async function cargarReservas() {
+      try {
+        const res = await fetch(`/api/reservas/dueno/${usuario.id}`, {
+          headers: { Authorization: "Bearer " + token }
+        });
+
+        const data = await res.json();
+        const tbody = document.getElementById("tablaReservas");
+        tbody.innerHTML = "";
+
+        if (data.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">Aún no tienes reservas.</td></tr>`;
+          return;
+        }
+
+        data.forEach(r => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+          <td>#${r.id}</td>
+          <td>${r.nombreHuesped}</td>
+          <td>${r.nombreHospedaje}</td>
+          <td>${r.fechaEntrada}</td>
+          <td>${r.fechaSalida}</td>
+          <td>S/ ${r.total}</td>
+          <td>
+            <button class="btn-action btn-edit" onclick="editarReserva(${r.id})">Editar</button>
+            <button class="btn-action btn-delete" onclick="eliminarReserva(${r.id})">Eliminar</button>
+          </td>
+        `;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        console.error(err);
+        document.getElementById("tablaReservas").innerHTML =
+          `<tr><td colspan="7" style="color:red;">Error al cargar datos.</td></tr>`;
+      }
+    }
+
+    function editarReserva(id) {
+      window.location.href = `/dueno/registrar-reserva.html?id=${id}`;
+    }
+
+    async function eliminarReserva(id) {
+      if (!confirm("¿Eliminar esta reserva?")) return;
+
+      try {
+        const res = await fetch(`/api/reservas/${id}`, {
+          method: "DELETE",
+          headers: { Authorization: "Bearer " + token }
+        });
+
+        if (res.ok) {
+          alert("Reserva eliminada.");
+          cargarReservas();
+        } else {
+          alert("Error al eliminar.");
+        }
+      } catch {
+        alert("Error de conexión.");
+      }
+    }
+
+    cargarReservas();
+  </script>
+
+</body>
+
+</html>
