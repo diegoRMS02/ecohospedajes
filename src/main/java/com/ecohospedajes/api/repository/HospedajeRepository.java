@@ -14,12 +14,11 @@ public interface HospedajeRepository extends JpaRepository<Hospedaje, Long> {
 
     List<Hospedaje> findByPropietarioId(Long propietarioId);
 
-    // FILTRO CON PAGINACIÓN Y BÚSQUEDA DINÁMICA
     @Query("SELECT h FROM Hospedaje h WHERE " +
             "(:ubicacion IS NULL OR h.ubicacion LIKE %:ubicacion%) AND " +
             "(h.precio >= :minPrice AND h.precio <= :maxPrice)")
     Page<Hospedaje> buscarConFiltros(@Param("ubicacion") String ubicacion,
             @Param("minPrice") Double minPrice,
             @Param("maxPrice") Double maxPrice,
-            Pageable pageable); // Devuelve una página de resultados
+            Pageable pageable); 
 }

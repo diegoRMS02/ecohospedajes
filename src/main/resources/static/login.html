@@ -54,27 +54,22 @@
           const contrasena = document.getElementById("contrasena").value;
 
           try {
-            // 1. CONEXIÓN AL BACKEND
             const response = await fetch(
               "http://localhost:8080/api/usuarios/login",
               {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                // Mapeamos 'contrasena' del input a 'password' que espera Java
                 body: JSON.stringify({ email: email, password: contrasena }),
               }
             );
 
-            // 2. RESPUESTA DEL SERVIDOR
             if (response.ok) {
               const data = await response.json();
 
-              // 3. GUARDAR SESIÓN EN EL NAVEGADOR
               localStorage.setItem("usuarioLogueado", JSON.stringify(data));
               localStorage.setItem("usuarioId", data.id);
               localStorage.setItem("usuarioRol", data.rol);
 
-              // 4. REDIRECCIÓN INTELIGENTE SEGÚN ROL
               if (data.rol === "DUENO") {
                 window.location.href = "/dashboard-dueno.html";
               } else if (data.rol === "ADMIN") {

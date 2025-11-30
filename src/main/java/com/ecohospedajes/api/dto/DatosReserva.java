@@ -24,13 +24,10 @@ public class DatosReserva {
     @NotNull(message = "Falta el ID del hospedaje")
     private Long hospedajeId;
 
-    // --- CAMBIO IMPORTANTE: Quitamos el @NotNull aquí ---
-    // Ya no es obligatorio en el JSON, porque lo ponemos nosotros desde el Token
     private Long usuarioId;
 
     private Double precioTotal;
 
-    // Getters y Setters
     public Long getId() {
         return id;
     }

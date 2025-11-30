@@ -56,7 +56,6 @@
           };
 
           try {
-            // Usamos ruta relativa (mejor práctica que localhost duro)
             const response = await fetch("/api/usuarios/registro", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -67,18 +66,14 @@
               alert("✅ Registro exitoso. Ahora inicia sesión.");
               window.location.href = "/login.html";
             } else {
-              // MEJORA: Leemos el mensaje real del servidor
-              // Spring suele devolver un JSON con "message" o "mensaje" en caso de error 500/400
               try {
                 const errorJson = await response.json();
-                // Buscamos el mensaje en varios lugares posibles
                 const msg =
                   errorJson.message ||
                   errorData.mensaje ||
                   "Error desconocido en el servidor";
                 alert("❌ Error: " + msg);
               } catch (parseError) {
-                // Si no devuelve JSON (ej. un error 404 plano)
                 alert(
                   "❌ Ocurrió un error en el servidor. Intenta con otro correo."
                 );

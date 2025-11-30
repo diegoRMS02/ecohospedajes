@@ -127,14 +127,12 @@
 
     <script src="/js/logic-navbar.js"></script>
     <script>
-      // Variables globales
       let paginaActual = 0;
       let filtrosActuales = {};
 
       async function cargar() {
         let url = `http://localhost:8080/api/hospedajes?page=${paginaActual}`;
 
-        // Agregar filtros a la URL si existen
         if (filtrosActuales.ubicacion)
           url += `&ubicacion=${filtrosActuales.ubicacion}`;
         if (filtrosActuales.min) url += `&minPrice=${filtrosActuales.min}`;
@@ -149,7 +147,6 @@
           document.getElementById("totalResultados").innerText =
             data.totalElements;
 
-          // Validar si no hay resultados
           if (data.content.length === 0) {
             contenedor.innerHTML = `
                         <div style="text-align:center; padding:50px; background:white; border-radius:12px; border:1px solid #eee;">
@@ -161,7 +158,6 @@
             return;
           }
 
-          // Generar tarjetas
           data.content.forEach((h) => {
             const card = document.createElement("div");
             card.className = "card";
@@ -182,7 +178,6 @@
             contenedor.appendChild(card);
           });
 
-          // Actualizar paginación
           actualizarPaginacion(data);
         } catch (e) {
           console.error(e);
@@ -231,7 +226,6 @@
         window.location.href = `/detalle.html?id=${id}`;
       }
 
-      // Carga inicial
       cargar();
     </script>
   </body>

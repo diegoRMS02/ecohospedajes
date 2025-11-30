@@ -15,8 +15,6 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
 
     List<Reserva> findByHospedajeId(Long hospedajeId);
 
-    // 🔥 LA JOYA DE LA CORONA: Validar disponibilidad
-    // Busca reservas de ESTE hotel que choquen con las fechas solicitadas
     @Query("SELECT r FROM Reserva r WHERE r.hospedaje.id = :hospedajeId " +
             "AND r.estado = 'CONFIRMADA' " +
             "AND (:fechaEntrada < r.checkout AND :fechaSalida > r.checkin)")

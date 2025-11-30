@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping; // Faltaba este im
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,28 +34,35 @@ public class ReservaController {
     }
 
     @PostMapping
-    // Inyectamos al usuario dueño del Token
     public ResponseEntity<DatosReserva> reservar(@Valid @RequestBody DatosReserva datos,
             @AuthenticationPrincipal Usuario usuarioLogueado) {
 
-        // 1. SEGURIDAD: Sobreescribimos el ID del usuario con el del Token
-        // Aunque el hacker mande otro ID en el JSON, nosotros usamos el real.
         datos.setUsuarioId(usuarioLogueado.getId());
 
         return ResponseEntity.ok(reservaService.crearReserva(datos));
     }
 
-    // Cambiamos la ruta para que no dependa de un ID en la URL
     @GetMapping("/mis-reservas")
     public ResponseEntity<List<Reserva>> obtenerMisViajes(@AuthenticationPrincipal Usuario usuarioLogueado) {
-        // Buscamos solo las reservas de ESTE usuario
         return ResponseEntity.ok(reservaService.listarReservasDeUsuario(usuarioLogueado.getId()));
     }
 
-    @DeleteMapping("/{id}") // Cambiado a DeleteMapping por semántica (o PutMapping si es cancelación
-                            // lógica)
+    @DeleteMapping("/{id}") 
     public ResponseEntity<?> cancelar(@PathVariable Long id) {
         reservaService.cancelarReserva(id);
         return ResponseEntity.ok().body(Map.of("mensaje", "Reserva cancelada con éxito"));
     }
+
+    @PutMapping("/{id}/estado")
+    public ResponseEntity<?> cambiarEstado(
+        @PathVariable Long id,
+        @RequestBody Map<String, String> body) {
+
+    String nuevoEstado = body.get("estado");
+
+    reservaService.cambiarEstado(id, nuevoEstado);
+
+    return ResponseEntity.ok(Map.of("mensaje", "Estado actualizado con éxito"));
+}
+
 }

@@ -28,13 +28,10 @@ public class ReservaService {
         }
 
         public DatosReserva crearReserva(DatosReserva datos) {
-                // 1. VALIDACIÓN ESTRICTA: La salida debe ser DESPUÉS de la entrada (no el mismo
-                // día)
                 if (!datos.getCheckout().isAfter(datos.getCheckin())) {
                         throw new RuntimeException("La fecha de salida debe ser al menos un día después de la entrada");
                 }
 
-                // --- VALIDACIÓN DE DISPONIBILIDAD (OVERBOOKING) ---
                 List<Reserva> conflictos = reservaRepository.findReservasEnConflicto(
                                 datos.getHospedajeId(),
                                 datos.getCheckin(),
@@ -43,23 +40,18 @@ public class ReservaService {
                 if (!conflictos.isEmpty()) {
                         throw new RuntimeException("¡Lo sentimos! Esas fechas ya están ocupadas.");
                 }
-                // --------------------------------------------------
 
-                // 2. Buscar Hospedaje
                 Hospedaje hospedaje = hospedajeRepository.findById(datos.getHospedajeId())
                                 .orElseThrow(() -> new RuntimeException("Hospedaje no encontrado"));
 
-                // 3. Buscar Usuario
                 Usuario usuario = usuarioRepository.findById(datos.getUsuarioId())
                                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-                // 4. Calcular precio
                 long dias = ChronoUnit.DAYS.between(datos.getCheckin(), datos.getCheckout());
                 if (dias < 1)
                         dias = 1;
                 double total = hospedaje.getPrecio() * dias;
 
-                // 5. Guardar la reserva
                 Reserva reserva = new Reserva();
                 reserva.setCheckin(datos.getCheckin());
                 reserva.setCheckout(datos.getCheckout());
@@ -71,7 +63,6 @@ public class ReservaService {
 
                 Reserva guardada = reservaRepository.save(reserva);
 
-                // 6. Retornar datos actualizados
                 datos.setId(guardada.getId());
                 datos.setPrecioTotal(total);
 
@@ -86,7 +77,6 @@ public class ReservaService {
                 Reserva reserva = reservaRepository.findById(id)
                                 .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
 
-                // Regla de Negocio: No se puede cancelar si el viaje ya pasó o empezó
                 if (java.time.LocalDate.now().isAfter(reserva.getCheckin())) {
                         throw new RuntimeException("No se pueden cancelar reservas pasadas o en curso.");
                 }
@@ -94,4 +84,13 @@ public class ReservaService {
                 reserva.setEstado("CANCELADA");
                 reservaRepository.save(reserva);
         }
+
+        public void cambiarEstado(Long id, String nuevoEstado) {
+    Reserva reserva = reservaRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
+
+    reserva.setEstado(nuevoEstado);
+    reservaRepository.save(reserva);
+}
+
 }

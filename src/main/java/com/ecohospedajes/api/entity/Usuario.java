@@ -25,8 +25,6 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "usuarios")
-// Usamos Lombok si está disponible (veo que lo tienes en pom) para limpiar
-// código, si no, mantén tus getters/setters manuales
 public class Usuario implements UserDetails {
 
     @Id
@@ -56,12 +54,9 @@ public class Usuario implements UserDetails {
         ADMIN, DUENO, CLIENTE
     }
 
-    // Constructor vacío
     public Usuario() {
     }
 
-    // Getters y Setters manuales (para asegurar compatibilidad con tu código
-    // previo)
     public Long getId() {
         return id;
     }
@@ -114,11 +109,9 @@ public class Usuario implements UserDetails {
         this.fechaRegistro = fechaRegistro;
     }
 
-    // --- MÉTODOS DE USER DETAILS (Spring Security) ---
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Convierte el ROL (Enum) en una Autoridad que Spring entienda
         return List.of(new SimpleGrantedAuthority(rol.name()));
     }
 
@@ -129,7 +122,7 @@ public class Usuario implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email; // Usamos el email como "usuario" para loguearse
+        return email; 
     }
 
     @Override

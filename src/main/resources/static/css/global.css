@@ -1,18 +1,17 @@
-/* 1. IMPORTAR FUENTE MODERNA */
 @import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800&display=swap");
 
 :root {
   --primary-color: #205c3b;
   --primary-dark: #143d26;
-  --secondary-color: #ffffff; /* CAMBIO: Fondo blanco puro */
-  --text-dark: #222222; /* Negro suave */
-  --text-light: #717171; /* Gris texto */
-  --border-color: #dddddd; /* Bordes sutiles */
+  --secondary-color: #ffffff; 
+  --text-dark: #222222; 
+  --text-light: #717171; 
+  --border-color: #dddddd; 
   --shadow-soft: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
 body {
-  font-family: "Nunito Sans", sans-serif; /* Fuente mucho más estética */
+  font-family: "Nunito Sans", sans-serif; 
   background-color: var(--secondary-color);
   margin: 0;
   padding: 0;
@@ -20,13 +19,12 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  -webkit-font-smoothing: antialiased; /* Texto más nítido */
+  -webkit-font-smoothing: antialiased; 
 }
 
-/* === NAVBAR PROFESIONAL === */
 .navbar {
   background-color: var(--text-white);
-  padding: 15px 50px; /* Más espacio a los lados */
+  padding: 15px 50px; 
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -73,32 +71,30 @@ body {
   transform: translateY(-2px);
 }
 
-/* Botón de Salir destacado */
 .btn-logout {
   color: #d63031 !important;
   font-weight: 600;
 }
 
-/* === FOOTER TIPO CORPORATIVO === */
 footer {
-  background-color: var(--primary-dark); /* Fondo Verde Oscuro */
+  background-color: var(--primary-dark); 
   color: var(--text-white);
   padding: 60px 20px 20px;
   margin-top: auto;
-  border-top: 5px solid var(--primary-color); /* Línea decorativa superior */
+  border-top: 5px solid var(--primary-color); 
 }
 
 .footer-content {
   max-width: 1200px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr; /* Columna izq más ancha */
+  grid-template-columns: 2fr 1fr 1fr; 
   gap: 40px;
   padding-bottom: 40px;
 }
 
 .footer-section h3 {
-  color: #a8e6cf; /* Verde claro para títulos */
+  color: #a8e6cf; 
   font-size: 1.1rem;
   margin-bottom: 20px;
   text-transform: uppercase;
@@ -144,11 +140,10 @@ footer {
   color: rgba(255, 255, 255, 0.5);
 }
 
-/* === FOOTER TIPO CORPORATIVO MEJORADO === */
 footer {
   background-color: var(--primary-dark);
   color: var(--text-white);
-  padding: 70px 0 20px; /* Más espacio arriba */
+  padding: 70px 0 20px; 
   margin-top: auto;
   border-top: 5px solid var(--primary-color);
 }
@@ -158,12 +153,10 @@ footer {
   margin: 0 auto;
   padding: 0 40px;
   display: grid;
-  /* Diseño: Columna marca ancha, otras dos más compactas */
   grid-template-columns: 2fr 1fr 1fr;
   gap: 60px;
 }
 
-/* Sección de Marca (Logo + Texto) */
 .footer-brand {
   display: flex;
   align-items: center;
@@ -174,10 +167,10 @@ footer {
 .footer-brand img {
   width: 50px;
   height: 50px;
-  object-fit: contain; /* Para que el logo no se deforme */
-  background: white; /* Un fondo blanco sutil para resaltar el logo */
+  object-fit: contain; 
+  background: white; 
   padding: 5px;
-  border-radius: 50%; /* Logo circular */
+  border-radius: 50%; 
 }
 
 .footer-brand h3 {
@@ -185,20 +178,19 @@ footer {
   font-size: 1.5rem;
   margin: 0;
   font-weight: 700;
-  text-transform: none; /* Quitamos mayúsculas forzadas al nombre */
-  border: none; /* Quitamos la línea de abajo en el nombre */
+  text-transform: none; 
+  border: none; 
 }
 
 .footer-description {
   color: #d1d8e0;
   font-size: 0.95rem;
   line-height: 1.8;
-  max-width: 400px; /* Para que el texto no se estire demasiado */
+  max-width: 400px; 
 }
 
-/* Títulos de las otras columnas */
 .footer-links h4 {
-  color: #a8e6cf; /* Verde claro */
+  color: #a8e6cf;
   font-size: 1rem;
   text-transform: uppercase;
   letter-spacing: 1.5px;
@@ -206,7 +198,6 @@ footer {
   position: relative;
 }
 
-/* Pequeña línea decorativa debajo de los títulos */
 .footer-links h4::after {
   content: "";
   position: absolute;
@@ -237,10 +228,9 @@ footer {
 
 .footer-links a:hover {
   color: #a8e6cf;
-  transform: translateX(5px); /* Efecto de movimiento al pasar el mouse */
+  transform: translateX(5px); 
 }
 
-/* Barra inferior */
 .footer-bottom {
   margin-top: 60px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -250,10 +240,9 @@ footer {
   color: rgba(255, 255, 255, 0.6);
 }
 
-/* Responsive para celular */
 @media (max-width: 768px) {
   .footer-content {
-    grid-template-columns: 1fr; /* Una sola columna en celular */
+    grid-template-columns: 1fr; 
     gap: 40px;
     text-align: center;
   }

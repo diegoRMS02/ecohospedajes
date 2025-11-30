@@ -1,23 +1,20 @@
-/* Hereda fuentes y colores de global.css */
-
 .profile-container {
   display: flex;
   justify-content: center;
   padding: 60px 20px;
-  background-color: #f8f9fa; /* Fondo página suave */
+  background-color: #f8f9fa; 
   min-height: 80vh;
 }
 
 .profile-card {
   background-color: white;
   width: 100%;
-  max-width: 700px; /* Más ancho para respirar */
+  max-width: 700px; 
   padding: 50px;
   border-radius: 20px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06); /* Sombra difuminada de alta calidad */
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06); 
 }
 
-/* === HEADER CON AVATAR === */
 .profile-header {
   text-align: center;
   margin-bottom: 40px;
@@ -59,14 +56,12 @@
   margin-top: 10px;
 }
 
-/* === FORMULARIO GRID === */
 #formPerfil {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-/* Fila de 2 columnas para Nombre/Apellido */
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -85,7 +80,6 @@ label {
   color: #444;
 }
 
-/* Inputs Modernos */
 input {
   padding: 14px 16px;
   border: 1px solid #e0e0e0;
@@ -99,7 +93,7 @@ input {
 input:focus {
   background-color: #fff;
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 4px rgba(32, 92, 59, 0.1); /* Aura verde */
+  box-shadow: 0 0 0 4px rgba(32, 92, 59, 0.1); 
   outline: none;
 }
 
@@ -110,14 +104,12 @@ input:disabled {
   cursor: not-allowed;
 }
 
-/* Inputs de contraseña */
 .password-section {
   margin-top: 20px;
   padding-top: 20px;
   border-top: 1px solid #eee;
 }
 
-/* === BOTONES DE ACCIÓN === */
 .form-actions {
   display: flex;
   gap: 15px;
@@ -125,7 +117,7 @@ input:disabled {
 }
 
 .btn-save {
-  flex: 2; /* El botón guardar ocupa más espacio */
+  flex: 2; 
   padding: 15px;
   background-color: var(--primary-color);
   color: white;
@@ -166,11 +158,10 @@ input:disabled {
   border-color: #ccc;
 }
 
-/* Responsive Móvil */
 @media (max-width: 600px) {
   .form-row {
     grid-template-columns: 1fr;
-  } /* Colapsar a 1 columna */
+  } 
   .profile-card {
     padding: 30px 20px;
   }
