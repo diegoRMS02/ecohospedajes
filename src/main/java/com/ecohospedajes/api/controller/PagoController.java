@@ -8,9 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-
-
-
 @Controller
 @RequestMapping("/payments")
 public class PagoController {
@@ -26,24 +23,22 @@ public class PagoController {
     @PostMapping("/create")
     @ResponseBody
     public String createPayment(
-            @RequestParam Double amount,
-            @RequestParam String method,
-            @RequestParam Long reservationId,
-            @RequestParam String firstName,
-            @RequestParam String lastName,
-            @RequestParam String email,
-            @RequestParam String phone,
-            @RequestParam String cardNumber,
-            @RequestParam String expiryDate,
-            @RequestParam String cvv
-    ) {
+            @RequestParam Double cantidad,
+            @RequestParam String metodo,
+            @RequestParam Long reservacion_id,
+            @RequestParam String nombre,
+            @RequestParam String apellidos,
+            @RequestParam String correo,
+            @RequestParam String numero,
+            @RequestParam String tarjeta_numero,
+            @RequestParam String fecha_expiracion,
+            @RequestParam String cvv) {
 
         try {
             paymentService.createPayment(
-                    reservationId, amount, method,
-                    firstName, lastName, email, phone,
-                    cardNumber, expiryDate, cvv
-            );
+                    reservacion_id, cantidad, metodo,
+                    nombre, apellidos, correo, numero,
+                    tarjeta_numero, fecha_expiracion, cvv);
             return "OK";
 
         } catch (Exception e) {
@@ -51,4 +46,3 @@ public class PagoController {
         }
     }
 }
-

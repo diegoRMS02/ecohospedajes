@@ -29,33 +29,27 @@ public class SecurityConfigurations {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // 1. RECURSOS ESTÁTICOS (HTML, CSS, JS, IMAGES) -> PERMITIR TODO
-                        // Esto permite cargar las VISTAS. La data se protege en la API.
                         .requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
                         .requestMatchers("/*.html", "/").permitAll()
-                        .requestMatchers("/dueno/**").permitAll() // <--- AGREGADO: Permite ver la carpeta dueno
-                        .requestMatchers("/admin/**").permitAll() // <--- AGREGADO: Permite ver la carpeta admin
+                        .requestMatchers("/dueno/**").permitAll()
+                        .requestMatchers("/admin/**").permitAll()
 
-                        // 2. RUTAS DE AUTENTICACIÓN (API)
                         .requestMatchers(HttpMethod.POST, "/api/usuarios/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/usuarios/registro").permitAll()
-
-                        // 3. RUTAS PÚBLICAS DE API (Catálogo)
                         .requestMatchers(HttpMethod.GET, "/api/hospedajes/**").permitAll()
 
-                        // 4. RUTAS PROTEGIDAS POR ROL (API)
-                        // Admin
-                        .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
+                        // 👉 PERMITIR PAGOS
+                        .requestMatchers("/payments/**").permitAll()
 
-                        // Dueño
+                        .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/hospedajes").hasAuthority("DUENO")
                         .requestMatchers(HttpMethod.PUT, "/api/hospedajes/**").hasAuthority("DUENO")
                         .requestMatchers(HttpMethod.DELETE, "/api/hospedajes/**").hasAuthority("DUENO")
                         .requestMatchers(HttpMethod.GET, "/api/hospedajes/dueno/**").hasAuthority("DUENO")
                         .requestMatchers("/api/dashboard/**").hasAuthority("DUENO")
 
-                        // 5. RESTO BLOQUEADO (Reservas, Perfil, etc.)
                         .anyRequest().authenticated())
+
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
@@ -70,4 +64,5 @@ public class SecurityConfigurations {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 }
