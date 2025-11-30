@@ -33,6 +33,7 @@ public class SecurityConfigurations {
                         .requestMatchers("/*.html", "/").permitAll()
                         .requestMatchers("/dueno/**").permitAll()
                         .requestMatchers("/admin/**").permitAll()
+                        .requestMatchers("/favicon.ico").permitAll()
 
                         .requestMatchers(HttpMethod.POST, "/api/usuarios/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/usuarios/registro").permitAll()
