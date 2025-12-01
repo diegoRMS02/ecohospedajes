@@ -192,14 +192,14 @@ document.getElementById("paymentForm").addEventListener("submit", function(event
 <script>
 const params = new URLSearchParams(window.location.search);
 
-const total   = params.get("total");
-const id      = params.get("id");
+const idReserva = params.get("idReserva");
+const precio = params.get("precio");
 const checkin = params.get("checkin");
 const checkout = params.get("checkout");
 const personas = params.get("personas");
 
-if (total) document.getElementById("cantidad").value = total;
-if (id) document.getElementById("reservacion_id").value = id;
+if (precio) document.getElementById("cantidad").value = precio;
+if (idReserva) document.getElementById("reservacion_id").value = idReserva;
 
 console.log("Checkin:", checkin);
 console.log("Checkout:", checkout);
