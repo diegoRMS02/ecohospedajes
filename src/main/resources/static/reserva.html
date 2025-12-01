@@ -77,7 +77,10 @@
             </div>
           </div>
 
-          <button type="submit" class="btn-confirm">Confirmar y Pagar</button>
+ 
+          <button type="button" class="btn-confirm" onclick="irAPago()">Confirmar y Pagar</button>
+
+
           <a href="/catalogo.html" class="cancel-link">Cancelar y volver</a>
         </form>
       </div>
@@ -86,7 +89,9 @@
     <footer></footer>
 
     <script src="/js/logic-navbar.js"></script>
+
     <script>
+
       const params = new URLSearchParams(window.location.search);
       const hospedajeId = params.get("id");
       const nombre = params.get("nombre");
@@ -100,9 +105,9 @@
         window.location.href = "/login.html";
       }
 
-      document.getElementById("nombreHospedaje").innerText =
-        nombre || "Hospedaje";
+      document.getElementById("nombreHospedaje").innerText = nombre || "Hospedaje";
       document.getElementById("precioUnitario").innerText = precio || 0;
+
 
       const inpCheckin = document.getElementById("checkin");
       const inpCheckout = document.getElementById("checkout");
@@ -129,59 +134,72 @@
       inpCheckin.addEventListener("change", calcular);
       inpCheckout.addEventListener("change", calcular);
 
-      document
-        .getElementById("formReserva")
-        .addEventListener("submit", async (e) => {
-          e.preventDefault();
 
-          const totalCalculado = parseFloat(
-            document.getElementById("precioTotal").innerText
-          );
 
-          if (totalCalculado <= 0) {
-            alert("Por favor selecciona fechas válidas (mínimo 1 noche).");
-            return;
-          }
+      document.getElementById("formReserva").addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-          const reservaDTO = {
-            checkin: inpCheckin.value,
-            checkout: inpCheckout.value,
-            personas: parseInt(document.getElementById("personas").value),
-            precioTotal: totalCalculado,
-            hospedajeId: parseInt(hospedajeId),
-          };
+        const totalCalculado = parseFloat(document.getElementById("precioTotal").innerText);
 
-          try {
-            const res = await fetch("/api/reservas", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: "Bearer " + token, 
-              },
-              body: JSON.stringify(reservaDTO),
-            });
+        if (totalCalculado <= 0) {
+          alert("Por favor selecciona fechas válidas (mínimo 1 noche).");
+          return;
+        }
 
-            if (res.ok) {
-              alert("✅ ¡Reserva Exitosa! Prepara tus maletas.");
-              window.location.href = "/mis-viajes.html";
-            } else {
-              if (res.status === 403) {
-                alert("Tu sesión ha expirado. Vuelve a ingresar.");
-                window.location.href = "/login.html";
-                return;
-              }
-              const errorJson = await res.json();
-              alert(
-                "❌ " +
-                  (errorJson.mensaje ||
-                    "Error al reservar (Fechas ocupadas o error servidor)")
-              );
+        const reservaDTO = {
+          checkin: inpCheckin.value,
+          checkout: inpCheckout.value,
+          personas: parseInt(document.getElementById("personas").value),
+          precioTotal: totalCalculado,
+          hospedajeId: parseInt(hospedajeId),
+        };
+
+        try {
+          const res = await fetch("/api/reservas", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + token,
+            },
+            body: JSON.stringify(reservaDTO),
+          });
+
+          if (res.ok) {
+            const reserva = await res.json();
+
+
+            window.location.href = `/pago_form.html?idReserva=${reserva.id}&precio=${reserva.precioTotal}`;
+          } else {
+            if (res.status === 403) {
+              alert("Tu sesión ha expirado. Vuelve a ingresar.");
+              window.location.href = "/login.html";
+              return;
             }
-          } catch (error) {
-            console.error(error);
-            alert("Error de conexión");
+            const errorJson = await res.json();
+            alert("❌ " + (errorJson.mensaje || "Error al reservar"));
           }
-        });
+        } catch (error) {
+          console.error(error);
+          alert("Error de conexión con el servidor");
+        }
+      });
+    function irAPago() {
+    const total = document.getElementById("precioTotal").innerText;
+    const id = hospedajeId;  
+    const checkin = inpCheckin.value;
+    const checkout = inpCheckout.value;
+    const personas = document.getElementById("personas").value;
+
+    if (!checkin || !checkout) {
+        alert("Selecciona las fechas antes de continuar.");
+        return;
+    }
+
+
+    window.location.href = `pago_form.html?id=${id}&total=${total}&checkin=${checkin}&checkout=${checkout}&personas=${personas}`;
+}
+
     </script>
   </body>
 </html>
+

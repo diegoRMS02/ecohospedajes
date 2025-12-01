@@ -24,27 +24,28 @@ public class SecurityConfigurations {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
-                        .requestMatchers("/*.html", "/").permitAll()
-                        .requestMatchers("/dueno/**").permitAll() 
-                        .requestMatchers("/admin/**").permitAll() 
+
+                        .requestMatchers("/css/**", "/js/**", "/img/**", "/favicon.ico").permitAll()
+
+                        .requestMatchers("/payments/**").permitAll()
+
+                        .requestMatchers("/", "/*.html").permitAll()
+
+                        .requestMatchers("/dueno/**", "/admin/**").permitAll()
 
                         .requestMatchers(HttpMethod.POST, "/api/usuarios/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/usuarios/registro").permitAll()
-
                         .requestMatchers(HttpMethod.GET, "/api/hospedajes/**").permitAll()
 
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
-
                         .requestMatchers(HttpMethod.POST, "/api/hospedajes").hasAuthority("DUENO")
                         .requestMatchers(HttpMethod.PUT, "/api/hospedajes/**").hasAuthority("DUENO")
                         .requestMatchers(HttpMethod.DELETE, "/api/hospedajes/**").hasAuthority("DUENO")
-                        .requestMatchers(HttpMethod.GET, "/api/hospedajes/dueno/**").hasAuthority("DUENO")
                         .requestMatchers("/api/dashboard/**").hasAuthority("DUENO")
 
                         .anyRequest().authenticated())
@@ -53,9 +54,9 @@ public class SecurityConfigurations {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
             throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+        return config.getAuthenticationManager();
     }
 
     @Bean

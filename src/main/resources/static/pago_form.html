@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario de Pago</title>
+    <link rel="stylesheet" href="/css/pago.css">
+    <script src="js/logic-navbar.js"></script>
+    <link rel="stylesheet" href="css/global.css">
+</head>
+<body>
+    <style>
+      .hero {
+        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+          url("https://images.unsplash.com/photo-1587595431973-160d0d94add1?auto=format&fit=crop&w=1600&q=80");
+        background-size: cover;
+        background-position: center;
+        height: 500px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: white;
+      }
+
+      .hero h1 {
+        font-size: 3rem;
+        margin-bottom: 10px;
+      }
+      .hero p {
+        font-size: 1.2rem;
+        margin-bottom: 30px;
+      }
+
+      .btn-cta {
+        background-color: #2ecc71;
+        color: white;
+        padding: 15px 30px;
+        font-size: 1.1rem;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: transform 0.3s;
+      }
+      .btn-cta:hover {
+        transform: scale(1.05);
+        background-color: #27ae60;
+      }
+
+      .section {
+        padding: 60px 20px;
+        text-align: center;
+      }
+      .section h2 {
+        color: var(--primary-color);
+        font-size: 2rem;
+        margin-bottom: 40px;
+      }
+
+      .steps-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+
+      .step-card {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: var(--shadow);
+      }
+      .step-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        display: block;
+      }
+    </style>
+
+<header class="navbar">
+      <div class="logo">
+        <a
+          href="/index.html"
+          class="logo"
+          style="
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+          "
+        >
+          <img src="/img/logo.jpg" alt="Logo" width="45" />
+          <span
+            style="
+              font-weight: bold;
+              color: var(--primary-color);
+              font-size: 1.2rem;
+            "
+            >EcoHospedajes</span
+          >
+        </a>
+      </div>
+      <nav id="menuNav">
+        <a href="/index.html">Inicio</a>
+        <a href="/catalogo.html">Catálogo</a>
+        <a href="/login.html">Iniciar Sesión</a>
+      </nav>
+    </header>
+
+<div class="container">
+    <div id="success-msg">✔ Gracias por realizar su pago</div>
+    <h2>Formulario de Pago</h2>
+
+    <form id="paymentForm">
+        <label>Nombres:</label>
+        <input type="text" id="nombre" required>
+
+        <label>Apellidos:</label>
+        <input type="text" id="apellidos" required>
+
+        <label>Correo electrónico:</label>
+        <input type="email" id="correo" required>
+
+        <label>Número (celular):</label>
+        <input type="text" id="numero" required>
+
+        <label>Número de tarjeta:</label>
+        <input type="text" id="tarjeta_numero" maxlength="19" required>
+
+        <label>Fecha de vencimiento:</label>
+        <input type="text" id="fecha_expiracion" placeholder="MM/YY" required>
+
+        <label>CVV:</label>
+        <input type="text" id="cvv" maxlength="4" required>
+
+        <label>Monto:</label>
+        <input type="number" step="0.01" id="cantidad" required>
+
+        <label>Método:</label>
+        <select id="metodo" required>
+            <option value="CARD">Tarjeta</option>
+            <option value="YAPE">Yape</option>
+            <option value="PLIN">Plin</option>
+        </select>
+
+        <label>ID Reserva:</label>
+        <input type="number" id="reservacion_id" required>
+
+        <button type="submit">Pagar ahora</button>
+    </form>
+</div>
+
+<script>
+document.getElementById("paymentForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const formData = new URLSearchParams();
+
+    formData.append("nombre", document.getElementById("nombre").value);
+    formData.append("apellidos", document.getElementById("apellidos").value);
+    formData.append("correo", document.getElementById("correo").value);
+    formData.append("numero", document.getElementById("numero").value);
+
+    formData.append("tarjeta_numero", document.getElementById("tarjeta_numero").value.replace(/\s+/g,''));
+    formData.append("fecha_expiracion", document.getElementById("fecha_expiracion").value);
+    formData.append("cvv", document.getElementById("cvv").value);
+
+    formData.append("cantidad", document.getElementById("cantidad").value);
+    formData.append("metodo", document.getElementById("metodo").value);
+    formData.append("reservacion_id", document.getElementById("reservacion_id").value);
+
+    fetch("/payments/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: formData
+    })
+    .then(res => res.text())
+    .then(data => {
+        if (data === "OK") {
+            document.getElementById("success-msg").style.display = "block";
+            document.getElementById("paymentForm").reset();
+            setTimeout(() => window.location.href = "/", 3000);
+        } else {
+            alert("Error: " + data);
+        }
+    })
+    .catch(err => alert("Error: " + err));
+});
+</script>
+
+</body>
+<script>
+const params = new URLSearchParams(window.location.search);
+
+const total   = params.get("total");
+const id      = params.get("id");
+const checkin = params.get("checkin");
+const checkout = params.get("checkout");
+const personas = params.get("personas");
+
+if (total) document.getElementById("cantidad").value = total;
+if (id) document.getElementById("reservacion_id").value = id;
+
+console.log("Checkin:", checkin);
+console.log("Checkout:", checkout);
+console.log("Personas:", personas);
+</script>
+
+</html>
