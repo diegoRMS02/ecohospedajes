@@ -1,198 +1,173 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Finalizar Reserva | EcoHospedajes</title>
-
     <link rel="stylesheet" href="/css/global.css" />
     <link rel="stylesheet" href="/css/reserva.css" />
-  </head>
-  <body>
+</head>
+
+<body>
     <header class="navbar">
-      <a
-        href="/index.html"
-        class="logo"
-        style="
-          text-decoration: none;
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        "
-      >
-        <img src="/img/logo.jpg" alt="Logo" width="45" />
-        <span
-          style="
-            font-weight: bold;
-            color: var(--primary-color);
-            font-size: 1.2rem;
-          "
-          >EcoHospedajes</span
-        >
-      </a>
-      <nav id="menuNav"></nav>
+        <a href="/index.html" class="logo" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
+            <img src="/img/logo.jpg" alt="Logo" width="45" />
+            <span style="font-weight: bold; color: var(--primary-color); font-size: 1.2rem;">EcoHospedajes</span>
+        </a>
+        <nav id="menuNav"></nav>
     </header>
 
     <div class="reservation-wrapper">
-      <div class="reservation-card">
-        <div class="reservation-header">
-          <h1>Confirma tu viaje</h1>
-          <div class="hotel-name">
-            Estás reservando en: <span id="nombreHospedaje">...</span>
-          </div>
+        <div class="reservation-card">
+            <div class="reservation-header">
+                <h1>Confirma tu viaje</h1>
+                <div class="hotel-name">
+                    Estás reservando en: <span id="nombreHospedaje">...</span>
+                </div>
+            </div>
+            <form id="formReserva">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Fecha de Llegada</label>
+                        <input type="date" id="checkin" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha de Salida</label>
+                        <input type="date" id="checkout" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Huéspedes</label>
+                    <select id="personas" required>
+                        <option value="1">1 viajero</option>
+                        <option value="2" selected>2 viajeros</option>
+                        <option value="3">3 viajeros</option>
+                        <option value="4">4 viajeros</option>
+                        <option value="5">5+ viajeros</option>
+                    </select>
+                </div>
+                <div class="summary-box">
+                    <div class="price-detail">
+                        Precio por noche: <b>S/ <span id="precioUnitario">0</span></b>
+                    </div>
+                    <div class="price-detail">
+                        Estadía: <span id="totalDias">0</span> noches
+                    </div>
+                    <div class="total-price">
+                        Total: S/ <span id="precioTotal">0.00</span>
+                    </div>
+                </div>
+                <button type="submit" class="btn-confirm">Confirmar y Pagar</button>
+                <a href="/catalogo.html" class="cancel-link">Cancelar y volver</a>
+            </form>
         </div>
-
-        <form id="formReserva">
-          <div class="form-row">
-            <div class="form-group">
-              <label>Fecha de Llegada</label>
-              <input type="date" id="checkin" required />
-            </div>
-            <div class="form-group">
-              <label>Fecha de Salida</label>
-              <input type="date" id="checkout" required />
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label>Huéspedes</label>
-            <select id="personas" required>
-              <option value="1">1 viajero</option>
-              <option value="2" selected>2 viajeros</option>
-              <option value="3">3 viajeros</option>
-              <option value="4">4 viajeros</option>
-              <option value="5">5+ viajeros</option>
-            </select>
-          </div>
-
-          <div class="summary-box">
-            <div class="price-detail">
-              Precio por noche: <b>S/ <span id="precioUnitario">0</span></b>
-            </div>
-            <div class="price-detail">
-              Estadía: <span id="totalDias">0</span> noches
-            </div>
-            <div class="total-price">
-              Total: S/ <span id="precioTotal">0.00</span>
-            </div>
-          </div>
-
-          <button type="submit" class="btn-confirm">Confirmar y Pagar</button>
-          <a href="/catalogo.html" class="cancel-link">Cancelar y volver</a>
-        </form>
-      </div>
     </div>
 
     <footer></footer>
 
     <script src="/js/logic-navbar.js"></script>
+
     <script>
-      // 1. Obtener parámetros URL y Usuario
-      const params = new URLSearchParams(window.location.search);
-      const hospedajeId = params.get("id");
-      const nombre = params.get("nombre");
-      const precio = parseFloat(params.get("precio"));
+        // 1. Obtener parámetros URL y Usuario
+        const params = new URLSearchParams(window.location.search);
+        const hospedajeId = params.get("id");
+        const nombre = params.get("nombre");
+        const precio = parseFloat(params.get("precio"));
 
-      // Validamos Token (La llave de seguridad)
-      const token = localStorage.getItem("jwt");
-      const usuario = JSON.parse(localStorage.getItem("usuarioLogueado"));
+        // Validamos Token (La llave de seguridad)
+        const token = localStorage.getItem("jwt");
+        const usuario = JSON.parse(localStorage.getItem("usuarioLogueado"));
 
-      // Seguridad Frontend
-      if (!token || !usuario) {
-        alert("Debes iniciar sesión para reservar");
-        window.location.href = "/login.html";
-      }
-
-      // Llenar datos iniciales
-      document.getElementById("nombreHospedaje").innerText =
-        nombre || "Hospedaje";
-      document.getElementById("precioUnitario").innerText = precio || 0;
-
-      // 2. Lógica de Cálculo de Precio
-      const inpCheckin = document.getElementById("checkin");
-      const inpCheckout = document.getElementById("checkout");
-
-      function calcular() {
-        if (inpCheckin.value && inpCheckout.value) {
-          const d1 = new Date(inpCheckin.value);
-          const d2 = new Date(inpCheckout.value);
-
-          // Diferencia en tiempo
-          const diffTime = d2 - d1;
-          // Diferencia en días (1000ms * 60s * 60m * 24h)
-          const dias = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-          if (dias > 0) {
-            const total = dias * precio;
-            document.getElementById("totalDias").innerText = dias;
-            document.getElementById("precioTotal").innerText = total.toFixed(2);
-          } else {
-            document.getElementById("totalDias").innerText = "0";
-            document.getElementById("precioTotal").innerText = "0.00";
-          }
+        // Seguridad Frontend
+        if (!token || !usuario) {
+            alert("Debes iniciar sesión para reservar");
+            window.location.href = "/login.html";
         }
-      }
 
-      inpCheckin.addEventListener("change", calcular);
-      inpCheckout.addEventListener("change", calcular);
+        // Llenar datos iniciales
+        document.getElementById("nombreHospedaje").innerText = nombre || "Hospedaje";
+        document.getElementById("precioUnitario").innerText = precio || 0;
 
-      // 3. Enviar Reserva al Backend (AHORA SEGURO)
-      document
-        .getElementById("formReserva")
-        .addEventListener("submit", async (e) => {
-          e.preventDefault();
+        // 2. Lógica de Cálculo de Precio
+        const inpCheckin = document.getElementById("checkin");
+        const inpCheckout = document.getElementById("checkout");
 
-          const totalCalculado = parseFloat(
-            document.getElementById("precioTotal").innerText
-          );
+        function calcular() {
+            if (inpCheckin.value && inpCheckout.value) {
+                const d1 = new Date(inpCheckin.value);
+                const d2 = new Date(inpCheckout.value);
 
-          if (totalCalculado <= 0) {
-            alert("Por favor selecciona fechas válidas (mínimo 1 noche).");
-            return;
-          }
+                // Diferencia en tiempo
+                const diffTime = d2 - d1;
 
-          const reservaDTO = {
-            checkin: inpCheckin.value,
-            checkout: inpCheckout.value,
-            personas: parseInt(document.getElementById("personas").value),
-            precioTotal: totalCalculado,
-            hospedajeId: parseInt(hospedajeId),
-            // YA NO enviamos usuarioId, el Backend lo saca del Token
-          };
+                // Diferencia en días (1000ms * 60s * 60m * 24h)
+                const dias = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-          try {
-            // Usamos ruta relativa /api/... es mejor práctica
-            const res = await fetch("/api/reservas", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: "Bearer " + token, // <--- LA CLAVE QUE FALTABA
-              },
-              body: JSON.stringify(reservaDTO),
-            });
-
-            if (res.ok) {
-              alert("✅ ¡Reserva Exitosa! Prepara tus maletas.");
-              window.location.href = "/mis-viajes.html";
-            } else {
-              // Manejo de errores (403, 400, etc)
-              if (res.status === 403) {
-                alert("Tu sesión ha expirado. Vuelve a ingresar.");
-                window.location.href = "/login.html";
-                return;
-              }
-              const errorJson = await res.json();
-              alert(
-                "❌ " +
-                  (errorJson.mensaje ||
-                    "Error al reservar (Fechas ocupadas o error servidor)")
-              );
+                if (dias > 0) {
+                    const total = dias * precio;
+                    document.getElementById("totalDias").innerText = dias;
+                    document.getElementById("precioTotal").innerText = total.toFixed(2);
+                } else {
+                    document.getElementById("totalDias").innerText = "0";
+                    document.getElementById("precioTotal").innerText = "0.00";
+                }
             }
-          } catch (error) {
-            console.error(error);
-            alert("Error de conexión");
-          }
+        }
+
+        inpCheckin.addEventListener("change", calcular);
+        inpCheckout.addEventListener("change", calcular);
+
+        // 3. Enviar Reserva al Backend (AHORA SEGURO)
+        document.getElementById("formReserva").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const totalCalculado = parseFloat(document.getElementById("precioTotal").innerText);
+
+            if (totalCalculado <= 0) {
+                alert("Por favor selecciona fechas válidas (mínimo 1 noche).");
+                return;
+            }
+
+            const reservaDTO = {
+                checkin: inpCheckin.value,
+                checkout: inpCheckout.value,
+                personas: parseInt(document.getElementById("personas").value),
+                precioTotal: totalCalculado,
+                hospedajeId: parseInt(hospedajeId), // YA NO enviamos usuarioId, el Backend lo saca del Token
+            };
+
+            try {
+                // Usamos ruta relativa /api/... es mejor práctica
+                const res = await fetch("/api/reservas", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: "Bearer " + token, // <--- LA CLAVE QUE FALTABA
+                    },
+                    body: JSON.stringify(reservaDTO),
+                });
+
+                if (res.ok) {
+                    alert("✅ ¡Reserva Exitosa! Prepara tus maletas.");
+                    window.location.href = "/mis-viajes.html";
+                } else {
+                    // Manejo de errores (403, 400, etc)
+                    if (res.status === 403) {
+                        alert("Tu sesión ha expirado. Vuelve a ingresar.");
+                        window.location.href = "/login.html";
+                        return;
+                    }
+                    const errorJson = await res.json();
+                    alert(
+                        "❌ " + (errorJson.mensaje || "Error al reservar (Fechas ocupadas o error servidor)")
+                    );
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Error de conexión");
+            }
         });
     </script>
-  </body>
+</body>
+
 </html>

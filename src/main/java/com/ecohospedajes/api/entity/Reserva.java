@@ -31,7 +31,7 @@ public class Reserva {
     @NotNull
     private Double precioTotal;
 
-    private String estado = "CONFIRMADA"; // PENDIENTE, CANCELADA
+    private String estado = "CONFIRMADA"; 
 
     // Relación: Quien reserva
     @ManyToOne
@@ -43,11 +43,9 @@ public class Reserva {
     @JoinColumn(name = "hospedaje_id", nullable = false)
     private Hospedaje hospedaje;
 
-    // Constructor vacío
     public Reserva() {
     }
 
-    // Getters y Setters
     public Long getId() {
         return id;
     }

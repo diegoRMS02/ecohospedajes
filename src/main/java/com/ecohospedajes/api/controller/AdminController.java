@@ -43,7 +43,7 @@ public class AdminController {
         Map<String, Long> stats = new HashMap<>();
         stats.put("usuarios", usuarioRepository.count());
         stats.put("hospedajes", hospedajeRepository.count());
-        stats.put("reservas", reservaRepository.count()); // NUEVO
+        stats.put("reservas", reservaRepository.count()); 
         return ResponseEntity.ok(stats);
     }
 
