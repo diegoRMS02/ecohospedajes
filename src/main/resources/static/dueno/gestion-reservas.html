@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Reservas</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f0f0f0;
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background: #2e8b57;
+            color: white;
+        }
+
+        button {
+            background: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Listado de Reservas</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Huésped</th>
+                <th>Hospedaje</th>
+                <th>Entrada</th>
+                <th>Salida</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="tabla"></tbody>
+    </table>
+
+    <script>
+        const token = localStorage.getItem("token");
+        if (!token) {
+            alert("Debes iniciar sesión");
+            window.location.href = "/login.html";
+        }
+
+        async function cargarReservas() {
+            const r = await fetch("/api/reservas/mis-reservas", {
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            });
+            const data = await r.json();
+            const tbody = document.getElementById("tabla");
+            tbody.innerHTML = "";
+            data.forEach(r => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${r.id}</td>
+                        <td>${r.usuario.nombre} ${r.usuario.apellidos}</td>
+                        <td>${r.hospedaje.nombre}</td>
+                        <td>${r.fechaInicio}</td>
+                        <td>${r.fechaFin}</td>
+                        <td><button onclick="eliminar(${r.id})">Eliminar</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        cargarReservas();
+
+        async function eliminar(id) {
+            if (!confirm("¿Eliminar reserva?")) return;
+            const r = await fetch("/api/reservas/" + id, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            });
+            if (r.ok) {
+                alert("Reserva eliminada");
+                cargarReservas();
+            }
+        }
+    </script>
+</body>
+
+</html>

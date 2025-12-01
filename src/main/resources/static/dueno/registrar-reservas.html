@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Registrar Reserva</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        body {
+            font-family: Arial;
+            padding: 20px;
+            background: #f7f7f7;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: #fff;
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #2e8b57;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Registrar Reserva</h2>
+
+        <label for="hospedaje">Hospedaje</label>
+        <select id="hospedaje"></select>
+
+        <label for="entrada">Fecha de entrada</label>
+        <input type="date" id="entrada">
+
+        <label for="salida">Fecha de salida</label>
+        <input type="date" id="salida">
+
+        <button onclick="registrarReserva()">Registrar</button>
+    </div>
+
+    <script>
+        const token = localStorage.getItem("token");
+        if (!token) {
+            alert("Debes iniciar sesión primero");
+            window.location.href = "/login.html";
+        }
+
+        // Cargar hospedajes
+        async function cargarHospedajes() {
+            const r = await fetch("/api/hospedajes/listar");
+            const data = await r.json();
+            const select = document.getElementById("hospedaje");
+            data.forEach(h => {
+                select.innerHTML += `<option value="${h.id}">${h.nombre}</option>`;
+            });
+        }
+        cargarHospedajes();
+
+        // Registrar reserva
+        async function registrarReserva() {
+            const datos = {
+                hospedajeId: document.getElementById("hospedaje").value,
+                fechaInicio: document.getElementById("entrada").value,
+                fechaFin: document.getElementById("salida").value
+            };
+
+            const r = await fetch("/api/reservas", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                },
+                body: JSON.stringify(datos)
+            });
+
+            if (r.ok) {
+                alert("Reserva registrada correctamente");
+                window.location.href = "/dueno/gestion-reservas.html";
+            } else {
+                alert("Error al registrar reserva");
+            }
+        }
+    </script>
+</body>
+
+</html>

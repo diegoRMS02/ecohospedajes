@@ -6,7 +6,7 @@ import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping; // Faltaba este import
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ecohospedajes.api.dto.DatosReserva;
+import com.ecohospedajes.api.dto.ReservaResponse;
 import com.ecohospedajes.api.entity.Reserva;
 import com.ecohospedajes.api.entity.Usuario;
 import com.ecohospedajes.api.service.ReservaService;
@@ -38,7 +39,6 @@ public class ReservaController {
             @AuthenticationPrincipal Usuario usuarioLogueado) {
 
         datos.setUsuarioId(usuarioLogueado.getId());
-
         return ResponseEntity.ok(reservaService.crearReserva(datos));
     }
 
@@ -47,10 +47,15 @@ public class ReservaController {
         return ResponseEntity.ok(reservaService.listarReservasDeUsuario(usuarioLogueado.getId()));
     }
 
-    @DeleteMapping("/{id}") 
+    @GetMapping
+    public ResponseEntity<List<ReservaResponse>> listarTodas() {
+        return ResponseEntity.ok(reservaService.listarTodas());
+    }
+
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> cancelar(@PathVariable Long id) {
         reservaService.cancelarReserva(id);
-        return ResponseEntity.ok().body(Map.of("mensaje", "Reserva cancelada con éxito"));
+        return ResponseEntity.ok(Map.of("mensaje", "Reserva cancelada con éxito"));
     }
 
     @PutMapping("/{id}/estado")

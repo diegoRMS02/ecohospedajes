@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ecohospedajes.api.entity.Reserva;
 import com.ecohospedajes.api.entity.Usuario;
 import com.ecohospedajes.api.repository.HospedajeRepository;
+import com.ecohospedajes.api.repository.ReservaRepository;
 import com.ecohospedajes.api.repository.UsuarioRepository;
 
 @RestController
@@ -23,10 +25,16 @@ public class AdminController {
 
     private final UsuarioRepository usuarioRepository;
     private final HospedajeRepository hospedajeRepository;
+    private final ReservaRepository reservaRepository;
 
-    public AdminController(UsuarioRepository usuarioRepository, HospedajeRepository hospedajeRepository) {
+    public AdminController(
+        UsuarioRepository usuarioRepository,
+        HospedajeRepository hospedajeRepository,
+        ReservaRepository reservaRepository
+    ) {
         this.usuarioRepository = usuarioRepository;
         this.hospedajeRepository = hospedajeRepository;
+        this.reservaRepository = reservaRepository;
     }
 
     @GetMapping("/stats")
@@ -34,6 +42,7 @@ public class AdminController {
         Map<String, Long> stats = new HashMap<>();
         stats.put("usuarios", usuarioRepository.count());
         stats.put("hospedajes", hospedajeRepository.count());
+        stats.put("reservas", reservaRepository.count()); 
         return ResponseEntity.ok(stats);
     }
 
@@ -51,6 +60,20 @@ public class AdminController {
     @DeleteMapping("/hospedajes/{id}")
     public ResponseEntity<?> eliminarHospedaje(@PathVariable Long id) {
         hospedajeRepository.deleteById(id);
+        return ResponseEntity.ok().build();
+    }
+
+
+    // 5. Listar Todas las Reservas
+    @GetMapping("/reservas")
+    public ResponseEntity<List<Reserva>> listarReservas() {
+        return ResponseEntity.ok(reservaRepository.findAll());
+    }
+
+    // 6. Eliminar Reserva
+    @DeleteMapping("/reservas/{id}")
+    public ResponseEntity<?> eliminarReserva(@PathVariable Long id) {
+        reservaRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }
 }

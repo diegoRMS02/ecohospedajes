@@ -1,89 +1,67 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Finalizar Reserva | EcoHospedajes</title>
-
     <link rel="stylesheet" href="/css/global.css" />
     <link rel="stylesheet" href="/css/reserva.css" />
-  </head>
-  <body>
+</head>
+
+<body>
     <header class="navbar">
-      <a
-        href="/index.html"
-        class="logo"
-        style="
-          text-decoration: none;
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        "
-      >
-        <img src="/img/logo.jpg" alt="Logo" width="45" />
-        <span
-          style="
-            font-weight: bold;
-            color: var(--primary-color);
-            font-size: 1.2rem;
-          "
-          >EcoHospedajes</span
-        >
-      </a>
-      <nav id="menuNav"></nav>
+        <a href="/index.html" class="logo" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
+            <img src="/img/logo.jpg" alt="Logo" width="45" />
+            <span style="font-weight: bold; color: var(--primary-color); font-size: 1.2rem;">EcoHospedajes</span>
+        </a>
+        <nav id="menuNav"></nav>
     </header>
 
     <div class="reservation-wrapper">
-      <div class="reservation-card">
-        <div class="reservation-header">
-          <h1>Confirma tu viaje</h1>
-          <div class="hotel-name">
-            Estás reservando en: <span id="nombreHospedaje">...</span>
-          </div>
+        <div class="reservation-card">
+            <div class="reservation-header">
+                <h1>Confirma tu viaje</h1>
+                <div class="hotel-name">
+                    Estás reservando en: <span id="nombreHospedaje">...</span>
+                </div>
+            </div>
+            <form id="formReserva">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Fecha de Llegada</label>
+                        <input type="date" id="checkin" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha de Salida</label>
+                        <input type="date" id="checkout" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Huéspedes</label>
+                    <select id="personas" required>
+                        <option value="1">1 viajero</option>
+                        <option value="2" selected>2 viajeros</option>
+                        <option value="3">3 viajeros</option>
+                        <option value="4">4 viajeros</option>
+                        <option value="5">5+ viajeros</option>
+                    </select>
+                </div>
+                <div class="summary-box">
+                    <div class="price-detail">
+                        Precio por noche: <b>S/ <span id="precioUnitario">0</span></b>
+                    </div>
+                    <div class="price-detail">
+                        Estadía: <span id="totalDias">0</span> noches
+                    </div>
+                    <div class="total-price">
+                        Total: S/ <span id="precioTotal">0.00</span>
+                    </div>
+                </div>
+                <button type="submit" class="btn-confirm">Confirmar y Pagar</button>
+                <a href="/catalogo.html" class="cancel-link">Cancelar y volver</a>
+            </form>
         </div>
-
-        <form id="formReserva">
-          <div class="form-row">
-            <div class="form-group">
-              <label>Fecha de Llegada</label>
-              <input type="date" id="checkin" required />
-            </div>
-            <div class="form-group">
-              <label>Fecha de Salida</label>
-              <input type="date" id="checkout" required />
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label>Huéspedes</label>
-            <select id="personas" required>
-              <option value="1">1 viajero</option>
-              <option value="2" selected>2 viajeros</option>
-              <option value="3">3 viajeros</option>
-              <option value="4">4 viajeros</option>
-              <option value="5">5+ viajeros</option>
-            </select>
-          </div>
-
-          <div class="summary-box">
-            <div class="price-detail">
-              Precio por noche: <b>S/ <span id="precioUnitario">0</span></b>
-            </div>
-            <div class="price-detail">
-              Estadía: <span id="totalDias">0</span> noches
-            </div>
-            <div class="total-price">
-              Total: S/ <span id="precioTotal">0.00</span>
-            </div>
-          </div>
-
- 
-          <button type="button" class="btn-confirm" onclick="irAPago()">Confirmar y Pagar</button>
-
-
-          <a href="/catalogo.html" class="cancel-link">Cancelar y volver</a>
-        </form>
-      </div>
     </div>
 
     <footer></footer>
@@ -200,6 +178,7 @@
 }
 
     </script>
-  </body>
+</body>
+
 </html>
 

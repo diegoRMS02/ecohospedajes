@@ -1,479 +1,456 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin Dashboard | EcoHospedajes</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      :root {
-        --primary: #205c3b;
-        --primary-light: #e8f5e9;
-        --danger: #d63031;
-        --dark: #2c3e50;
-        --gray: #f4f6f8;
-        --white: #ffffff;
-        --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-      }
 
-      * {
-        box-sizing: border-box;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard | EcoHospedajes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet" />
 
-      body {
-        margin: 0;
-        font-family: "Inter", sans-serif;
-        background-color: var(--gray);
-        display: flex;
-        height: 100vh;
-        overflow: hidden;
-      }
+  <style>
+    :root {
+      --primary: #205c3b;
+      --primary-light: #e8f5e9;
+      --danger: #d63031;
+      --dark: #2c3e50;
+      --gray: #f4f6f8;
+      --white: #ffffff;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
 
-      .sidebar {
-        width: 260px;
-        background-color: var(--white);
-        border-right: 1px solid #e0e0e0;
-        display: flex;
-        flex-direction: column;
-        padding: 20px;
-        flex-shrink: 0;
-      }
+    body {
+      margin: 0;
+      font-family: "Inter", sans-serif;
+      background-color: var(--gray);
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
 
-      .logo {
-        font-size: 1.4rem;
-        font-weight: 700;
-        color: var(--primary);
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 40px;
-      }
+    .sidebar {
+      width: 260px;
+      background-color: var(--white);
+      border-right: 1px solid #e0e0e0;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      flex-shrink: 0;
+    }
 
-      .menu-item {
-        padding: 12px 15px;
-        margin-bottom: 5px;
-        border-radius: 8px;
-        color: #666;
-        text-decoration: none;
-        font-weight: 500;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        cursor: pointer;
-        transition: all 0.3s;
-      }
+    .logo {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 40px;
+    }
 
-      .menu-item:hover,
-      .menu-item.active {
-        background-color: var(--primary-light);
-        color: var(--primary);
-      }
+    .menu-item {
+      padding: 12px 15px;
+      margin-bottom: 6px;
+      border-radius: 8px;
+      color: #666;
+      cursor: pointer;
+      font-weight: 500;
+      display: block;
+      text-decoration: none;
+      transition: 0.3s;
+    }
 
-      .menu-item.logout {
-        margin-top: auto;
-        color: var(--danger);
-      }
-      .menu-item.logout:hover {
-        background-color: #fee;
-      }
+    .menu-item:hover,
+    .menu-item.active {
+      background-color: var(--primary-light);
+      color: var(--primary);
+    }
 
-      .main-content {
-        flex: 1;
-        overflow-y: auto;
-        padding: 30px 40px;
-      }
+    .menu-item.logout {
+      margin-top: auto;
+      color: var(--danger);
+    }
 
-      header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 30px;
-      }
+    .main-content {
+      flex: 1;
+      padding: 30px 40px;
+      overflow-y: auto;
+    }
 
-      h1 {
-        font-size: 1.8rem;
-        color: var(--dark);
-        margin: 0;
-      }
+    h1 {
+      margin: 0;
+      color: var(--dark);
+    }
 
-      .kpi-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        gap: 20px;
-        margin-bottom: 30px;
-      }
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      margin: 25px 0;
+    }
 
-      .kpi-card {
-        background: var(--white);
-        padding: 25px;
-        border-radius: 12px;
-        box-shadow: var(--shadow);
-        border-left: 4px solid var(--primary);
-      }
+    .kpi-card {
+      background: var(--white);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      border-left: 4px solid var(--primary);
+    }
 
-      .kpi-label {
-        font-size: 0.9rem;
-        color: #888;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-      }
+    .table-container {
+      background: var(--white);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+    }
 
-      .kpi-value {
-        font-size: 2.2rem;
-        font-weight: 700;
-        color: var(--dark);
-        margin-top: 10px;
-      }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
 
-      .section-view {
-        display: none; 
-        animation: fadeIn 0.3s ease;
-      }
-      .section-view.active {
-        display: block;
-      }
+    th {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+      color: #888;
+      text-align: left;
+      font-size: 0.9rem;
+    }
 
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(10px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #f3f3f3;
+      color: var(--dark);
+    }
 
-      .table-container {
-        background: var(--white);
-        border-radius: 12px;
-        padding: 20px;
-        box-shadow: var(--shadow);
-      }
+    .thumb-img {
+      width: 50px;
+      height: 35px;
+      object-fit: cover;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+    }
 
-      table {
-        width: 100%;
-        border-collapse: collapse;
-      }
+    .badge {
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
 
-      th {
-        text-align: left;
-        padding: 15px;
-        color: #888;
-        font-weight: 600;
-        border-bottom: 1px solid #eee;
-        font-size: 0.9rem;
-      }
+    .badge-admin {
+      background: #e3f2fd;
+      color: #1565c0;
+    }
 
-      td {
-        padding: 15px;
-        border-bottom: 1px solid #f9f9f9;
-        color: var(--dark);
-        vertical-align: middle;
-      }
+    .badge-dueno {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
 
-      .badge {
-        padding: 5px 10px;
-        border-radius: 20px;
-        font-size: 0.75rem;
-        font-weight: 700;
-        text-transform: uppercase;
-      }
-      .badge-admin {
-        background: #e3f2fd;
-        color: #1565c0;
-      }
-      .badge-dueno {
-        background: #e8f5e9;
-        color: #2e7d32;
-      }
-      .badge-cliente {
-        background: #f3e5f5;
-        color: #7b1fa2;
-      }
+    .badge-cliente {
+      background: #f3e5f5;
+      color: #7b1fa2;
+    }
 
-      .btn-icon {
-        background: none;
-        border: none;
-        cursor: pointer;
-        font-size: 1.1rem;
-        padding: 5px;
-        border-radius: 5px;
-        transition: background 0.2s;
-      }
-      .btn-delete {
-        color: #e74c3c;
-      }
-      .btn-delete:hover {
-        background: #ffecec;
-      }
+    .btn-icon {
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 1.1rem;
+      color: #e74c3c;
+      padding: 6px;
+      border-radius: 5px;
+    }
 
-      .thumb-img {
-        width: 50px;
-        height: 35px;
-        object-fit: cover;
-        border-radius: 4px;
-        border: 1px solid #eee;
-      }
-    </style>
-  </head>
-  <body>
-    <aside class="sidebar">
-      <div class="logo">
-        <span>🛡️ EcoAdmin</span>
+    .btn-icon:hover {
+      background: #fee;
+    }
+
+    .section-view {
+      display: none;
+    }
+
+    .section-view.active {
+      display: block;
+    }
+  </style>
+
+</head>
+
+<body>
+  <aside class="sidebar">
+    <div class="logo">🛡️ EcoAdmin</div>
+
+    <a class="menu-item active" onclick="switchTab('usuarios', this)">👥 Usuarios</a>
+    <a class="menu-item" onclick="switchTab('hospedajes', this)">🏡 Hospedajes</a>
+    <a class="menu-item" onclick="switchTab('reservas', this)">📅 Reservas</a>
+    <a href="/index.html" class="menu-item">🌐 Ir al Sitio Web</a>
+
+    <a class="menu-item logout" onclick="logout()">🚪 Cerrar Sesión</a>
+  </aside>
+
+  <main class="main-content">
+    <header>
+      <h1 id="pageTitle">Gestión de Usuarios</h1>
+    </header>
+
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Usuarios Totales</div>
+        <div class="kpi-value" id="kpiUsers">0</div>
       </div>
 
-      <a
-        href="#"
-        class="menu-item active"
-        onclick="switchTab('usuarios', this)"
-      >
-        <span>👥</span> Usuarios
-      </a>
-      <a href="#" class="menu-item" onclick="switchTab('hospedajes', this)">
-        <span>🏡</span> Hospedajes
-      </a>
-      <a href="/index.html" class="menu-item">
-        <span>🌐</span> Ir al Sitio Web
-      </a>
-
-      <a href="#" onclick="logout()" class="menu-item logout">
-        <span>🚪</span> Cerrar Sesión
-      </a>
-    </aside>
-
-    <main class="main-content">
-      <header>
-        <div>
-          <h1 id="pageTitle">Gestión de Usuarios</h1>
-          <p style="color: #666; font-size: 0.9rem">
-            Panel de administración general
-          </p>
-        </div>
-      </header>
-
-      <div class="kpi-grid">
-        <div class="kpi-card">
-          <div class="kpi-label">Usuarios Totales</div>
-          <div class="kpi-value" id="kpiUsers">0</div>
-        </div>
-        <div class="kpi-card" style="border-color: #f39c12">
-          <div class="kpi-label">Hospedajes Activos</div>
-          <div class="kpi-value" id="kpiHotels">0</div>
-        </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Hospedajes Activos</div>
+        <div class="kpi-value" id="kpiHotels">0</div>
       </div>
+    </div>
 
-      <div id="view-usuarios" class="section-view active">
-        <div class="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Usuario</th>
-                <th>Rol</th>
-                <th>Email</th>
-                <th style="text-align: right">Acciones</th>
-              </tr>
-            </thead>
-            <tbody id="tablaUsuarios">
-              <tr>
-                <td colspan="5">Cargando...</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+    <!-- USUARIOS -->
+    <section id="view-usuarios" class="section-view active">
+      <div class="table-container">
+
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Usuario</th>
+              <th>Rol</th>
+              <th>Email</th>
+              <th style="text-align:right">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tablaUsuarios">
+            <tr><td colspan="5">Cargando...</td></tr>
+          </tbody>
+        </table>
+
       </div>
+    </section>
 
-      <div id="view-hospedajes" class="section-view">
-        <div class="table-container">
-          <h3>Listado Global de Propiedades</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Foto</th>
-                <th>Propiedad</th>
-                <th>Ubicación</th>
-                <th>Dueño</th>
-                <th>Precio</th>
-                <th style="text-align: right">Acciones</th>
-              </tr>
-            </thead>
-            <tbody id="tablaHospedajes">
-              <tr>
-                <td colspan="7">Cargando...</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+    <!-- HOSPEDAJES -->
+    <section id="view-hospedajes" class="section-view">
+      <div class="table-container">
+        <h3>Listado de Propiedades</h3>
+
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Foto</th>
+              <th>Nombre</th>
+              <th>Ubicación</th>
+              <th>Dueño</th>
+              <th>Precio</th>
+              <th style="text-align:right">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tablaHospedajes">
+            <tr><td colspan="7">Cargando...</td></tr>
+          </tbody>
+        </table>
       </div>
-    </main>
+    </section>
 
+    <!-- RESERVAS -->
+    <section id="view-reservas" class="section-view">
+      <div class="table-container">
+        <h3>Listado de Reservas</h3>
+
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Huésped</th>
+              <th>Hospedaje</th>
+              <th>Entrada</th>
+              <th>Salida</th>
+              <th>Total</th>
+              <th>Estado</th>
+              <th style="text-align:right">Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody id="tablaReservas">
+            <tr><td colspan="8">Cargando...</td></tr>
+          </tbody>
+        </table>
+
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    const usuario = JSON.parse(localStorage.getItem("usuarioLogueado"));
+    const token = localStorage.getItem("jwt");
+
+    if (!usuario || usuario.rol !== "ADMIN") {
+      window.location.href = "/index.html";
+    }
     <script>
       const usuario = JSON.parse(localStorage.getItem("usuarioLogueado"));
       const token = localStorage.getItem("jwt");
 
-      if (!usuario || usuario.rol !== "ADMIN" || !token) {
-        window.location.href = "/index.html";
-      }
+    const headersAuth = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + token
+    };
 
-      const headersAuth = {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token,
+    function switchTab(tab, element) {
+      document.querySelectorAll(".menu-item").forEach(m => m.classList.remove("active"));
+      element.classList.add("active");
+
+      document.querySelectorAll(".section-view").forEach(v => v.classList.remove("active"));
+      document.getElementById("view-" + tab).classList.add("active");
+
+      const titles = {
+        usuarios: "Gestión de Usuarios",
+        hospedajes: "Gestión de Hospedajes",
+        reservas: "Gestión de Reservas"
       };
 
-      function switchTab(tabName, element) {
-        document
-          .querySelectorAll(".menu-item")
-          .forEach((el) => el.classList.remove("active"));
-        if (element) element.classList.add("active");
+      document.getElementById("pageTitle").textContent = titles[tab];
+    }
 
-        document
-          .querySelectorAll(".section-view")
-          .forEach((el) => el.classList.remove("active"));
-        document.getElementById(`view-${tabName}`).classList.add("active");
+    window.onload = initData;
 
-        const titulos = {
-          usuarios: "Gestión de Usuarios",
-          hospedajes: "Gestión de Hospedajes",
-        };
-        document.getElementById("pageTitle").innerText = titulos[tabName];
-      }
+    async function initData() {
+      try {
+        const stats = await (await fetch("/api/admin/stats", { headers: headersAuth })).json();
+        document.getElementById("kpiUsers").textContent = stats.usuarios;
+        document.getElementById("kpiHotels").textContent = stats.hospedajes;
 
-      async function initData() {
-        try {
-          const resStats = await fetch("/api/admin/stats", {
-            headers: headersAuth,
-          });
-          const stats = await resStats.json();
-          document.getElementById("kpiUsers").innerText = stats.usuarios;
-          document.getElementById("kpiHotels").innerText = stats.hospedajes;
+        cargarUsuarios();
+        cargarHospedajes();
+        cargarReservas();
 
-          cargarUsuarios();
-          cargarHospedajes(); 
-        } catch (error) {
-          console.error(error);
-          alert("Error de conexión");
-        }
-      }
+      } catch (e) { console.error(e); }
+    }
 
-      async function cargarUsuarios() {
-        const res = await fetch("/api/admin/usuarios", {
-          headers: headersAuth,
-        });
-        const users = await res.json();
-        const tbody = document.getElementById("tablaUsuarios");
-        tbody.innerHTML = "";
+    /* ---------------- USUARIOS ---------------- */
+    async function cargarUsuarios() {
+      const data = await (await fetch("/api/admin/usuarios", { headers: headersAuth })).json();
+      const tbody = document.getElementById("tablaUsuarios");
+      tbody.innerHTML = "";
 
-        users.forEach((u) => {
-          const badgeClass = `badge-${u.rol.toLowerCase()}`;
-          const btnDelete =
-            u.email === usuario.email
-              ? `<span style="color:#aaa; font-size:0.8rem">Actual</span>`
-              : `<button class="btn-icon btn-delete" onclick="eliminarUsuario(${u.id})" title="Eliminar Usuario">🗑️</button>`;
+      data.forEach(u => {
+        const badge = `badge-${u.rol.toLowerCase()}`;
 
-          tbody.innerHTML += `
-                <tr>
-                    <td>#${u.id}</td>
-                    <td><div style="font-weight:600">${u.nombre} ${u.apellidos}</div></td>
-                    <td><span class="badge ${badgeClass}">${u.rol}</span></td>
-                    <td style="color:#666">${u.email}</td>
-                    <td style="text-align: right;">${btnDelete}</td>
-                </tr>
-            `;
-        });
-      }
+        tbody.innerHTML += `
+          <tr>
+            <td>#${u.id}</td>
+            <td>${u.nombre} ${u.apellidos}</td>
+            <td><span class="badge ${badge}">${u.rol}</span></td>
+            <td>${u.email}</td>
+            <td style="text-align:right">
+              ${u.email === usuario.email
+            ? "<i>(Actual)</i>"
+            : `<button class='btn-icon' onclick='eliminarUsuario(${u.id})'>🗑️</button>`}
+            </td>
+          </tr>
+        `;
+      });
+    }
 
-      async function cargarHospedajes() {
-        try {
-          const res = await fetch("/api/hospedajes", {
-            method: "GET",
-            headers: headersAuth,
-          });
+    async function eliminarUsuario(id) {
+      if (!confirm("¿Eliminar este usuario?")) return;
 
-          if (!res.ok) throw new Error("Error fetching hospedajes");
+      const res = await fetch(`/api/admin/usuarios/${id}`, {
+        method: "DELETE",
+        headers: headersAuth
+      });
 
-          const respuesta = await res.json();
+      if (res.ok) cargarUsuarios();
+    }
 
-          const listaHoteles = respuesta.content
-            ? respuesta.content
-            : respuesta;
+    /* ---------------- HOSPEDAJES ---------------- */
+    async function cargarHospedajes() {
+      const data = await (await fetch("/api/hospedajes", { headers: headersAuth })).json();
+      const lista = data.content ? data.content : data;
 
-          const tbody = document.getElementById("tablaHospedajes");
-          tbody.innerHTML = "";
+      const tbody = document.getElementById("tablaHospedajes");
+      tbody.innerHTML = "";
 
-          if (!listaHoteles || listaHoteles.length === 0) {
-            tbody.innerHTML =
-              "<tr><td colspan='7' style='text-align:center'>No hay hospedajes registrados.</td></tr>";
-            return;
-          }
+      lista.forEach(h => {
+        const img = h.imagenUrl || "/img/logo.jpg";
 
-          listaHoteles.forEach((h) => {
-            const imgUrl = h.imagenUrl ? h.imagenUrl : "/img/logo.jpg";
+        tbody.innerHTML += `
+          <tr>
+            <td>#${h.id}</td>
+            <td><img src="${img}" class="thumb-img"></td>
+            <td>${h.nombre}</td>
+            <td>${h.ubicacion}</td>
+            <td>${h.nombrePropietario}</td>
+            <td>S/ ${h.precio}</td>
+            <td style="text-align:right">
+              <button class="btn-icon" onclick="eliminarHospedaje(${h.id})">🗑️</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
 
-            tbody.innerHTML += `
-                    <tr>
-                        <td>#${h.id}</td>
-                        <td>
-                            <img src="${imgUrl}" class="thumb-img" onerror="this.src='/img/logo.jpg'">
-                        </td>
-                        <td>
-                            <div style="font-weight:600; color:var(--primary)">${h.nombre}</div>
-                        </td>
-                        <td>${h.ubicacion}</td>
-                        <td>${h.nombrePropietario}</td>
-                        <td>S/ ${h.precio}</td>
-                        <td style="text-align: right;">
-                            <button class="btn-icon btn-delete" onclick="eliminarHospedaje(${h.id})" title="Eliminar Propiedad">🗑️</button>
-                        </td>
-                    </tr>
-                `;
-          });
-        } catch (error) {
-          console.error("Error cargando hospedajes:", error);
-        }
-      }
+    async function eliminarHospedaje(id) {
+      if (!confirm("¿Eliminar hospedaje?")) return;
 
-      async function eliminarUsuario(id) {
-        if (
-          !confirm("⚠️ ¿Estás seguro? Se borrará el usuario y TODOS sus datos.")
-        )
-          return;
-        try {
-          const res = await fetch(`/api/admin/usuarios/${id}`, {
-            method: "DELETE",
-            headers: headersAuth,
-          });
-          if (res.ok) initData();
-          else alert("No se pudo eliminar.");
-        } catch (e) {
-          console.error(e);
-        }
-      }
+      const res = await fetch(`/api/hospedajes/${id}`, {
+        method: "DELETE",
+        headers: headersAuth
+      });
 
-      async function eliminarHospedaje(id) {
-        if (!confirm("⚠️ ¿Eliminar esta propiedad permanentemente?")) return;
-        try {
-          const res = await fetch(`/api/admin/hospedajes/${id}`, {
-            method: "DELETE",
-            headers: headersAuth,
-          });
-          if (res.ok) initData();
-          else alert("Error al eliminar propiedad.");
-        } catch (e) {
-          console.error(e);
-        }
-      }
+      if (res.ok) cargarHospedajes();
+    }
 
-      function logout() {
-        localStorage.clear();
-        window.location.href = "/index.html";
-      }
+    /* ---------------- RESERVAS ---------------- */
+    async function cargarReservas() {
+      const lista = await (await fetch("/api/reservas", { headers: headersAuth })).json();
+      console.log("reservas recibidas:", lista);
 
-      initData();
-    </script>
-  </body>
+      const tbody = document.getElementById("tablaReservas");
+      tbody.innerHTML = "";
+
+      lista.forEach(r => {
+
+        const nombreCliente = r.nombreCliente || "—";
+        const nombreHospedaje = r.nombreHospedaje || "—";
+        const fechaInicio = r.checkin || "—";
+        const fechaFin = r.checkout || "—";
+        const total = r.precioTotal ? `S/ ${r.precioTotal}` : "S/ —";
+
+        const estado = r.estado || "—";
+
+        tbody.innerHTML += `
+          <tr>
+            <td>#${r.id}</td>
+            <td>${nombreCliente}</td>
+            <td>${nombreHospedaje}</td>
+            <td>${fechaInicio}</td>
+            <td>${fechaFin}</td>
+            <td>${total}</td>
+            <td>${estado}</td>
+            <td style="text-align:right">
+              <button class="btn-icon" onclick="eliminarReserva(${r.id})">🗑️</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    async function eliminarReserva(id) {
+      if (!confirm("¿Eliminar reserva?")) return;
+
+      const res = await fetch(`/api/reservas/${id}`, {
+        method: "DELETE",
+        headers: headersAuth
+      });
+
+      if (res.ok) cargarReservas();
+    }
+
+    function logout() {
+      localStorage.clear();
+      window.location.href = "/index.html";
+    }
+  </script>
+
+</body>
+
 </html>
