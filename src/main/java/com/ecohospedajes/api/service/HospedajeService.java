@@ -6,9 +6,9 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional; // Importante
+import org.springframework.transaction.annotation.Transactional; 
 
-import com.ecohospedajes.api.dto.DatosHospedaje; // Importante
+import com.ecohospedajes.api.dto.DatosHospedaje;
 import com.ecohospedajes.api.entity.Hospedaje;
 import com.ecohospedajes.api.entity.Usuario;
 import com.ecohospedajes.api.repository.HospedajeRepository;
@@ -25,48 +25,37 @@ public class HospedajeService {
         this.usuarioRepository = usuarioRepository;
     }
 
-    // --- MÉTODOS DE LECTURA (READ) ---
-
-    // Listar todos (se mantiene por si acaso, aunque ya no se use directo)
     public List<DatosHospedaje> listarTodos() {
         return hospedajeRepository.findAll().stream()
                 .map(this::convertirADTO)
                 .collect(Collectors.toList());
     }
 
-    // Listar por dueño (para la tabla de gestión)
     public List<DatosHospedaje> listarPorDueno(Long duenoId) {
         return hospedajeRepository.findByPropietarioId(duenoId).stream()
                 .map(this::convertirADTO)
                 .collect(Collectors.toList());
     }
 
-    // Buscar por ID (para la vista detalle)
     public DatosHospedaje buscarPorId(Long id) {
         Hospedaje h = hospedajeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Hospedaje no encontrado con ID: " + id));
         return convertirADTO(h);
     }
 
-    // 🔥 EL MÉTODO QUE FALTABA CON PAGINACIÓN (4 argumentos)
     public Page<DatosHospedaje> filtrar(String ubicacion, Double minPrice, Double maxPrice, int pagina) {
-        // Asignar valores por defecto para que la consulta SQL funcione
         if (minPrice == null)
             minPrice = 0.0;
         if (maxPrice == null)
             maxPrice = 10000.0;
 
-        // Creamos la solicitud de página (Pagina X, 5 elementos por página)
         PageRequest pageRequest = PageRequest.of(pagina, 5);
 
-        // El repositorio llama al método que creamos con @Query
         Page<Hospedaje> resultados = hospedajeRepository.buscarConFiltros(ubicacion, minPrice, maxPrice, pageRequest);
 
-        // Convertimos la Página de Entidades a Página de DTOs y la retornamos
         return resultados.map(this::convertirADTO);
     }
 
-    // --- MÉTODOS DE ESCRITURA (CRUD) ---
 
     @Transactional
     public DatosHospedaje guardar(DatosHospedaje datos) {
@@ -111,7 +100,6 @@ public class HospedajeService {
         hospedajeRepository.deleteById(id);
     }
 
-    // --- CONVERSOR (Entity -> DTO) ---
     private DatosHospedaje convertirADTO(Hospedaje h) {
         DatosHospedaje dto = new DatosHospedaje();
         dto.setId(h.getId());

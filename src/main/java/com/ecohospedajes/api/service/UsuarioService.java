@@ -12,7 +12,7 @@ import com.ecohospedajes.api.repository.UsuarioRepository;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
-    private final PasswordEncoder passwordEncoder; // Inyectamos el encoder
+    private final PasswordEncoder passwordEncoder; 
 
     public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
@@ -29,15 +29,10 @@ public class UsuarioService {
         nuevo.setApellidos(datos.getApellidos());
         nuevo.setEmail(datos.getEmail());
         nuevo.setRol(datos.getRol());
-        // AQUI ESTA LA CLAVE: ENCRIPTAMOS
         nuevo.setPassword(passwordEncoder.encode(datos.getPassword()));
 
         return usuarioRepository.save(nuevo);
     }
-
-    // EL LOGIN YA NO SE HACE AQUI, SE HACE EN EL CONTROLLER CON AUTHENTICATION
-    // MANAGER
-    // Mantenemos solo la actualización
 
     public Usuario actualizar(Long id, DatosActualizacionUsuario datos) {
         Usuario usuario = usuarioRepository.findById(id)

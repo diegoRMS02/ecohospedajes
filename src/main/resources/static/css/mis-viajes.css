@@ -1,10 +1,8 @@
-/* Hereda estilos base de global.css, aquí solo lo específico */
-
 .container {
   max-width: 900px;
   margin: 40px auto;
   padding: 20px;
-  min-height: 60vh; /* Para que el footer no suba si hay pocos viajes */
+  min-height: 60vh; 
 }
 
 .page-header {
@@ -14,11 +12,10 @@
 }
 
 .page-header h1 {
-  color: var(--primary-color); /* Usa la variable del global */
+  color: var(--primary-color); 
   margin: 0;
 }
 
-/* TARJETA DE VIAJE */
 .trip-card {
   background: white;
   border-radius: 12px;

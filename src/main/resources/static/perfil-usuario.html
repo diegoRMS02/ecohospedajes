@@ -95,24 +95,20 @@
       const usuario = JSON.parse(localStorage.getItem("usuarioLogueado"));
       if (!usuario) window.location.href = "/login.html";
 
-      // 1. Cargar datos en Inputs y Header
       document.getElementById("nombre").value = usuario.nombre;
       document.getElementById("apellidos").value = usuario.apellidos;
       document.getElementById("email").value = usuario.email;
 
-      // Header visual
       document.getElementById(
         "displayNombre"
       ).innerText = `${usuario.nombre} ${usuario.apellidos}`;
       document.getElementById("displayEmail").innerText = usuario.email;
       document.getElementById("displayRol").innerText = usuario.rol;
 
-      // Avatar Grande
       document.getElementById(
         "avatarBig"
       ).src = `https://ui-avatars.com/api/?name=${usuario.nombre}+${usuario.apellidos}&background=205c3b&color=fff&size=200`;
 
-      // 2. Guardar cambios
       document
         .getElementById("formPerfil")
         .addEventListener("submit", async (e) => {
@@ -120,7 +116,6 @@
 
           const passInput = document.getElementById("password").value;
 
-          // Validación Frontend básica
           if (passInput && passInput.length < 3) {
             alert("La contraseña es muy corta.");
             return;

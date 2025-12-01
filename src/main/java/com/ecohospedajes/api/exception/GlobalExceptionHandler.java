@@ -14,9 +14,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, String>> manejarErroresLogicos(RuntimeException ex) {
         Map<String, String> respuesta = new HashMap<>();
-        respuesta.put("mensaje", ex.getMessage()); // Aquí va el texto "¡Lo sentimos!..."
+        respuesta.put("mensaje", ex.getMessage()); 
 
-        // Devolvemos 400 Bad Request en vez de 500 (que asusta)
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(respuesta);
     }
 }

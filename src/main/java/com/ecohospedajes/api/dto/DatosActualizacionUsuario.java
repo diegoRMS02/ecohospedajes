@@ -3,7 +3,6 @@ package com.ecohospedajes.api.dto;
 import com.ecohospedajes.api.entity.Usuario.Rol;
 
 import jakarta.validation.constraints.NotBlank;
-// Ya no usamos @Size para permitir que el campo no se envíe
 
 public class DatosActualizacionUsuario {
 
@@ -13,11 +12,10 @@ public class DatosActualizacionUsuario {
     @NotBlank(message = "El apellido es obligatorio")
     private String apellidos;
 
-    private String password; // SIN ANOTACIONES para que sea 100% opcional
+    private String password; 
 
     private Rol rol;
 
-    // Getters y Setters
     public String getNombre() {
         return nombre;
     }

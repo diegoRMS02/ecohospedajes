@@ -25,7 +25,6 @@
         font-size: 1.8rem;
       }
 
-      /* Estilos de la Tabla */
       table {
         width: 100%;
         border-collapse: collapse;
@@ -48,7 +47,6 @@
         text-transform: uppercase;
       }
 
-      /* Thumbnail Style */
       .hotel-thumb {
         width: 60px;
         height: 40px;
@@ -152,19 +150,17 @@
       const usuario = JSON.parse(localStorage.getItem("usuarioLogueado"));
       const token = localStorage.getItem("jwt");
 
-      // 1. Seguridad: Solo DUEÑO puede entrar
       if (!usuario || usuario.rol !== "DUENO" || !token) {
         alert("Acceso denegado.");
         window.location.href = "/index.html";
       }
 
-      // 2. Función de Carga
       async function cargarHospedajes() {
         try {
           const res = await fetch(`/api/hospedajes/dueno/${usuario.id}`, {
             method: "GET",
             headers: {
-              Authorization: "Bearer " + token, // TOKEN AQUI
+              Authorization: "Bearer " + token, 
             },
           });
 
@@ -217,7 +213,6 @@
         }
       }
 
-      // 3. Lógica de Acciones
       function editarHotel(id) {
         window.location.href = `/dueno/registrar-hospedaje.html?id=${id}`;
       }
@@ -229,7 +224,7 @@
           const res = await fetch(`/api/hospedajes/${id}`, {
             method: "DELETE",
             headers: {
-              Authorization: "Bearer " + token, // TOKEN TAMBIEN AQUI
+              Authorization: "Bearer " + token, 
             },
           });
 
@@ -237,7 +232,7 @@
             alert("✅ Hospedaje eliminado correctamente.");
             cargarHospedajes();
           } else {
-            const errorData = await res.json(); // Intentar leer error del backend
+            const errorData = await res.json(); 
             alert(
               "❌ Error al eliminar: " +
                 (errorData.mensaje ||

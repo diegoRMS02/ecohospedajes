@@ -44,16 +44,12 @@ public class UsuarioController {
 
     @PostMapping("/login")
     public ResponseEntity<DatosJWTToken> login(@RequestBody @Valid DatosLogin datos) {
-        // 1. Crear el token de autenticación
         Authentication authToken = new UsernamePasswordAuthenticationToken(datos.getEmail(), datos.getPassword());
 
-        // 2. Verificar credenciales (Spring Security lo hace por nosotros)
         var usuarioAutenticado = authenticationManager.authenticate(authToken);
 
-        // 3. Generar JWT
         var JWTtoken = tokenService.generarToken((Usuario) usuarioAutenticado.getPrincipal());
 
-        // 4. Retornar Token
         return ResponseEntity.ok(new DatosJWTToken(JWTtoken));
     }
 

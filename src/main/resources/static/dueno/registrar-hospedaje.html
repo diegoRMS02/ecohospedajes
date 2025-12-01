@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="/css/perfil.css" />
 
     <style>
-      /* Estilos específicos que se mantienen por consistencia */
       .publish-container {
         display: flex;
         justify-content: center;
@@ -217,7 +216,7 @@
     <script src="/js/logic-navbar.js"></script>
     <script>
       const usuario = JSON.parse(localStorage.getItem("usuarioLogueado"));
-      const token = localStorage.getItem("jwt"); // LLAVE DE SEGURIDAD
+      const token = localStorage.getItem("jwt"); 
 
       if (!usuario || usuario.rol !== "DUENO" || !token) {
         alert("Acceso denegado. Debes ser dueño para ver esto.");
@@ -228,9 +227,8 @@
       const hotelId = urlParams.get("id");
 
       let fetchMethod = "POST";
-      let fetchUrl = "/api/hospedajes"; // Ruta relativa
+      let fetchUrl = "/api/hospedajes"; 
 
-      // --- LÓGICA DE EDICIÓN ---
       if (hotelId) {
         document.getElementById("formTitle").innerText =
           "Editar Hospedaje (ID: " + hotelId + ")";
@@ -242,7 +240,6 @@
 
       async function cargarDatosHotel(id) {
         try {
-          // GET es público, no necesita token, pero no está de más ponerlo
           const res = await fetch(`/api/hospedajes/${id}`);
           const data = await res.json();
 
@@ -266,7 +263,6 @@
         }
       }
 
-      // --- LÓGICA DE SUBMIT (POST / PUT) ---
       document
         .getElementById("formHospedaje")
         .addEventListener("submit", async (e) => {
@@ -294,7 +290,7 @@
               method: fetchMethod,
               headers: {
                 "Content-Type": "application/json",
-                Authorization: "Bearer " + token, // <--- CLAVE PARA QUE FUNCIONE
+                Authorization: "Bearer " + token, 
               },
               body: JSON.stringify(datos),
             });

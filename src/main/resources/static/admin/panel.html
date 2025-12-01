@@ -32,7 +32,6 @@
         overflow: hidden;
       }
 
-      /* --- SIDEBAR --- */
       .sidebar {
         width: 260px;
         background-color: var(--white);
@@ -81,7 +80,6 @@
         background-color: #fee;
       }
 
-      /* --- MAIN CONTENT --- */
       .main-content {
         flex: 1;
         overflow-y: auto;
@@ -101,7 +99,6 @@
         margin: 0;
       }
 
-      /* --- KPI CARDS --- */
       .kpi-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -131,9 +128,8 @@
         margin-top: 10px;
       }
 
-      /* --- TABS & TABLES --- */
       .section-view {
-        display: none; /* Ocultar por defecto */
+        display: none; 
         animation: fadeIn 0.3s ease;
       }
       .section-view.active {
@@ -215,7 +211,6 @@
         background: #ffecec;
       }
 
-      /* NUEVO: Estilo para la foto miniatura */
       .thumb-img {
         width: 50px;
         height: 35px;
@@ -318,7 +313,6 @@
     </main>
 
     <script>
-      // 1. SEGURIDAD
       const usuario = JSON.parse(localStorage.getItem("usuarioLogueado"));
       const token = localStorage.getItem("jwt");
 
@@ -331,7 +325,6 @@
         Authorization: "Bearer " + token,
       };
 
-      // 2. LÓGICA DE TABS
       function switchTab(tabName, element) {
         document
           .querySelectorAll(".menu-item")
@@ -350,10 +343,8 @@
         document.getElementById("pageTitle").innerText = titulos[tabName];
       }
 
-      // 3. CARGA DE DATOS
       async function initData() {
         try {
-          // Stats
           const resStats = await fetch("/api/admin/stats", {
             headers: headersAuth,
           });
@@ -362,7 +353,7 @@
           document.getElementById("kpiHotels").innerText = stats.hospedajes;
 
           cargarUsuarios();
-          cargarHospedajes(); // <--- LLAMADA CRÍTICA
+          cargarHospedajes(); 
         } catch (error) {
           console.error(error);
           alert("Error de conexión");
@@ -407,9 +398,6 @@
 
           const respuesta = await res.json();
 
-          // AQUÍ ESTÁ EL TRUCO:
-          // Si es una Página de Spring, la lista está en ".content".
-          // Si es una lista normal, es la respuesta misma.
           const listaHoteles = respuesta.content
             ? respuesta.content
             : respuesta;
@@ -449,7 +437,6 @@
         }
       }
 
-      // 4. ACCIONES
       async function eliminarUsuario(id) {
         if (
           !confirm("⚠️ ¿Estás seguro? Se borrará el usuario y TODOS sus datos.")
@@ -486,7 +473,6 @@
         window.location.href = "/index.html";
       }
 
-      // Iniciar
       initData();
     </script>
   </body>

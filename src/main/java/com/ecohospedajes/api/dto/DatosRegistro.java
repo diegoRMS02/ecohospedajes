@@ -24,7 +24,6 @@ public class DatosRegistro {
     @NotNull(message = "Falta el rol")
     private Rol rol;
 
-    // Getters y Setters
     public String getNombre() {
         return nombre;
     }
