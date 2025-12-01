@@ -4,19 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Dashboard | EcoHospedajes</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet"/>
-
-<style>
-/* ⭐ TODO TU CSS ⭐ */
-:root {
-  --primary: #1e5631;
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+  --primary: #1e5631; 
   --primary-dark: #184628;
   --gray-bg: #f0f2f1;
   --white: #ffffff;
   --text-dark: #2e2e2e;
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
@@ -27,7 +30,6 @@ body {
   overflow: hidden;
 }
 
-/* SIDEBAR */
 .sidebar {
   width: 260px;
   background-color: var(--primary);
@@ -41,18 +43,25 @@ body {
 .logo {
   font-size: 1.5rem;
   font-weight: 700;
+  color: var(--white);
   margin-bottom: 40px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .menu-item {
   padding: 12px 15px;
-  border-radius: 8px;
-  text-decoration: none;
-  color: var(--white);
   margin-bottom: 8px;
-  display: flex;
-  gap: 12px;
+  border-radius: 8px;
+  color: var(--white);
+  text-decoration: none;
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: background 0.3s;
 }
 
 .menu-item:hover,
@@ -64,354 +73,460 @@ body {
   margin-top: auto;
   color: #ffd1d1;
 }
+.menu-item.logout:hover {
+  background-color: #b83a3a;
+}
 
-/* CONTENIDO */
 .main-content {
   flex: 1;
   overflow-y: auto;
   padding: 40px 50px;
 }
 
-h1 { font-size: 2rem; margin-bottom: 8px; }
+h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0 0 5px 0;
+}
 
-/* KPI */
-.kpi-grid { display: flex; gap: 25px; margin-bottom: 40px; }
+
+.kpi-grid {
+  display: flex;
+  gap: 25px;
+  margin-bottom: 40px;
+}
 
 .kpi-card {
-  background: white;
-  padding: 25px;
-  border-radius: 14px;
   flex: 1;
-  text-align: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-}
-
-.kpi-value { font-size: 2.3rem; font-weight: bold; }
-
-/* TABLAS */
-.table-container {
   background: var(--white);
-  padding: 25px;
+  padding: 25px 30px;
   border-radius: 14px;
   box-shadow: 0 3px 5px rgba(0,0,0,0.08);
-  margin-top: 35px;
+  text-align: center;
 }
 
-table { width: 100%; border-collapse: collapse; }
-th { padding: 13px; background: #f3f3f3; }
-td { padding: 12px; border-bottom: 1px solid #eee; }
+.kpi-label {
+  font-size: 0.9rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.kpi-value {
+  font-size: 2.6rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-top: 12px;
+}
+
+.table-container {
+  background: var(--white);
+  border-radius: 14px;
+  padding: 25px;
+  box-shadow: 0 3px 5px rgba(0,0,0,0.08);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  text-align: left;
+  padding: 15px 10px;
+  color: #666;
+  font-weight: 600;
+  border-bottom: 1px solid #ddd;
+  font-size: 0.95rem;
+}
+
+td {
+  padding: 14px 10px;
+  border-bottom: 1px solid #efefef;
+  font-size: 0.95rem;
+  color: var(--text-dark);
+}
+
+.badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.badge-admin {
+  background: #d6e6ff;
+  color: #1553b1;
+}
+
+.badge-dueno {
+  background: #d8f3da;
+  color: #1d7c29;
+}
+
+.badge-cliente {
+  background: #f0d7f7;
+  color: #7a1fa2;
+}
 
 .btn-icon {
   background: none;
   border: none;
   cursor: pointer;
-  padding: 6px;
   font-size: 1.1rem;
-  color: red;
+  padding: 7px;
+  border-radius: 6px;
+  transition: background 0.2s;
 }
 
-.section-view { display: none; }
-.section-view.active { display: block; }
-</style>
-</head>
+.btn-delete {
+  color: #e74c3c;
+}
 
-<body>
+.btn-delete:hover {
+  background: #ffe6e6;
+}
 
-<!-- SIDEBAR -->
-<aside class="sidebar">
-  <div class="logo">🛡️ EcoAdmin</div>
 
-  <a href="#" class="menu-item active" onclick="switchTab('dashboard', this)">
-    🏠 Dashboard
-  </a>
+.thumb-img {
+  width: 55px;
+  height: 40px;
+  border-radius: 5px;
+  object-fit: cover;
+  border: 1px solid #ddd;
+}
 
-  <a href="#" class="menu-item" onclick="switchTab('usuarios', this)">
-    👥 Usuarios
-  </a>
 
-  <a href="#" class="menu-item" onclick="switchTab('hospedajes', this)">
-    🏡 Hospedajes
-  </a>
+.section-view {
+  display: none;
+}
+.section-view.active {
+  display: block;
+}
 
-  <a href="/index.html" class="menu-item">🌐 Ir al Sitio Web</a>
+    </style>
+  </head>
+  <body>
+    <aside class="sidebar">
+      <div class="logo">
+        <span>🛡️ EcoAdmin</span>
+      </div>
 
-  <a href="#" onclick="logout()" class="menu-item logout">🚪 Cerrar Sesión</a>
-</aside>
+      <a
+        href="#"
+        class="menu-item active"
+        onclick="switchTab('usuarios', this)"
+      >
+      <a href="#" class="menu-item" onclick="switchTab('dashboard', this)">
+  <span>🏠</span> Dashboard
+</a>
 
-<!-- CONTENIDO -->
-<main class="main-content">
+<a href="#" class="menu-item active" onclick="switchTab('usuarios', this)">
+  <span>👥</span> Usuarios
+</a>
 
-    <h1 id="pageTitle">Dashboard del Administrador</h1>
+<a href="#" class="menu-item" onclick="switchTab('hospedajes', this)">
+  <span>🏡</span> Hospedajes
+</a>
 
-    <!-- KPIs -->
-    <div class="kpi-grid">
-        <div class="kpi-card">
-            <div class="kpi-label">Usuarios Totales</div>
-            <div class="kpi-value" id="kpiUsers">0</div>
+      <a href="/index.html" class="menu-item">
+        <span>🌐</span> Ir al Sitio Web
+      </a>
+
+      <a href="#" onclick="logout()" class="menu-item logout">
+        <span>🚪</span> Cerrar Sesión
+      </a>
+    </aside>
+
+    <main class="main-content">
+      <header>
+        <div>
+          <h1 id="pageTitle">Gestión de Usuarios</h1>
+          <p style="color: #666; font-size: 0.9rem">
+            Panel de administración general
+          </p>
         </div>
+      </header>
+
+      <div id="view-usuarios" class="section-view active">
+        <div class="kpi-grid">
         <div class="kpi-card">
-            <div class="kpi-label">Hospedajes Registrados</div>
-            <div class="kpi-value" id="kpiHotels">0</div>
+          <div class="kpi-label">Usuarios Totales</div>
+          <div class="kpi-value" id="kpiUsers">0</div>
         </div>
-        <div class="kpi-card">
-            <div class="kpi-label">Reservas Totales</div>
-            <div class="kpi-value" id="kpiReservas">0</div>
+        <div class="kpi-card" style="border-color: #f39c12">
+          <div class="kpi-label">Hospedajes Activos</div>
+          <div class="kpi-value" id="kpiHotels">0</div>
         </div>
-    </div>
-
-    <!-- ⭐⭐⭐ AÑADIDO AL DASHBOARD ⭐⭐⭐ -->
-    <div class="table-container">
-        <h3>Usuarios Registrados</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Usuario</th>
-                    <th>Email</th>
-                    <th>Rol</th>
-                </tr>
-            </thead>
-            <tbody id="tablaDashboardUsuarios">
-                <tr><td colspan="4" style="text-align:center">Cargando...</td></tr>
-            </tbody>
-        </table>
-    </div>
-
-    <div class="table-container">
-        <h3>Hospedajes Registrados</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Hospedaje</th>
-                    <th>Ubicación</th>
-                    <th>Precio</th>
-                    <th>Disponibilidad</th>
-                </tr>
-            </thead>
-            <tbody id="tablaDashboardHospedajes">
-                <tr><td colspan="5" style="text-align:center">Cargando...</td></tr>
-            </tbody>
-        </table>
-    </div>
-    <!-- ⭐⭐⭐ FIN DE BLOQUE AÑADIDO ⭐⭐⭐ -->
-
-
-    <!-- VISTA USUARIOS -->
-    <div id="view-usuarios" class="section-view">
+      </div>
         <div class="table-container">
-            <h3>Gestión de Usuarios</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Usuario</th>
-                        <th>Email</th>
-                        <th>Rol</th>
-                        <th style="text-align:right">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="tablaUsuarios"></tbody>
-            </table>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Usuario</th>
+                <th>Rol</th>
+                <th>Email</th>
+                <th style="text-align: right">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tablaUsuarios">
+              <tr>
+                <td colspan="5">Cargando...</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+      </div>
+      
+      <!-- ░░░ DASHBOARD DEL ADMINISTRADOR ░░░ -->
+<div id="view-dashboard" class="section-view">
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-value" id="dashUsuarios">0</div>
+      <div class="kpi-label">Número de usuarios registrados</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-value" id="dashHospedajes">0</div>
+      <div class="kpi-label">Número de hospedajes</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-value" id="dashReservas">0</div>
+      <div class="kpi-label">Reservas totales</div>
+    </div>
+  </div>
+
+  <div style="display:flex; gap:25px; margin-top:30px;">
+    
+    <div class="table-container" style="flex:1;">
+      <h3 style="margin-bottom:15px;">Gestión de usuarios</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Rol</th>
+          </tr>
+        </thead>
+        <tbody id="dashTablaUsuarios">
+          <tr><td colspan="2">Cargando...</td></tr>
+        </tbody>
+      </table>
     </div>
 
-    <!-- VISTA HOSPEDAJES -->
-    <div id="view-hospedajes" class="section-view">
+    <div class="table-container" style="flex:1;">
+      <h3 style="margin-bottom:15px;">Gestión de hospedajes</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Ubicación</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody id="dashTablaHospedajes">
+          <tr><td colspan="3">Cargando...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+</div>
+
+      <div id="view-hospedajes" class="section-view">
         <div class="table-container">
-            <h3>Gestión de Hospedajes</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Ubicación</th>
-                        <th>Precio</th>
-                        <th>Disponibilidad</th>
-                        <th style="text-align:right">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="tablaHospedajes"></tbody>
-            </table>
+          <h3>Listado Global de Propiedades</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Foto</th>
+                <th>Propiedad</th>
+                <th>Ubicación</th>
+                <th>Dueño</th>
+                <th>Precio</th>
+                <th style="text-align: right">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tablaHospedajes">
+              <tr>
+                <td colspan="7">Cargando...</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-    </div>
-
-</main>
-
-<script>
-
-/* ============= AUTENTICACIÓN ============= */
-const usuario = JSON.parse(localStorage.getItem("usuarioLogueado"));
-const token = localStorage.getItem("jwt");
-
-if (!usuario || usuario.rol !== "ADMIN" || !token) {
-  window.location.href = "/index.html";
-}
-
-const headersAuth = {
-  "Content-Type": "application/json",
-  Authorization: "Bearer " + token
-};
+      </div>
+    </main>
 
 
-/* ============= CAMBIO DE TABS ============= */
-function switchTab(tab, element) {
-  document.querySelectorAll(".menu-item").forEach(el => el.classList.remove("active"));
-  element.classList.add("active");
+    <script>
+      const usuario = JSON.parse(localStorage.getItem("usuarioLogueado"));
+      const token = localStorage.getItem("jwt");
 
-  document.querySelectorAll(".section-view").forEach(s => s.classList.remove("active"));
+      if (!usuario || usuario.rol !== "ADMIN" || !token) {
+        window.location.href = "/index.html";
+      }
 
-  if (tab !== "dashboard") {
-    document.getElementById(`view-${tab}`).classList.add("active");
-  }
+      const headersAuth = {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      };
 
-  const titles = {
-    dashboard: "Dashboard",
-    usuarios: "Gestión de Usuarios",
-    hospedajes: "Gestión de Hospedajes"
-  };
+      function switchTab(tabName, element) {
+        document
+          .querySelectorAll(".menu-item")
+          .forEach((el) => el.classList.remove("active"));
+        if (element) element.classList.add("active");
 
-  document.getElementById("pageTitle").innerText = titles[tab];
-}
+        document
+          .querySelectorAll(".section-view")
+          .forEach((el) => el.classList.remove("active"));
+        document.getElementById(`view-${tabName}`).classList.add("active");
 
+        const titulos = {
+          usuarios: "Gestión de Usuarios",
+          hospedajes: "Gestión de Hospedajes",
+          dashboard:"Dashboard del administrador"
+        };
+        document.getElementById("pageTitle").innerText = titulos[tabName];
+      }
 
-/* ============= CARGAR STATS ============= */
-async function cargarStats() {
-  const res = await fetch("http://localhost:8080/api/admin/stats", { headers: headersAuth });
-  const data = await res.json();
+      async function initData() {
+        try {
+          const resStats = await fetch("/api/admin/stats", {
+            headers: headersAuth,
+          });
+          const stats = await resStats.json();
+          document.getElementById("kpiUsers").innerText = stats.usuarios;
+          document.getElementById("kpiHotels").innerText = stats.hospedajes;
 
-  document.getElementById("kpiUsers").innerText = data.usuarios;
-  document.getElementById("kpiHotels").innerText = data.hospedajes;
-  document.getElementById("kpiReservas").innerText = data.reservas || 0;
-}
+          cargarUsuarios();
+          cargarHospedajes(); 
+        } catch (error) {
+          console.error(error);
+          alert("Error de conexión");
+        }
+      }
 
+      async function cargarUsuarios() {
+        const res = await fetch("/api/admin/usuarios", {
+          headers: headersAuth,
+        });
+        const users = await res.json();
+        const tbody = document.getElementById("tablaUsuarios");
+        tbody.innerHTML = "";
 
-/* ============= CARGAR USUARIOS (Dashboard) ============= */
-async function cargarUsuariosDashboard() {
-  const res = await fetch("http://localhost:8080/api/admin/usuarios", { headers: headersAuth });
-  const users = await res.json();
+        users.forEach((u) => {
+          const badgeClass = `badge-${u.rol.toLowerCase()}`;
+          const btnDelete =
+            u.email === usuario.email
+              ? `<span style="color:#aaa; font-size:0.8rem">Actual</span>`
+              : `<button class="btn-icon btn-delete" onclick="eliminarUsuario(${u.id})" title="Eliminar Usuario">🗑️</button>`;
 
-  const tbody = document.getElementById("tablaDashboardUsuarios");
-  tbody.innerHTML = "";
+          tbody.innerHTML += `
+                <tr>
+                    <td>#${u.id}</td>
+                    <td><div style="font-weight:600">${u.nombre} ${u.apellidos}</div></td>
+                    <td><span class="badge ${badgeClass}">${u.rol}</span></td>
+                    <td style="color:#666">${u.email}</td>
+                    <td style="text-align: right;">${btnDelete}</td>
+                </tr>
+            `;
+        });
+      }
 
-  users.forEach(u => {
-    tbody.innerHTML += `
-      <tr>
-        <td>${u.id}</td>
-        <td>${u.nombre}</td>
-        <td>${u.email}</td>
-        <td>${u.rol}</td>
-      </tr>
-    `;
-  });
-}
+      async function cargarHospedajes() {
+        try {
+          const res = await fetch("/api/hospedajes", {
+            method: "GET",
+            headers: headersAuth,
+          });
 
+          if (!res.ok) throw new Error("Error fetching hospedajes");
 
-/* ============= CARGAR HOSPEDAJES (Dashboard) ============= */
-async function cargarHospedajesDashboard() {
-  const res = await fetch("http://localhost:8080/api/admin/hospedajes", { headers: headersAuth });
-  const hotels = await res.json();
+          const respuesta = await res.json();
 
-  const tbody = document.getElementById("tablaDashboardHospedajes");
-  tbody.innerHTML = "";
+          const listaHoteles = respuesta.content
+            ? respuesta.content
+            : respuesta;
 
-  hotels.forEach(h => {
-    tbody.innerHTML += `
-      <tr>
-        <td>${h.id}</td>
-        <td>${h.nombre}</td>
-        <td>${h.ubicacion}</td>
-        <td>S/ ${h.precioNoche}</td>
-        <td>${h.disponibilidad ? "Disponible" : "No disponible"}</td>
-      </tr>
-    `;
-  });
-}
+          const tbody = document.getElementById("tablaHospedajes");
+          tbody.innerHTML = "";
 
+          if (!listaHoteles || listaHoteles.length === 0) {
+            tbody.innerHTML =
+              "<tr><td colspan='7' style='text-align:center'>No hay hospedajes registrados.</td></tr>";
+            return;
+          }
 
-/* ============= CARGAR USUARIOS (Vista Usuarios) ============= */
-async function cargarUsuarios() {
-  const res = await fetch("http://localhost:8080/api/admin/usuarios", { headers: headersAuth });
-  const users = await res.json();
+          listaHoteles.forEach((h) => {
+            const imgUrl = h.imagenUrl ? h.imagenUrl : "/img/logo.jpg";
 
-  const tbody = document.getElementById("tablaUsuarios");
-  tbody.innerHTML = "";
+            tbody.innerHTML += `
+                    <tr>
+                        <td>#${h.id}</td>
+                        <td>
+                            <img src="${imgUrl}" class="thumb-img" onerror="this.src='/img/logo.jpg'">
+                        </td>
+                        <td>
+                            <div style="font-weight:600; color:var(--primary)">${h.nombre}</div>
+                        </td>
+                        <td>${h.ubicacion}</td>
+                        <td>${h.nombrePropietario}</td>
+                        <td>S/ ${h.precio}</td>
+                        <td style="text-align: right;">
+                            <button class="btn-icon btn-delete" onclick="eliminarHospedaje(${h.id})" title="Eliminar Propiedad">🗑️</button>
+                        </td>
+                    </tr>
+                `;
+          });
+        } catch (error) {
+          console.error("Error cargando hospedajes:", error);
+        }
+      }
 
-  users.forEach(u => {
-    tbody.innerHTML += `
-      <tr>
-        <td>${u.id}</td>
-        <td>${u.nombre}</td>
-        <td>${u.email}</td>
-        <td>${u.rol}</td>
-        <td style="text-align:right">
-            <button class="btn-icon" onclick="eliminarUsuario(${u.id})">🗑️</button>
-        </td>
-      </tr>
-    `;
-  });
-}
+      async function eliminarUsuario(id) {
+        if (
+          !confirm("⚠️ ¿Estás seguro? Se borrará el usuario y TODOS sus datos.")
+        )
+          return;
+        try {
+          const res = await fetch(`/api/admin/usuarios/${id}`, {
+            method: "DELETE",
+            headers: headersAuth,
+          });
+          if (res.ok) initData();
+          else alert("No se pudo eliminar.");
+        } catch (e) {
+          console.error(e);
+        }
+      }
 
+      async function eliminarHospedaje(id) {
+        if (!confirm("⚠️ ¿Eliminar esta propiedad permanentemente?")) return;
+        try {
+          const res = await fetch(`/api/admin/hospedajes/${id}`, {
+            method: "DELETE",
+            headers: headersAuth,
+          });
+          if (res.ok) initData();
+          else alert("Error al eliminar propiedad.");
+        } catch (e) {
+          console.error(e);
+        }
+      }
 
-/* ============= CARGAR HOSPEDAJES (Vista Hospedajes) ============= */
-async function cargarHospedajes() {
-  const res = await fetch("http://localhost:8080/api/admin/hospedajes", { headers: headersAuth });
-  const hotels = await res.json();
+      function logout() {
+        localStorage.clear();
+        window.location.href = "/index.html";
+      }
 
-  const tbody = document.getElementById("tablaHospedajes");
-  tbody.innerHTML = "";
-
-  hotels.forEach(h => {
-    tbody.innerHTML += `
-      <tr>
-        <td>${h.id}</td>
-        <td>${h.nombre}</td>
-        <td>${h.ubicacion}</td>
-        <td>S/ ${h.precioNoche}</td>
-        <td>${h.disponibilidad ? "Disponible" : "No disponible"}</td>
-        <td style="text-align:right">
-            <button class="btn-icon" onclick="eliminarHospedaje(${h.id})">🗑️</button>
-        </td>
-      </tr>
-    `;
-  });
-}
-
-
-/* ============= ACCIONES ============= */
-async function eliminarUsuario(id) {
-  if (!confirm("¿Eliminar usuario?")) return;
-  await fetch(`http://localhost:8080/api/admin/usuarios/${id}`, {
-    method: "DELETE", headers: headersAuth
-  });
-  cargarUsuarios();
-  cargarUsuariosDashboard();
-  cargarStats();
-}
-
-async function eliminarHospedaje(id) {
-  if (!confirm("¿Eliminar hospedaje?")) return;
-  await fetch(`http://localhost:8080/api/admin/hospedajes/${id}`, {
-    method: "DELETE", headers: headersAuth
-  });
-  cargarHospedajes();
-  cargarHospedajesDashboard();
-  cargarStats();
-}
-
-function logout() {
-  localStorage.clear();
-  window.location.href = "/index.html";
-}
-
-
-/* ============= EJECUCIÓN INICIAL ============= */
-cargarStats();
-cargarUsuariosDashboard();
-cargarHospedajesDashboard();
-cargarUsuarios();
-cargarHospedajes();
-
-</script>
-</body>
+      initData();
+    </script>
+  </body>
 </html>
