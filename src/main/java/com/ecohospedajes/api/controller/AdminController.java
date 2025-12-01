@@ -63,14 +63,11 @@ public class AdminController {
         return ResponseEntity.ok().build();
     }
 
-
-    // 5. Listar Todas las Reservas
     @GetMapping("/reservas")
     public ResponseEntity<List<Reserva>> listarReservas() {
         return ResponseEntity.ok(reservaRepository.findAll());
     }
 
-    // 6. Eliminar Reserva
     @DeleteMapping("/reservas/{id}")
     public ResponseEntity<?> eliminarReserva(@PathVariable Long id) {
         reservaRepository.deleteById(id);

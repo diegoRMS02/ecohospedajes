@@ -42,7 +42,7 @@ public class UsuarioService {
         usuario.setApellidos(datos.getApellidos());
 
         if (datos.getPassword() != null && !datos.getPassword().isEmpty()) {
-            usuario.setPassword(passwordEncoder.encode(datos.getPassword())); // Encriptar si cambia
+            usuario.setPassword(passwordEncoder.encode(datos.getPassword())); 
         }
 
         return usuarioRepository.save(usuario);

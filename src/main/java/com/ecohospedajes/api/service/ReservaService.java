@@ -32,81 +32,44 @@ public class ReservaService {
 
     public DatosReserva crearReserva(DatosReserva datos) {
 
-        // Validar fechas
         if (!datos.getCheckout().isAfter(datos.getCheckin())) {
-            throw new RuntimeException("La fecha de salida debe ser después de la fecha de entrada.");
+            throw new RuntimeException("La fecha de salida debe ser después de la entrada");
         }
 
-        public DatosReserva crearReserva(DatosReserva datos) {
-                if (!datos.getCheckout().isAfter(datos.getCheckin())) {
-                        throw new RuntimeException("La fecha de salida debe ser al menos un día después de la entrada");
-                }
+        List<Reserva> conflictos = reservaRepository.findReservasEnConflicto(
+                datos.getHospedajeId(),
+                datos.getCheckin(),
+                datos.getCheckout()
+        );
 
-                List<Reserva> conflictos = reservaRepository.findReservasEnConflicto(
-                                datos.getHospedajeId(),
-                                datos.getCheckin(),
-                                datos.getCheckout());
-
-                if (!conflictos.isEmpty()) {
-                        throw new RuntimeException("¡Lo sentimos! Esas fechas ya están ocupadas.");
-                }
-
-                Hospedaje hospedaje = hospedajeRepository.findById(datos.getHospedajeId())
-                                .orElseThrow(() -> new RuntimeException("Hospedaje no encontrado"));
-
-                Usuario usuario = usuarioRepository.findById(datos.getUsuarioId())
-                                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
-                long dias = ChronoUnit.DAYS.between(datos.getCheckin(), datos.getCheckout());
-                if (dias < 1)
-                        dias = 1;
-                double total = hospedaje.getPrecio() * dias;
-
-                Reserva reserva = new Reserva();
-                reserva.setCheckin(datos.getCheckin());
-                reserva.setCheckout(datos.getCheckout());
-                reserva.setPersonas(datos.getPersonas());
-                reserva.setPrecioTotal(total);
-                reserva.setHospedaje(hospedaje);
-                reserva.setUsuario(usuario);
-                reserva.setEstado("CONFIRMADA");
-
-                Reserva guardada = reservaRepository.save(reserva);
-
-                datos.setId(guardada.getId());
-                datos.setPrecioTotal(total);
-
-                return datos;
+        if (!conflictos.isEmpty()) {
+            throw new RuntimeException("¡Lo sentimos! Esas fechas ya están ocupadas.");
         }
 
-        // Buscar hospedaje
         Hospedaje hospedaje = hospedajeRepository.findById(datos.getHospedajeId())
-                .orElseThrow(() -> new RuntimeException("Hospedaje no encontrado."));
+                .orElseThrow(() -> new RuntimeException("Hospedaje no encontrado"));
 
-        // Buscar usuario
         Usuario usuario = usuarioRepository.findById(datos.getUsuarioId())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado."));
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        // Calcular noches
-        long noches = ChronoUnit.DAYS.between(datos.getCheckin(), datos.getCheckout());
+        long dias = ChronoUnit.DAYS.between(datos.getCheckin(), datos.getCheckout());
+        if (dias < 1) dias = 1;
 
-        // Calcular precio total
-        double precioTotal = noches * hospedaje.getPrecio();
+        double total = hospedaje.getPrecio() * dias;
 
-        // Crear reserva
         Reserva reserva = new Reserva();
         reserva.setCheckin(datos.getCheckin());
         reserva.setCheckout(datos.getCheckout());
         reserva.setPersonas(datos.getPersonas());
-        reserva.setPrecioTotal(precioTotal);
-        reserva.setUsuario(usuario);
+        reserva.setPrecioTotal(total);
         reserva.setHospedaje(hospedaje);
-        reserva.setEstado("ACTIVA");
-        reservaRepository.save(reserva);
+        reserva.setUsuario(usuario);
+        reserva.setEstado("CONFIRMADA");
 
-        // Rellenar DTO de respuesta
-        datos.setId(reserva.getId());
-        datos.setPrecioTotal(precioTotal);
+        Reserva guardada = reservaRepository.save(reserva);
+
+        datos.setId(guardada.getId());
+        datos.setPrecioTotal(total);
 
         return datos;
     }
@@ -126,10 +89,10 @@ public class ReservaService {
 
     public void cancelarReserva(Long id) {
         Reserva reserva = reservaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Reserva no encontrada."));
+                .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
 
         if (java.time.LocalDate.now().isAfter(reserva.getCheckin())) {
-            throw new RuntimeException("No se pueden cancelar reservas ya iniciadas o pasadas.");
+            throw new RuntimeException("No se pueden cancelar reservas pasadas o en curso.");
         }
 
         reserva.setEstado("CANCELADA");
@@ -139,9 +102,6 @@ public class ReservaService {
 
     private ReservaResponse toResponse(Reserva r) {
         ReservaResponse resp = new ReservaResponse();
-                if (java.time.LocalDate.now().isAfter(reserva.getCheckin())) {
-                        throw new RuntimeException("No se pueden cancelar reservas pasadas o en curso.");
-                }
 
         resp.setId(r.getId());
         resp.setCheckin(r.getCheckin());
@@ -151,9 +111,9 @@ public class ReservaService {
         resp.setEstado(r.getEstado());
 
         if (r.getUsuario() != null) {
-            String nombre = r.getUsuario().getNombre();
-            String apellido = r.getUsuario().getApellidos() != null ? r.getUsuario().getApellidos() : "";
-            resp.setNombreCliente((nombre + " " + apellido).trim());
+            String nom = r.getUsuario().getNombre();
+            String ape = r.getUsuario().getApellidos() != null ? r.getUsuario().getApellidos() : "";
+            resp.setNombreCliente((nom + " " + ape).trim());
         }
 
         if (r.getHospedaje() != null) {
@@ -162,13 +122,12 @@ public class ReservaService {
 
         return resp;
     }
-}
-        public void cambiarEstado(Long id, String nuevoEstado) {
-    Reserva reserva = reservaRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
 
-    reserva.setEstado(nuevoEstado);
-    reservaRepository.save(reserva);
-}
+    public void cambiarEstado(Long id, String nuevoEstado) {
+        Reserva reserva = reservaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
 
+        reserva.setEstado(nuevoEstado);
+        reservaRepository.save(reserva);
+    }
 }
