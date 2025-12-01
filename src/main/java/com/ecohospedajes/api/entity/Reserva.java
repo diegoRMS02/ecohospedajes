@@ -33,12 +33,10 @@ public class Reserva {
 
     private String estado = "CONFIRMADA"; 
 
-    // Relación: Quien reserva
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
-    // Relación: Qué se reserva
     @ManyToOne
     @JoinColumn(name = "hospedaje_id", nullable = false)
     private Hospedaje hospedaje;

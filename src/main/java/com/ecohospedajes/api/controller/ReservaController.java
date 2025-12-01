@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -56,4 +57,17 @@ public class ReservaController {
         reservaService.cancelarReserva(id);
         return ResponseEntity.ok(Map.of("mensaje", "Reserva cancelada con éxito"));
     }
+
+    @PutMapping("/{id}/estado")
+    public ResponseEntity<?> cambiarEstado(
+        @PathVariable Long id,
+        @RequestBody Map<String, String> body) {
+
+    String nuevoEstado = body.get("estado");
+
+    reservaService.cambiarEstado(id, nuevoEstado);
+
+    return ResponseEntity.ok(Map.of("mensaje", "Estado actualizado con éxito"));
+}
+
 }

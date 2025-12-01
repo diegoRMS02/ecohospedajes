@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 
 public class DatosHospedaje {
 
-    private Long id; // Para cuando lo devolvemos al frontend
+    private Long id; 
 
     @NotBlank(message = "El nombre del hospedaje es obligatorio")
     private String nombre;
@@ -21,13 +21,11 @@ public class DatosHospedaje {
     private String imagenUrl;
     private String descripcion;
 
-    // Solo pedimos el ID del dueño, no todo el objeto Usuario
     @NotNull(message = "El ID del dueño es obligatorio")
     private Long propietarioId;
 
-    // Para mostrar el nombre del dueño en la tarjeta (opcional pero útil)
     private String nombrePropietario;
-    private String servicios; // Recibimos la lista de servicios
+    private String servicios; 
 
     public String getServicios() {
         return servicios;
@@ -37,7 +35,6 @@ public class DatosHospedaje {
         this.servicios = servicios;
     }
 
-    // Getters y Setters
     public Long getId() {
         return id;
     }

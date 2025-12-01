@@ -17,7 +17,6 @@ import com.ecohospedajes.api.entity.Usuario;
 @Service
 public class TokenService {
 
-    // En producción esto debe ir en variable de entorno, por ahora lo ponemos aquí
     @Value("${api.security.secret:mi_secreto_super_seguro_123}")
     private String apiSecret;
 
@@ -30,7 +29,7 @@ public class TokenService {
                     .withClaim("id", usuario.getId())
                     .withClaim("rol", usuario.getRol().name())
                     .withClaim("nombre", usuario.getNombre())
-                    .withClaim("apellidos", usuario.getApellidos()) // <--- ¡AÑADE ESTA LÍNEA!
+                    .withClaim("apellidos", usuario.getApellidos()) 
                     .withExpiresAt(generarFechaExpiracion())
                     .sign(algorithm);
         } catch (JWTCreationException exception) {
@@ -60,7 +59,6 @@ public class TokenService {
     }
 
     private Instant generarFechaExpiracion() {
-        // El token dura 2 horas
         return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-05:00"));
     }
 }

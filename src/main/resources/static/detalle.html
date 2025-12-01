@@ -138,7 +138,6 @@
       const params = new URLSearchParams(window.location.search);
       const id = params.get("id");
 
-      // DICCIONARIO DE ICONOS
       const iconosMap = {
         WIFI: "📶 Wifi Rural",
         PISCINA: "🏊 Piscina Privada",
@@ -155,7 +154,6 @@
 
           const h = await res.json();
 
-          // Llenar Textos Básicos
           document.getElementById("tituloHospedaje").innerText = h.nombre;
           document.getElementById("ubicacionHospedaje").innerText =
             "📍 " + h.ubicacion;
@@ -168,13 +166,11 @@
           document.getElementById("descripcionHospedaje").innerText =
             h.descripcion;
 
-          // Llenar Precios
           document.getElementById("precioHospedaje").innerText =
             "S/ " + h.precio;
           document.getElementById("tarifaBase").innerText = "S/ " + h.precio;
           document.getElementById("totalEstimado").innerText = "S/ " + h.precio;
 
-          // --- LÓGICA DE SERVICIOS ---
           const divServicios = document.getElementById("listaServicios");
           divServicios.innerHTML = "";
 
@@ -193,9 +189,7 @@
               "<p style='color:#777;'>Este lugar no ha especificado servicios adicionales.</p>";
           }
 
-          // --- ACCIÓN BOTÓN (SEGURIDAD AÑADIDA) ---
           document.getElementById("btnReservar").onclick = () => {
-            // 1. Verificamos si hay usuario logueado ANTES de ir al formulario
             const token = localStorage.getItem("jwt");
 
             if (!token) {
@@ -204,13 +198,11 @@
               return;
             }
 
-            // 2. Si hay token, lo dejamos pasar a la pantalla de reserva
             window.location.href = `/reserva.html?id=${
               h.id
             }&nombre=${encodeURIComponent(h.nombre)}&precio=${h.precio}`;
           };
 
-          // Mostrar
           document.getElementById("loading").style.display = "none";
           document.getElementById("detalle-container").style.display = "block";
         } catch (error) {

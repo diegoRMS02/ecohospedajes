@@ -32,16 +32,14 @@ public class Hospedaje {
 
     private String imagenUrl;
 
-    @Column(length = 1000) // Descripción larga
+    @Column(length = 1000) 
     private String descripcion;
 
-    // Relación: Muchos hospedajes -> Un Dueño
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario propietario;
     private String servicios;
 
-    // Constructor vacío
     public Hospedaje() {
     }
 
@@ -53,7 +51,6 @@ public class Hospedaje {
         this.servicios = servicios;
     }
 
-    // Getters y Setters
     public Long getId() {
         return id;
     }

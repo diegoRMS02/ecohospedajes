@@ -2,7 +2,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const navMenu = document.getElementById("menuNav");
   const usuarioLogueado = JSON.parse(localStorage.getItem("usuarioLogueado"));
 
-  // Función de utilidad para crear un elemento <a> (usado para Logout)
   const createLink = (href, text, extraStyle = "") => {
     const link = document.createElement("a");
     link.href = href;
@@ -18,14 +17,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     navMenu.innerHTML = "";
 
-    // Enlaces base
     navMenu.innerHTML += `<a href="/index.html">Inicio</a>`;
     navMenu.innerHTML += `<a href="/catalogo.html">Catálogo</a>`;
 
     if (usuarioLogueado) {
       let menuExtraHTML = "";
 
-      // 1. Enlace Funcional según Rol
       if (usuarioLogueado.rol === "DUENO") {
         menuExtraHTML = `
                     <a href="/dashboard-dueno.html" style="color:#205c3b; font-weight:bold; margin-right:10px;">Dashboard</a>
@@ -37,10 +34,8 @@ document.addEventListener("DOMContentLoaded", () => {
         menuExtraHTML = `<a href="/admin/panel.html" style="color:#d63031; font-weight:bold; margin-right:15px;">Admin</a>`;
       }
 
-      // Inyectar enlaces especiales
       navMenu.innerHTML += menuExtraHTML;
 
-      // 2. Enlace de Perfil (Nombre + Lápiz)
       navMenu.innerHTML += `
                 <a href="/perfil-usuario.html" style="margin-left:10px; color:#555; font-size:0.9em; text-decoration:none; display:inline-flex; align-items:center; gap:5px;" title="Editar Perfil">
                     <img src="https://ui-avatars.com/api/?name=${usuarioLogueado.nombre}+${usuarioLogueado.apellidos}&background=205c3b&color=fff&rounded=true" width="30" style="border-radius:50%; margin-right:5px; box-shadow: 0 0 0 2px rgba(32, 92, 59, 0.2);">
@@ -49,7 +44,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 </a>
             `;
 
-      // 3. Botón de Salida
       const logoutLink = createLink(
         "#",
         "Salir",
@@ -58,7 +52,6 @@ document.addEventListener("DOMContentLoaded", () => {
       logoutLink.addEventListener("click", logoutGlobal);
       navMenu.appendChild(logoutLink);
     } else {
-      // Usuario NO Logueado
       navMenu.appendChild(createLink("/login.html", "Iniciar Sesión"));
     }
   };
@@ -72,7 +65,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   renderNav();
 
-  // === 2. LOGICA DEL FOOTER AUTOMÁTICO (Sin cambios) ===
   const footer = document.querySelector("footer");
   if (footer) {
     footer.innerHTML = `

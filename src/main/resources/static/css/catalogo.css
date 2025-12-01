@@ -1,25 +1,22 @@
-/* === LAYOUT PRINCIPAL === */
 .main-layout {
   display: grid;
-  /* Sidebar de 300px fijo, el resto (1fr) para las tarjetas */
   grid-template-columns: 300px 1fr;
   gap: 40px;
-  max-width: 1400px; /* Aumentamos ancho para llenar pantalla */
+  max-width: 1400px; 
   margin: 40px auto;
   padding: 0 40px;
   align-items: start;
-  min-height: 60vh; /* Para empujar el footer */
+  min-height: 60vh; 
 }
 
-/* === SIDEBAR DE FILTROS (Más robusto) === */
 .filters-sidebar {
   background: white;
-  padding: 30px; /* Más espacio interno */
+  padding: 30px; 
   border-radius: 16px;
   border: 1px solid #e0e0e0;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   position: sticky;
-  top: 100px; /* Se queda fijo al bajar */
+  top: 100px; 
   height: fit-content;
 }
 
@@ -44,14 +41,13 @@
   font-size: 0.95rem;
 }
 
-/* Inputs "Chunky" (Más grandes y modernos) */
 .filter-input {
   width: 100%;
-  padding: 12px 15px; /* Más relleno */
+  padding: 12px 15px; 
   border: 1px solid #ccc;
   border-radius: 8px;
   font-size: 1rem;
-  box-sizing: border-box; /* Clave para que no se salga del borde */
+  box-sizing: border-box; 
   background-color: #f9f9f9;
   transition: all 0.3s;
 }
@@ -63,17 +59,15 @@
   box-shadow: 0 0 0 3px rgba(32, 92, 59, 0.1);
 }
 
-/* Inputs de Precio en línea */
 .price-inputs {
   display: flex;
   gap: 10px;
   align-items: center;
 }
 
-/* Botones del Filtro */
 .filter-actions {
   display: flex;
-  flex-direction: column; /* Uno debajo del otro */
+  flex-direction: column; 
   gap: 10px;
   margin-top: 30px;
 }
@@ -113,7 +107,6 @@
   border-color: #ccc;
 }
 
-/* === TARJETAS DE RESULTADOS === */
 .results-header {
   margin-bottom: 20px;
   font-size: 1.1rem;
@@ -136,7 +129,7 @@
   border: 1px solid #f0f0f0;
   display: flex;
   flex-direction: row;
-  height: 240px; /* Un poco más alta */
+  height: 240px; 
   transition: transform 0.2s;
 }
 
@@ -146,7 +139,7 @@
 }
 
 .card img {
-  width: 320px; /* Imagen más ancha */
+  width: 320px; 
   min-width: 320px;
   height: 100%;
   object-fit: cover;
@@ -184,11 +177,10 @@
   overflow: hidden;
 }
 
-/* Footer de tarjeta mejorado */
 .card-footer {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end; /* Alinea abajo */
+  align-items: flex-end; 
   margin-top: auto;
 }
 
@@ -219,7 +211,6 @@
   font-size: 1rem;
 }
 
-/* Paginación */
 .pagination {
   margin-top: 50px;
   display: flex;
@@ -250,11 +241,10 @@
   cursor: not-allowed;
 }
 
-/* RESPONSIVE */
 @media (max-width: 900px) {
   .main-layout {
     grid-template-columns: 1fr;
-  } /* Sidebar pasa arriba */
+  } 
   .filters-sidebar {
     position: static;
     margin-bottom: 30px;

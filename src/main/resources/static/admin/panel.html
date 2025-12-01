@@ -285,6 +285,9 @@
     if (!usuario || usuario.rol !== "ADMIN") {
       window.location.href = "/index.html";
     }
+    <script>
+      const usuario = JSON.parse(localStorage.getItem("usuarioLogueado"));
+      const token = localStorage.getItem("jwt");
 
     const headersAuth = {
       "Content-Type": "application/json",

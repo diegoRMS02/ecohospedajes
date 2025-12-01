@@ -37,7 +37,6 @@ public class AdminController {
         this.reservaRepository = reservaRepository;
     }
 
-    // 1. Estadísticas Generales
     @GetMapping("/stats")
     public ResponseEntity<Map<String, Long>> obtenerEstadisticas() {
         Map<String, Long> stats = new HashMap<>();
@@ -47,20 +46,17 @@ public class AdminController {
         return ResponseEntity.ok(stats);
     }
 
-    // 2. Listar Todos los Usuarios
     @GetMapping("/usuarios")
     public ResponseEntity<List<Usuario>> listarUsuarios() {
         return ResponseEntity.ok(usuarioRepository.findAll());
     }
 
-    // 3. Eliminar Usuario
     @DeleteMapping("/usuarios/{id}")
     public ResponseEntity<?> eliminarUsuario(@PathVariable Long id) {
         usuarioRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }
 
-    // 4. Eliminar Hospedaje
     @DeleteMapping("/hospedajes/{id}")
     public ResponseEntity<?> eliminarHospedaje(@PathVariable Long id) {
         hospedajeRepository.deleteById(id);
