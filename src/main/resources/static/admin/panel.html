@@ -189,7 +189,6 @@
 
     <section id="view-usuarios" class="section-view active">
       <div class="table-container">
-
         <table>
           <thead>
             <tr>
@@ -204,7 +203,6 @@
             <tr><td colspan="5">Cargando...</td></tr>
           </tbody>
         </table>
-
       </div>
     </section>
 
@@ -248,12 +246,10 @@
               <th style="text-align:right">Acciones</th>
             </tr>
           </thead>
-
           <tbody id="tablaReservas">
             <tr><td colspan="8">Cargando...</td></tr>
           </tbody>
         </table>
-
       </div>
     </section>
 
@@ -267,9 +263,7 @@
       window.location.href = "/index.html";
     }
 
-    const headersAuth = {
-      "Authorization": "Bearer " + token
-    };
+    const headersAuth = { "Authorization": "Bearer " + token };
 
     function switchTab(tab, element) {
       document.querySelectorAll(".menu-item").forEach(e => e.classList.remove("active"));
@@ -290,18 +284,13 @@
     window.onload = initData;
 
     async function initData() {
-      try {
-        const stats = await (await fetch("/api/admin/stats", { headers: headersAuth })).json();
-        document.getElementById("kpiUsers").textContent = stats.usuarios;
-        document.getElementById("kpiHotels").textContent = stats.hospedajes;
+      const stats = await (await fetch("/api/admin/stats", { headers: headersAuth })).json();
+      document.getElementById("kpiUsers").textContent = stats.usuarios;
+      document.getElementById("kpiHotels").textContent = stats.hospedajes;
 
-        cargarUsuarios();
-        cargarHospedajes();
-        cargarReservas();
-
-      } catch (error) {
-        console.error(error);
-      }
+      cargarUsuarios();
+      cargarHospedajes();
+      cargarReservas();
     }
 
     async function cargarUsuarios() {
@@ -323,28 +312,31 @@
                 ? "<i>(Actual)</i>"
                 : `<button class='btn-icon' onclick='eliminarUsuario(${u.id})'>🗑️</button>`}
             </td>
-          </tr>
-        `;
+          </tr>`;
       });
     }
 
     async function eliminarUsuario(id) {
       if (!confirm("¿Eliminar este usuario?")) return;
 
-      const res = await fetch(`/api/admin/usuarios/${id}`, {
+      await fetch(`/api/admin/usuarios/${id}`, {
         method: "DELETE",
         headers: headersAuth
       });
 
-      if (res.ok) cargarUsuarios();
+      cargarUsuarios();
     }
 
     async function cargarHospedajes() {
-      const data = await (await fetch("/api/hospedajes", { headers: headersAuth })).json();
+
+      const respuesta = await (await fetch("/api/hospedajes", { headers: headersAuth })).json();
+
+      const lista = respuesta.content ? respuesta.content : respuesta;
+
       const tbody = document.getElementById("tablaHospedajes");
       tbody.innerHTML = "";
 
-      data.forEach(h => {
+      lista.forEach(h => {
         const img = h.imagenUrl || "/img/logo.jpg";
 
         tbody.innerHTML += `
@@ -358,29 +350,31 @@
             <td style="text-align:right">
               <button class="btn-icon" onclick="eliminarHospedaje(${h.id})">🗑️</button>
             </td>
-          </tr>
-        `;
+          </tr>`;
       });
     }
 
     async function eliminarHospedaje(id) {
       if (!confirm("¿Eliminar hospedaje?")) return;
 
-      const res = await fetch(`/api/hospedajes/${id}`, {
+      await fetch(`/api/hospedajes/${id}`, {
         method: "DELETE",
         headers: headersAuth
       });
 
-      if (res.ok) cargarHospedajes();
+      cargarHospedajes();
     }
 
     async function cargarReservas() {
-      const data = await (await fetch("/api/reservas", { headers: headersAuth })).json();
+
+      const respuesta = await (await fetch("/api/reservas", { headers: headersAuth })).json();
+
+      const lista = respuesta.content ? respuesta.content : respuesta;
 
       const tbody = document.getElementById("tablaReservas");
       tbody.innerHTML = "";
 
-      data.forEach(r => {
+      lista.forEach(r => {
         tbody.innerHTML += `
           <tr>
             <td>#${r.id}</td>
@@ -393,20 +387,19 @@
             <td style="text-align:right">
               <button class="btn-icon" onclick="eliminarReserva(${r.id})">🗑️</button>
             </td>
-          </tr>
-        `;
+          </tr>`;
       });
     }
 
     async function eliminarReserva(id) {
       if (!confirm("¿Eliminar reserva?")) return;
 
-      const res = await fetch(`/api/reservas/${id}`, {
+      await fetch(`/api/reservas/${id}`, {
         method: "DELETE",
         headers: headersAuth
       });
 
-      if (res.ok) cargarReservas();
+      cargarReservas();
     }
 
     function logout() {
