@@ -39,7 +39,7 @@ public class SecurityConfigurations {
 
                         .requestMatchers(HttpMethod.GET, "/api/hospedajes/**").permitAll()
 
-                        .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers("/api/admin/**").permitAll()
 
                         .requestMatchers(HttpMethod.POST, "/api/hospedajes").hasAuthority("DUENO")
                         .requestMatchers(HttpMethod.PUT, "/api/hospedajes/**").hasAuthority("DUENO")

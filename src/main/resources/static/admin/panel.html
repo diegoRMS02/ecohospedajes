@@ -4,476 +4,414 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Dashboard | EcoHospedajes</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      :root {
-        --primary: #205c3b;
-        --primary-light: #e8f5e9;
-        --danger: #d63031;
-        --dark: #2c3e50;
-        --gray: #f4f6f8;
-        --white: #ffffff;
-        --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-      }
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet"/>
 
-      * {
-        box-sizing: border-box;
-      }
+<style>
+/* ⭐ TODO TU CSS ⭐ */
+:root {
+  --primary: #1e5631;
+  --primary-dark: #184628;
+  --gray-bg: #f0f2f1;
+  --white: #ffffff;
+  --text-dark: #2e2e2e;
+}
 
-      body {
-        margin: 0;
-        font-family: "Inter", sans-serif;
-        background-color: var(--gray);
-        display: flex;
-        height: 100vh;
-        overflow: hidden;
-      }
+* { box-sizing: border-box; }
 
-      .sidebar {
-        width: 260px;
-        background-color: var(--white);
-        border-right: 1px solid #e0e0e0;
-        display: flex;
-        flex-direction: column;
-        padding: 20px;
-        flex-shrink: 0;
-      }
+body {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  background-color: var(--gray-bg);
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
 
-      .logo {
-        font-size: 1.4rem;
-        font-weight: 700;
-        color: var(--primary);
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 40px;
-      }
+/* SIDEBAR */
+.sidebar {
+  width: 260px;
+  background-color: var(--primary);
+  display: flex;
+  flex-direction: column;
+  padding: 25px 20px;
+  flex-shrink: 0;
+  color: var(--white);
+}
 
-      .menu-item {
-        padding: 12px 15px;
-        margin-bottom: 5px;
-        border-radius: 8px;
-        color: #666;
-        text-decoration: none;
-        font-weight: 500;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        cursor: pointer;
-        transition: all 0.3s;
-      }
+.logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 40px;
+}
 
-      .menu-item:hover,
-      .menu-item.active {
-        background-color: var(--primary-light);
-        color: var(--primary);
-      }
+.menu-item {
+  padding: 12px 15px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--white);
+  margin-bottom: 8px;
+  display: flex;
+  gap: 12px;
+  font-weight: 500;
+}
 
-      .menu-item.logout {
-        margin-top: auto;
-        color: var(--danger);
-      }
-      .menu-item.logout:hover {
-        background-color: #fee;
-      }
+.menu-item:hover,
+.menu-item.active {
+  background-color: var(--primary-dark);
+}
 
-      .main-content {
-        flex: 1;
-        overflow-y: auto;
-        padding: 30px 40px;
-      }
+.menu-item.logout {
+  margin-top: auto;
+  color: #ffd1d1;
+}
 
-      header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 30px;
-      }
+/* CONTENIDO */
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 40px 50px;
+}
 
-      h1 {
-        font-size: 1.8rem;
-        color: var(--dark);
-        margin: 0;
-      }
+h1 { font-size: 2rem; margin-bottom: 8px; }
 
-      .kpi-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        gap: 20px;
-        margin-bottom: 30px;
-      }
+/* KPI */
+.kpi-grid { display: flex; gap: 25px; margin-bottom: 40px; }
 
-      .kpi-card {
-        background: var(--white);
-        padding: 25px;
-        border-radius: 12px;
-        box-shadow: var(--shadow);
-        border-left: 4px solid var(--primary);
-      }
+.kpi-card {
+  background: white;
+  padding: 25px;
+  border-radius: 14px;
+  flex: 1;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
 
-      .kpi-label {
-        font-size: 0.9rem;
-        color: #888;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-      }
+.kpi-value { font-size: 2.3rem; font-weight: bold; }
 
-      .kpi-value {
-        font-size: 2.2rem;
-        font-weight: 700;
-        color: var(--dark);
-        margin-top: 10px;
-      }
+/* TABLAS */
+.table-container {
+  background: var(--white);
+  padding: 25px;
+  border-radius: 14px;
+  box-shadow: 0 3px 5px rgba(0,0,0,0.08);
+  margin-top: 35px;
+}
 
-      .section-view {
-        display: none; 
-        animation: fadeIn 0.3s ease;
-      }
-      .section-view.active {
-        display: block;
-      }
+table { width: 100%; border-collapse: collapse; }
+th { padding: 13px; background: #f3f3f3; }
+td { padding: 12px; border-bottom: 1px solid #eee; }
 
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(10px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
+.btn-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  font-size: 1.1rem;
+  color: red;
+}
 
-      .table-container {
-        background: var(--white);
-        border-radius: 12px;
-        padding: 20px;
-        box-shadow: var(--shadow);
-      }
+.section-view { display: none; }
+.section-view.active { display: block; }
+</style>
+</head>
 
-      table {
-        width: 100%;
-        border-collapse: collapse;
-      }
+<body>
 
-      th {
-        text-align: left;
-        padding: 15px;
-        color: #888;
-        font-weight: 600;
-        border-bottom: 1px solid #eee;
-        font-size: 0.9rem;
-      }
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo">🛡️ EcoAdmin</div>
 
-      td {
-        padding: 15px;
-        border-bottom: 1px solid #f9f9f9;
-        color: var(--dark);
-        vertical-align: middle;
-      }
+  <a href="#" class="menu-item active" onclick="switchTab('dashboard', this)">
+    🏠 Dashboard
+  </a>
 
-      .badge {
-        padding: 5px 10px;
-        border-radius: 20px;
-        font-size: 0.75rem;
-        font-weight: 700;
-        text-transform: uppercase;
-      }
-      .badge-admin {
-        background: #e3f2fd;
-        color: #1565c0;
-      }
-      .badge-dueno {
-        background: #e8f5e9;
-        color: #2e7d32;
-      }
-      .badge-cliente {
-        background: #f3e5f5;
-        color: #7b1fa2;
-      }
+  <a href="#" class="menu-item" onclick="switchTab('usuarios', this)">
+    👥 Usuarios
+  </a>
 
-      .btn-icon {
-        background: none;
-        border: none;
-        cursor: pointer;
-        font-size: 1.1rem;
-        padding: 5px;
-        border-radius: 5px;
-        transition: background 0.2s;
-      }
-      .btn-delete {
-        color: #e74c3c;
-      }
-      .btn-delete:hover {
-        background: #ffecec;
-      }
+  <a href="#" class="menu-item" onclick="switchTab('hospedajes', this)">
+    🏡 Hospedajes
+  </a>
 
-      .thumb-img {
-        width: 50px;
-        height: 35px;
-        object-fit: cover;
-        border-radius: 4px;
-        border: 1px solid #eee;
-      }
-    </style>
-  </head>
-  <body>
-    <aside class="sidebar">
-      <div class="logo">
-        <span>🛡️ EcoAdmin</span>
-      </div>
+  <a href="/index.html" class="menu-item">🌐 Ir al Sitio Web</a>
 
-      <a
-        href="#"
-        class="menu-item active"
-        onclick="switchTab('usuarios', this)"
-      >
-        <span>👥</span> Usuarios
-      </a>
-      <a href="#" class="menu-item" onclick="switchTab('hospedajes', this)">
-        <span>🏡</span> Hospedajes
-      </a>
-      <a href="/index.html" class="menu-item">
-        <span>🌐</span> Ir al Sitio Web
-      </a>
+  <a href="#" onclick="logout()" class="menu-item logout">🚪 Cerrar Sesión</a>
+</aside>
 
-      <a href="#" onclick="logout()" class="menu-item logout">
-        <span>🚪</span> Cerrar Sesión
-      </a>
-    </aside>
+<!-- CONTENIDO -->
+<main class="main-content">
 
-    <main class="main-content">
-      <header>
-        <div>
-          <h1 id="pageTitle">Gestión de Usuarios</h1>
-          <p style="color: #666; font-size: 0.9rem">
-            Panel de administración general
-          </p>
-        </div>
-      </header>
+    <h1 id="pageTitle">Dashboard del Administrador</h1>
 
-      <div class="kpi-grid">
+    <!-- KPIs -->
+    <div class="kpi-grid">
         <div class="kpi-card">
-          <div class="kpi-label">Usuarios Totales</div>
-          <div class="kpi-value" id="kpiUsers">0</div>
+            <div class="kpi-label">Usuarios Totales</div>
+            <div class="kpi-value" id="kpiUsers">0</div>
         </div>
-        <div class="kpi-card" style="border-color: #f39c12">
-          <div class="kpi-label">Hospedajes Activos</div>
-          <div class="kpi-value" id="kpiHotels">0</div>
+        <div class="kpi-card">
+            <div class="kpi-label">Hospedajes Registrados</div>
+            <div class="kpi-value" id="kpiHotels">0</div>
         </div>
-      </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Reservas Totales</div>
+            <div class="kpi-value" id="kpiReservas">0</div>
+        </div>
+    </div>
 
-      <div id="view-usuarios" class="section-view active">
-        <div class="table-container">
-          <table>
+    <!-- ⭐⭐⭐ AÑADIDO AL DASHBOARD ⭐⭐⭐ -->
+    <div class="table-container">
+        <h3>Usuarios Registrados</h3>
+        <table>
             <thead>
-              <tr>
-                <th>ID</th>
-                <th>Usuario</th>
-                <th>Rol</th>
-                <th>Email</th>
-                <th style="text-align: right">Acciones</th>
-              </tr>
-            </thead>
-            <tbody id="tablaUsuarios">
-              <tr>
-                <td colspan="5">Cargando...</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div id="view-hospedajes" class="section-view">
-        <div class="table-container">
-          <h3>Listado Global de Propiedades</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Foto</th>
-                <th>Propiedad</th>
-                <th>Ubicación</th>
-                <th>Dueño</th>
-                <th>Precio</th>
-                <th style="text-align: right">Acciones</th>
-              </tr>
-            </thead>
-            <tbody id="tablaHospedajes">
-              <tr>
-                <td colspan="7">Cargando...</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </main>
-
-    <script>
-      const usuario = JSON.parse(localStorage.getItem("usuarioLogueado"));
-      const token = localStorage.getItem("jwt");
-
-      if (!usuario || usuario.rol !== "ADMIN" || !token) {
-        window.location.href = "/index.html";
-      }
-
-      const headersAuth = {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token,
-      };
-
-      function switchTab(tabName, element) {
-        document
-          .querySelectorAll(".menu-item")
-          .forEach((el) => el.classList.remove("active"));
-        if (element) element.classList.add("active");
-
-        document
-          .querySelectorAll(".section-view")
-          .forEach((el) => el.classList.remove("active"));
-        document.getElementById(`view-${tabName}`).classList.add("active");
-
-        const titulos = {
-          usuarios: "Gestión de Usuarios",
-          hospedajes: "Gestión de Hospedajes",
-        };
-        document.getElementById("pageTitle").innerText = titulos[tabName];
-      }
-
-      async function initData() {
-        try {
-          const resStats = await fetch("/api/admin/stats", {
-            headers: headersAuth,
-          });
-          const stats = await resStats.json();
-          document.getElementById("kpiUsers").innerText = stats.usuarios;
-          document.getElementById("kpiHotels").innerText = stats.hospedajes;
-
-          cargarUsuarios();
-          cargarHospedajes(); 
-        } catch (error) {
-          console.error(error);
-          alert("Error de conexión");
-        }
-      }
-
-      async function cargarUsuarios() {
-        const res = await fetch("/api/admin/usuarios", {
-          headers: headersAuth,
-        });
-        const users = await res.json();
-        const tbody = document.getElementById("tablaUsuarios");
-        tbody.innerHTML = "";
-
-        users.forEach((u) => {
-          const badgeClass = `badge-${u.rol.toLowerCase()}`;
-          const btnDelete =
-            u.email === usuario.email
-              ? `<span style="color:#aaa; font-size:0.8rem">Actual</span>`
-              : `<button class="btn-icon btn-delete" onclick="eliminarUsuario(${u.id})" title="Eliminar Usuario">🗑️</button>`;
-
-          tbody.innerHTML += `
                 <tr>
-                    <td>#${u.id}</td>
-                    <td><div style="font-weight:600">${u.nombre} ${u.apellidos}</div></td>
-                    <td><span class="badge ${badgeClass}">${u.rol}</span></td>
-                    <td style="color:#666">${u.email}</td>
-                    <td style="text-align: right;">${btnDelete}</td>
+                    <th>ID</th>
+                    <th>Usuario</th>
+                    <th>Email</th>
+                    <th>Rol</th>
                 </tr>
-            `;
-        });
-      }
+            </thead>
+            <tbody id="tablaDashboardUsuarios">
+                <tr><td colspan="4" style="text-align:center">Cargando...</td></tr>
+            </tbody>
+        </table>
+    </div>
 
-      async function cargarHospedajes() {
-        try {
-          const res = await fetch("/api/hospedajes", {
-            method: "GET",
-            headers: headersAuth,
-          });
+    <div class="table-container">
+        <h3>Hospedajes Registrados</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Hospedaje</th>
+                    <th>Ubicación</th>
+                    <th>Precio</th>
+                    <th>Disponibilidad</th>
+                </tr>
+            </thead>
+            <tbody id="tablaDashboardHospedajes">
+                <tr><td colspan="5" style="text-align:center">Cargando...</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- ⭐⭐⭐ FIN DE BLOQUE AÑADIDO ⭐⭐⭐ -->
 
-          if (!res.ok) throw new Error("Error fetching hospedajes");
 
-          const respuesta = await res.json();
-
-          const listaHoteles = respuesta.content
-            ? respuesta.content
-            : respuesta;
-
-          const tbody = document.getElementById("tablaHospedajes");
-          tbody.innerHTML = "";
-
-          if (!listaHoteles || listaHoteles.length === 0) {
-            tbody.innerHTML =
-              "<tr><td colspan='7' style='text-align:center'>No hay hospedajes registrados.</td></tr>";
-            return;
-          }
-
-          listaHoteles.forEach((h) => {
-            const imgUrl = h.imagenUrl ? h.imagenUrl : "/img/logo.jpg";
-
-            tbody.innerHTML += `
+    <!-- VISTA USUARIOS -->
+    <div id="view-usuarios" class="section-view">
+        <div class="table-container">
+            <h3>Gestión de Usuarios</h3>
+            <table>
+                <thead>
                     <tr>
-                        <td>#${h.id}</td>
-                        <td>
-                            <img src="${imgUrl}" class="thumb-img" onerror="this.src='/img/logo.jpg'">
-                        </td>
-                        <td>
-                            <div style="font-weight:600; color:var(--primary)">${h.nombre}</div>
-                        </td>
-                        <td>${h.ubicacion}</td>
-                        <td>${h.nombrePropietario}</td>
-                        <td>S/ ${h.precio}</td>
-                        <td style="text-align: right;">
-                            <button class="btn-icon btn-delete" onclick="eliminarHospedaje(${h.id})" title="Eliminar Propiedad">🗑️</button>
-                        </td>
+                        <th>ID</th>
+                        <th>Usuario</th>
+                        <th>Email</th>
+                        <th>Rol</th>
+                        <th style="text-align:right">Acciones</th>
                     </tr>
-                `;
-          });
-        } catch (error) {
-          console.error("Error cargando hospedajes:", error);
-        }
-      }
+                </thead>
+                <tbody id="tablaUsuarios"></tbody>
+            </table>
+        </div>
+    </div>
 
-      async function eliminarUsuario(id) {
-        if (
-          !confirm("⚠️ ¿Estás seguro? Se borrará el usuario y TODOS sus datos.")
-        )
-          return;
-        try {
-          const res = await fetch(`/api/admin/usuarios/${id}`, {
-            method: "DELETE",
-            headers: headersAuth,
-          });
-          if (res.ok) initData();
-          else alert("No se pudo eliminar.");
-        } catch (e) {
-          console.error(e);
-        }
-      }
+    <!-- VISTA HOSPEDAJES -->
+    <div id="view-hospedajes" class="section-view">
+        <div class="table-container">
+            <h3>Gestión de Hospedajes</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Ubicación</th>
+                        <th>Precio</th>
+                        <th>Disponibilidad</th>
+                        <th style="text-align:right">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaHospedajes"></tbody>
+            </table>
+        </div>
+    </div>
 
-      async function eliminarHospedaje(id) {
-        if (!confirm("⚠️ ¿Eliminar esta propiedad permanentemente?")) return;
-        try {
-          const res = await fetch(`/api/admin/hospedajes/${id}`, {
-            method: "DELETE",
-            headers: headersAuth,
-          });
-          if (res.ok) initData();
-          else alert("Error al eliminar propiedad.");
-        } catch (e) {
-          console.error(e);
-        }
-      }
+</main>
 
-      function logout() {
-        localStorage.clear();
-        window.location.href = "/index.html";
-      }
+<script>
 
-      initData();
-    </script>
-  </body>
+/* ============= AUTENTICACIÓN ============= */
+const usuario = JSON.parse(localStorage.getItem("usuarioLogueado"));
+const token = localStorage.getItem("jwt");
+
+if (!usuario || usuario.rol !== "ADMIN" || !token) {
+  window.location.href = "/index.html";
+}
+
+const headersAuth = {
+  "Content-Type": "application/json",
+  Authorization: "Bearer " + token
+};
+
+
+/* ============= CAMBIO DE TABS ============= */
+function switchTab(tab, element) {
+  document.querySelectorAll(".menu-item").forEach(el => el.classList.remove("active"));
+  element.classList.add("active");
+
+  document.querySelectorAll(".section-view").forEach(s => s.classList.remove("active"));
+
+  if (tab !== "dashboard") {
+    document.getElementById(`view-${tab}`).classList.add("active");
+  }
+
+  const titles = {
+    dashboard: "Dashboard",
+    usuarios: "Gestión de Usuarios",
+    hospedajes: "Gestión de Hospedajes"
+  };
+
+  document.getElementById("pageTitle").innerText = titles[tab];
+}
+
+
+/* ============= CARGAR STATS ============= */
+async function cargarStats() {
+  const res = await fetch("http://localhost:8080/api/admin/stats", { headers: headersAuth });
+  const data = await res.json();
+
+  document.getElementById("kpiUsers").innerText = data.usuarios;
+  document.getElementById("kpiHotels").innerText = data.hospedajes;
+  document.getElementById("kpiReservas").innerText = data.reservas || 0;
+}
+
+
+/* ============= CARGAR USUARIOS (Dashboard) ============= */
+async function cargarUsuariosDashboard() {
+  const res = await fetch("http://localhost:8080/api/admin/usuarios", { headers: headersAuth });
+  const users = await res.json();
+
+  const tbody = document.getElementById("tablaDashboardUsuarios");
+  tbody.innerHTML = "";
+
+  users.forEach(u => {
+    tbody.innerHTML += `
+      <tr>
+        <td>${u.id}</td>
+        <td>${u.nombre}</td>
+        <td>${u.email}</td>
+        <td>${u.rol}</td>
+      </tr>
+    `;
+  });
+}
+
+
+/* ============= CARGAR HOSPEDAJES (Dashboard) ============= */
+async function cargarHospedajesDashboard() {
+  const res = await fetch("http://localhost:8080/api/admin/hospedajes", { headers: headersAuth });
+  const hotels = await res.json();
+
+  const tbody = document.getElementById("tablaDashboardHospedajes");
+  tbody.innerHTML = "";
+
+  hotels.forEach(h => {
+    tbody.innerHTML += `
+      <tr>
+        <td>${h.id}</td>
+        <td>${h.nombre}</td>
+        <td>${h.ubicacion}</td>
+        <td>S/ ${h.precioNoche}</td>
+        <td>${h.disponibilidad ? "Disponible" : "No disponible"}</td>
+      </tr>
+    `;
+  });
+}
+
+
+/* ============= CARGAR USUARIOS (Vista Usuarios) ============= */
+async function cargarUsuarios() {
+  const res = await fetch("http://localhost:8080/api/admin/usuarios", { headers: headersAuth });
+  const users = await res.json();
+
+  const tbody = document.getElementById("tablaUsuarios");
+  tbody.innerHTML = "";
+
+  users.forEach(u => {
+    tbody.innerHTML += `
+      <tr>
+        <td>${u.id}</td>
+        <td>${u.nombre}</td>
+        <td>${u.email}</td>
+        <td>${u.rol}</td>
+        <td style="text-align:right">
+            <button class="btn-icon" onclick="eliminarUsuario(${u.id})">🗑️</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+
+/* ============= CARGAR HOSPEDAJES (Vista Hospedajes) ============= */
+async function cargarHospedajes() {
+  const res = await fetch("http://localhost:8080/api/admin/hospedajes", { headers: headersAuth });
+  const hotels = await res.json();
+
+  const tbody = document.getElementById("tablaHospedajes");
+  tbody.innerHTML = "";
+
+  hotels.forEach(h => {
+    tbody.innerHTML += `
+      <tr>
+        <td>${h.id}</td>
+        <td>${h.nombre}</td>
+        <td>${h.ubicacion}</td>
+        <td>S/ ${h.precioNoche}</td>
+        <td>${h.disponibilidad ? "Disponible" : "No disponible"}</td>
+        <td style="text-align:right">
+            <button class="btn-icon" onclick="eliminarHospedaje(${h.id})">🗑️</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+
+/* ============= ACCIONES ============= */
+async function eliminarUsuario(id) {
+  if (!confirm("¿Eliminar usuario?")) return;
+  await fetch(`http://localhost:8080/api/admin/usuarios/${id}`, {
+    method: "DELETE", headers: headersAuth
+  });
+  cargarUsuarios();
+  cargarUsuariosDashboard();
+  cargarStats();
+}
+
+async function eliminarHospedaje(id) {
+  if (!confirm("¿Eliminar hospedaje?")) return;
+  await fetch(`http://localhost:8080/api/admin/hospedajes/${id}`, {
+    method: "DELETE", headers: headersAuth
+  });
+  cargarHospedajes();
+  cargarHospedajesDashboard();
+  cargarStats();
+}
+
+function logout() {
+  localStorage.clear();
+  window.location.href = "/index.html";
+}
+
+
+/* ============= EJECUCIÓN INICIAL ============= */
+cargarStats();
+cargarUsuariosDashboard();
+cargarHospedajesDashboard();
+cargarUsuarios();
+cargarHospedajes();
+
+</script>
+</body>
 </html>

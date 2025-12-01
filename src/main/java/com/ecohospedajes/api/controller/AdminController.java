@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ecohospedajes.api.entity.Usuario;
 import com.ecohospedajes.api.repository.HospedajeRepository;
 import com.ecohospedajes.api.repository.UsuarioRepository;
+import com.ecohospedajes.api.repository.ReservaRepository; // ← IMPORTANTE
 
 @RestController
 @RequestMapping("/api/admin")
@@ -23,10 +24,16 @@ public class AdminController {
 
     private final UsuarioRepository usuarioRepository;
     private final HospedajeRepository hospedajeRepository;
+    private final ReservaRepository reservaRepository; // ← NUEVO
 
-    public AdminController(UsuarioRepository usuarioRepository, HospedajeRepository hospedajeRepository) {
+    public AdminController(
+            UsuarioRepository usuarioRepository,
+            HospedajeRepository hospedajeRepository,
+            ReservaRepository reservaRepository // ← NUEVO
+    ) {
         this.usuarioRepository = usuarioRepository;
         this.hospedajeRepository = hospedajeRepository;
+        this.reservaRepository = reservaRepository;
     }
 
     @GetMapping("/stats")
@@ -34,6 +41,7 @@ public class AdminController {
         Map<String, Long> stats = new HashMap<>();
         stats.put("usuarios", usuarioRepository.count());
         stats.put("hospedajes", hospedajeRepository.count());
+        stats.put("reservas", reservaRepository.count()); // ← NUEVO
         return ResponseEntity.ok(stats);
     }
 
@@ -47,7 +55,7 @@ public class AdminController {
         usuarioRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }
-
+      
     @DeleteMapping("/hospedajes/{id}")
     public ResponseEntity<?> eliminarHospedaje(@PathVariable Long id) {
         hospedajeRepository.deleteById(id);
